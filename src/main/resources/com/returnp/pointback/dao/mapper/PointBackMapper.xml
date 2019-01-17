@@ -1,0 +1,1657 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PointBackMapper">
+  
+    <resultMap id="OuterPointBackTarget_ResultMap" type="com.returnp.pointback.dto.command.OuterPointBackTarget">
+	  <id column="memNo" jdbcType="INTEGER" property="memNo" />
+	  <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+	  <result column="recommenderMemberNo" jdbcType="INTEGER" property="recommenderMemberNo" />
+	  <result column="saleManagerNo" jdbcType="INTEGER" property="saleManagerNo" />
+	  <result column="saleManagerMemberNo" jdbcType="INTEGER" property="saleManagerMemberNo" />
+  </resultMap>
+  
+  <sql id="OuterPointBackTarget_Column_List">
+   	M.memberNo as memberNo,
+   	M.memberName as memberName,
+   	M1.memberNo as firstRecommenderMemberNo,
+   	M1.memberName firstRecommenderMemberName,
+   	M2.memberNo as secondRecommenderMemberNo,
+   	M2.memberName as secondRecommenderMemberName
+  </sql>
+
+   <sql id ="OuterPointBackTarget_Where">
+   <if test="memberNo != null"> AND M.memberNo= #{memberNo,jdbcType=INTEGER} </if>  	
+   </sql>
+  
+<!--    <select id="findOuterPointBackTarget" parameterType="com.returnp.pointback.dto.command.OuterPointBackTarget"  resultMap="OuterPointBackTarget_ResultMap" >
+   		select 
+    <include refid="OuterPointBackTarget_Column_List"/>
+    from (select * from member where memberNo = #{memberNo}) as M  
+    left outer join recommender as R on (M.recommenderNo= R.recommenderNo) 
+    left outer join sale_manager as SR on (R.saleManagerNo= SR.saleManagerNo) 
+    where 
+    	1 = 1
+		<include refid = "OuterPointBackTarget_Where"/>
+  </select> -->
+  
+  
+   <select id="findOuterPointBackTarget" parameterType="com.returnp.pointback.dto.command.OuterPointBackTarget"  resultMap="OuterPointBackTarget_ResultMap" >
+   		select 
+    <include refid="OuterPointBackTarget_Column_List"/>
+    from (select * from member where memberNo = #{memberNo}) as M  
+    left outer join member as M1 on (M.recommenderNo= M1.memberNo) 
+    left outer join member as M2 on (M1.recommenderNo= M2.memberNo) 
+    where 
+    	1 = 1
+		<include refid = "OuterPointBackTarget_Where"/>
+  </select>
+
+
+  <resultMap id="InnerPointBackTarget_ResultMap" type="com.returnp.pointback.dto.command.InnerPointBackTarget">
+  	 <id column="affiliateMemberNo" jdbcType="INTEGER" property="affiliateMemberNo" />
+	 <result column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+	 <result column="affiliateRecommenderNo" jdbcType="INTEGER" property="affiliateRecommenderNo" />
+	 <result column="affiliateRecommenderMemberNo" jdbcType="INTEGER" property="affiliateRecommenderMemberNo" />
+	 <result column="affiliateRecommenderSaleManagerNo" jdbcType="INTEGER" property="affiliateRecommenderSaleManagerNo" />
+	 <result column="affiliateRecommenderSaleManagerMemberNo" jdbcType="INTEGER" property="affiliateRecommenderSaleManagerMemberNo" />
+	
+	 <result column="agencyMemberNo" jdbcType="INTEGER" property="agencyMemberNo" />
+	 <result column="agencyNo" jdbcType="INTEGER" property="agencyNo" />
+	 <result column="agencyRecommenderNo" jdbcType="INTEGER" property="agencyRecommenderNo" />
+	 <result column="agencyRecommenderMemberNo" jdbcType="INTEGER" property="agencyRecommenderMemberNo" />
+	 <result column="agencyRecommenderSaleManagerNo" jdbcType="INTEGER" property="agencyRecommenderSaleManagerNo" />
+	 <result column="agencyRecommenderSaleManagerMemberNo" jdbcType="INTEGER" property="agencyRecommenderSaleManagerMemberNo" />
+	
+	 <result column="branchMemberNo" jdbcType="INTEGER" property="branchMemberNo" />
+	 <result column="branchNo" jdbcType="INTEGER" property="branchNo" />
+	 <result column="branchRecommenderNo" jdbcType="INTEGER" property="branchRecommenderNo" />
+	 <result column="branchRecommenderMemberNo" jdbcType="INTEGER" property="branchRecommenderMemberNo" />
+	 <result column="branchRecommenderSaleManagerNo" jdbcType="INTEGER" property="branchRecommenderSaleManagerNo" />
+	 <result column="branchRecommenderSaleManagerMemberNo" jdbcType="INTEGER" property="branchRecommenderSaleManagerMemberNo" />
+
+	 <result column="soleDistNo" jdbcType="INTEGER" property="soleDistNo" />
+	 <result column="soleDistMemberNo" jdbcType="INTEGER" property="soleDistMemberNo" />
+  </resultMap>
+  
+ <sql id="InnerPointBackTarget_Column_List">
+ 	AF.memberNo as affiliateMemberNo,
+    AF.affiliateNo as affiliateNo,
+    AF.affiliateName as affiliateName,
+
+    M1.memberNo as affiliateFirstRecommenderMemberNo,
+    M1.memberName as affiliateFirstRecommenderMemberName,
+    M2.memberNo as affiliateSecondRecommenderMemberNo,
+    M2.memberName as affiliateSecondRecommenderMemberName,
+
+    AG.memberNo as agencyMemberNo,
+    AG.agencyNo as agencyNo,
+    AG.agencyName as agencyName,
+    M3.memberNo as agencyFirstRecommenderMemberNo,
+    M3.memberName as agencyFirstRecommenderMemberName,
+    M4.memberNo as agencySecondRecommenderMemberNo,
+    M4.memberName as agencySecondRecommenderMemberName,
+
+    BR.memberNo as branchMemberNo,
+    BR.branchNo as branchNo,
+    BR.branchName as branchName,
+    M5.memberNo as branchFirstRecommenderMemberNo,
+    M5.memberName as branchFirstRecommenderMemberName,
+    M6.memberNo as branchSecondRecommenderMemberNo,
+    M6.memberName as branchSecondRecommenderMemberName,
+
+    SD.memberNo as soleDistMemberNo,
+    SD.soleDistNo as soleDistNo,
+    SD.soleDistName as soleDistName
+  </sql>
+
+ <sql id ="InnerPointBackTarget_Where"></sql>
+ 
+ <select id="findInnerPointBackTarget" parameterType="com.returnp.pointback.dto.command.InnerPointBackTarget"  resultMap="InnerPointBackTarget_ResultMap" >
+   	select 
+    <include refid="InnerPointBackTarget_Column_List"/>
+       from 
+    	(select * from affiliate where affiliateSerial = #{affiliateSerial}) as AF
+	left outer join member as M1
+        on (AF.recommenderNo = M1.memberNo)
+    left outer join member as M2
+        on (M1.recommenderNo = M2.memberNo)
+
+    left outer join agency as  AG
+        on (AF.agencyNo= AG.agencyNo)
+     left outer join member as M3
+        on (AG.recommenderNo= M3.memberNo)
+     left outer join member as M4
+        on (M3.recommenderNo= M4.memberNo)
+
+
+    left outer join branch as  BR
+        on (AG.branchNo= BR.branchNo)
+    left outer join member as M5
+        on (BR.recommenderNo= M5.memberNo)
+    left outer join member as M6
+        on (M5.recommenderNo= M6.memberNo)
+
+    left outer join sole_dist as  SD
+        on (BR.soleDistNo = SD.soleDistNo)
+    where
+        1 = 1
+		<include refid = "InnerPointBackTarget_Where"/>
+  </select>
+	
+	 <!-- ===============================================================================================================    -->
+  <!-- Admin Mapper   -->
+  
+    <resultMap id="AdminResultMap" type="com.returnp.pointback.model.Admin">
+    <id column="adminNo" jdbcType="INTEGER" property="adminNo" />
+    <result column="adminEmail" jdbcType="VARCHAR" property="adminEmail" />
+    <result column="adminPassword" jdbcType="VARCHAR" property="adminPassword" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Admin_Column_List">
+    adminNo, adminEmail, adminPassword, regAdminNo, createTime, updateTime
+  </sql>
+  
+    <sql id ="adminWhereStatement">
+	 <if test="adminNo != null  and  adminNo  != 0"> AND adminNo = #{adminNo} </if>
+      <if test="adminEmail != null"> AND adminEmail =  #{adminEmail} </if>
+      <if test="adminPassword != null"> AND adminPassword = #{adminPassword}</if>
+      <if test="regAdminNo != null and regAdminNo != 0"> AND regAdminNo = #{regAdminNo} </if> 
+	</sql>
+	
+  <select id="findAdmins" parameterType="com.returnp.pointback.model.Admin"  resultMap="AdminResultMap" >
+    select 
+    <include refid="Admin_Column_List" />
+    from admin
+    where 
+    	1 = 1
+		<include refid = "adminWhereStatement"/>
+  </select>
+  
+  
+  <!-- ===============================================================================================================    -->
+  <!-- Policy  -->
+    <resultMap id="PolicyResultMap" type="com.returnp.pointback.model.Policy">
+    <id column="policyNo" jdbcType="INTEGER" property="policyNo" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="branchComm" jdbcType="REAL" property="branchComm" />
+    <result column="soleDistComm" jdbcType="REAL" property="soleDistComm" />
+    <result column="agancyComm" jdbcType="REAL" property="agancyComm" />
+    <result column="affiliateComm" jdbcType="REAL" property="affiliateComm" />
+    <result column="branchRecComm" jdbcType="REAL" property="branchRecComm" />
+    <result column="agancyRecComm" jdbcType="REAL" property="agancyRecComm" />
+    <result column="affiliateRecComm" jdbcType="REAL" property="affiliateRecComm" />
+    <result column="customerRecCom" jdbcType="REAL" property="customerRecCom" />
+    <result column="customerComm" jdbcType="REAL" property="customerComm" />
+    <result column="pointTransRate" jdbcType="REAL" property="pointTransRate" />
+    <result column="pointTransLimit" jdbcType="REAL" property="pointTransLimit" />
+    <result column="redPointAccRate" jdbcType="REAL" property="redPointAccRate" />
+    <result column="membershipTransLimit" jdbcType="INTEGER" property="membershipTransLimit" />
+    <result column="gPointMovingMinLimit" jdbcType="INTEGER" property="gPointMovingMinLimit" />
+    <result column="gPointMovingMaxLimit" jdbcType="INTEGER" property="gPointMovingMaxLimit" />
+    <result column="rPointMovingMinLimit" jdbcType="INTEGER" property="rPointMovingMinLimit" />
+    <result column="rPointMovingMaxLimit" jdbcType="INTEGER" property="rPointMovingMaxLimit" />
+    <result column="customerRecManagerComm" jdbcType="REAL" property="customerRecManagerComm" />
+    <result column="affiliateRecManagerComm" jdbcType="REAL" property="affiliateRecManagerComm" />
+    <result column="agancyRecManagerComm" jdbcType="REAL" property="agancyRecManagerComm" />
+    <result column="branchRecManagerComm" jdbcType="REAL" property="branchRecManagerComm" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Policy_Column_List">
+    policyNo, regAdminNo, branchComm, soleDistComm, agancyComm, affiliateComm, branchRecComm, 
+    agancyRecComm, affiliateRecComm, customerRecCom, customerComm, pointTransRate, pointTransLimit, 
+    redPointAccRate, membershipTransLimit, gPointMovingMinLimit, gPointMovingMaxLimit, 
+    rPointMovingMinLimit, rPointMovingMaxLimit, customerRecManagerComm, affiliateRecManagerComm, 
+    agancyRecManagerComm, branchRecManagerComm, createTime, updateTime
+  </sql>
+  
+  <sql id ="policyWhereStatement">
+	 <if test="policyNo != null  and  policyNo  != 0"> AND adminNo = #{adminNo} </if>
+      <if test="regAdminNo != null and regAdminNo != 0"> AND regAdminNo = #{regAdminNo} </if> 
+	</sql>
+	
+   <select id="findPolicies" parameterType="com.returnp.pointback.model.Policy" resultMap="PolicyResultMap">
+    select 
+    <include refid="Policy_Column_List" />
+    from policy
+    where 
+    		1 = 1
+		<include refid = "policyWhereStatement"/>
+  </select>
+   
+   <!-- ===============================================================================================================    -->
+  <!-- Member  -->
+  <resultMap id="MemberResultMap" type="com.returnp.pointback.model.Member">
+    <id column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberPassword" jdbcType="VARCHAR" property="memberPassword" />
+    <result column="memberPassword2" jdbcType="VARCHAR" property="memberPassword2" />
+    <result column="memberType" jdbcType="VARCHAR" property="memberType" />
+    <result column="memberStatus" jdbcType="VARCHAR" property="memberStatus" />
+    <result column="memberAuthType" jdbcType="VARCHAR" property="memberAuthType" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="joinRoute" jdbcType="VARCHAR" property="joinRoute" />
+    <result column="statusReason" jdbcType="VARCHAR" property="statusReason" />
+     <result column="isSoleDist" jdbcType="CHAR" property="isSoleDist" />
+    <result column="isRecommender" jdbcType="CHAR" property="isRecommender" />
+    <result column="isSaleManager" jdbcType="CHAR" property="isSaleManager" />
+    <result column="isBranch" jdbcType="CHAR" property="isBranch" />
+    <result column="isAffiliate" jdbcType="CHAR" property="isAffiliate" />
+    <result column="isAgency" jdbcType="CHAR" property="isAgency" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+    <sql id="Member_Column_List">
+   memberNo, memberName, memberEmail, memberPassword, memberPassword2, memberType, memberStatus, 
+    memberAuthType, memberPhone, recommenderNo, joinRoute, statusReason, isSoleDist, 
+    isRecommender, isSaleManager, isBranch, isAffiliate, isAgency, regType, regAdminNo, 
+    greenPointAccStatus, redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, 
+    updateTime
+  </sql>
+  
+    <sql id ="memberSearchWhereStatement">
+       <if test="memberNo != null">AND  memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="memberPassword != null"> AND memberPassword = #{memberPassword,jdbcType=VARCHAR}</if>
+      <if test="memberPassword2 != null">AND  memberPassword2 = #{memberPassword2,jdbcType=VARCHAR}</if>
+      <if test="memberType != null">AND  memberType = #{memberType,jdbcType=VARCHAR}</if>
+      <if test="memberStatus != null and memberStatus !=  '0'  and memberStatus !=  0">AND  memberStatus = #{memberStatus,jdbcType=VARCHAR}</if>
+      <if test="memberAuthType != null">AND  memberAuthType = #{memberAuthType,jdbcType=VARCHAR}</if>
+      <if test="recommenderNo != null">AND  recommenderNo = #{recommenderNo,jdbcType=INTEGER}</if>
+      <if test="joinRoute != null">AND  joinRoute = #{joinRoute,jdbcType=VARCHAR}</if>
+      <if test="isSoleDist != null">AND  isSoleDist = #{isSoleDist,jdbcType=CHAR}</if>
+      <if test="isRecommender != null">AND  isRecommender = #{isRecommender,jdbcType=CHAR}</if>
+      <if test="isSaleManager != null"> isSaleManager = #{isSaleManager,jdbcType=CHAR}</if>
+      <if test="isBranch != null">AND  isBranch = #{isBranch,jdbcType=CHAR}</if>
+      <if test="isAffiliate != null">AND  isAffiliate = #{isAffiliate,jdbcType=CHAR}</if>
+      <if test="isAgency != null">AND  isAgency = #{isAgency,jdbcType=CHAR}</if>
+      <if test="regType != null">AND  regType = #{regType,jdbcType=CHAR}</if>
+      <if test="regAdminNo != null">AND  regAdminNo = #{regAdminNo,jdbcType=INTEGER}</if>
+      <if test="greenPointAccStatus != null">AND  greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR}</if>
+      <if test="redPointAccStatus != null">AND  redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR}</if>
+      <if test="greenPointUseStatus != null">AND  greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR}</if>
+      <if test="redPointUseStatus != null">AND  redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR}</if>
+      <if test="memberPhone != null">AND  memberPhone = #{memberPhone,jdbcType=CHAR}</if>
+      <if test="memberEmail != null">AND  memberEmail = #{memberEmail,jdbcType=CHAR}</if>
+      <if test="memberName != null or statusReason != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">OR memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="statusReason != null">OR  statusReason = #{statusReason,jdbcType=VARCHAR}</if>
+      <if test="memberName != null or statusReason != null">
+      	)
+      </if>
+	</sql>
+	
+  <select id="findMembers" parameterType="com.returnp.pointback.model.Member"  resultMap="MemberResultMap" >
+    select 
+    <include refid="Member_Column_List" />
+    from member
+    where 
+    	1 = 1
+		<include refid = "memberSearchWhereStatement"/>
+  </select>
+  
+    
+  <!-- ===============================================================================================================    -->
+    <!-- SoleDist -->
+  <resultMap id="soleDist_ResultMap" type="com.returnp.pointback.model.SoleDist">
+    <id column="soleDistNo" jdbcType="INTEGER" property="soleDistNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="soleDistCode" jdbcType="VARCHAR" property="soleDistCode" />
+    <result column="soleDistEmail" jdbcType="VARCHAR" property="soleDistEmail" />
+    <result column="soleDistName" jdbcType="VARCHAR" property="soleDistName" />
+    <result column="soleDistAddress" jdbcType="VARCHAR" property="soleDistAddress" />
+    <result column="soleDistTel" jdbcType="VARCHAR" property="soleDistTel" />
+    <result column="soleDistPhone" jdbcType="VARCHAR" property="soleDistPhone" />
+    <result column="soleDistStatus" jdbcType="VARCHAR" property="soleDistStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="soleDist_Column_List">
+    soleDistNo, memberNo, soleDistCode, soleDistEmail, soleDistName, soleDistAddress, 
+    soleDistTel, soleDistPhone, soleDistStatus, regType, regAdminNo, greenPointAccStatus, 
+    redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, 
+    updatetime
+  </sql>
+ 
+   <sql id ="soleDistSearchWhereStatement">
+       <if test="soleDistNo != null and soleDistNo !=  '0'  and soleDistNo !=  0"> AND soleDistNo = #{soleDistNo,jdbcType=INTEGER} </if>
+       <if test="memberNo != null and memberNo !=  '0'  and memberNo !=  0"> AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="soleDistStatus != null and soleDistStatus !=  '0'  and soleDistStatus !=  0"> AND soleDistStatus = #{soleDistStatus,jdbcType=VARCHAR}  </if>
+      <if test="regType != null"> AND regType = #{regType,jdbcType=CHAR} </if>
+      <if test="regAdminNo != null  and regAdminNo !=  '0'  and regAdminNo !=  0"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+      <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR} </if>
+      <if test="redPointAccStatus != null"> AND redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR} </if>
+      <if test="greenPointUseStatus != null"> AND greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR} </if>
+      <if test="redPointUseStatus != null"> AND redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR} </if>
+      
+          <if test="soleDistCode != null or soleDistName != null or soleDistEmail != null or soleDistAddress != null or soleDistTel != null or soleDistPhone != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="soleDistCode != null"> OR soleDistCode  LIKE CONCAT('%',#{soleDistCode},'%') </if>
+      <if test="soleDistName != null">OR soleDistName  LIKE CONCAT('%',#{soleDistName},'%') </if>
+      <if test="soleDistEmail != null"> OR soleDistEmail  LIKE CONCAT('%',#{soleDistEmail},'%') </if>
+      <if test="soleDistAddress != null"> OR soleDistAddress  LIKE CONCAT('%',#{soleDistAddress},'%') </if>
+      <if test="soleDistTel != null"> OR soleDistTel  LIKE CONCAT('%',#{soleDistTel},'%')</if>
+      <if test="soleDistPhone != null"> OR soleDistPhone  LIKE CONCAT('%',#{soleDistPhone},'%') </if>
+   <if test="soleDistCode != null or soleDistName != null or soleDistEmail != null or soleDistAddress != null or soleDistTel != null or soleDistPhone != null">
+      	)
+      </if>
+	</sql>
+	
+  <select id="findSoleDists" parameterType="com.returnp.pointback.model.SoleDist"  resultMap="soleDist_ResultMap" >
+    select 
+    <include refid="soleDist_Column_List" />
+    from sole_dist
+    where 
+    	1 = 1
+		<include refid = "soleDistSearchWhereStatement"/>
+  </select>
+  
+  
+  
+  <!-- ===============================================================================================================    -->
+  <!-- Branch -->
+   <resultMap id="BranchResultMap" type="com.returnp.pointback.model.Branch">
+ <id column="branchNo" jdbcType="INTEGER" property="branchNo" />
+   <id column="branchNo" jdbcType="INTEGER" property="branchNo" />
+    <result column="soleDistNo" jdbcType="INTEGER" property="soleDistNo" />
+    <result column="branchCode" jdbcType="VARCHAR" property="branchCode" />
+    <result column="branchName" jdbcType="VARCHAR" property="branchName" />
+    <result column="branchAddress" jdbcType="VARCHAR" property="branchAddress" />
+    <result column="branchTel" jdbcType="VARCHAR" property="branchTel" />
+    <result column="branchPhone" jdbcType="VARCHAR" property="branchPhone" />
+    <result column="branchStatus" jdbcType="VARCHAR" property="branchStatus" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="branchEmail" jdbcType="VARCHAR" property="branchEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Branch_Column_List">
+    branchNo, soleDistNo, branchCode, branchName, branchAddress, branchTel, branchPhone, 
+    branchStatus, memberNo, recommenderNo, regType, regAdminNo, branchEmail, greenPointAccStatus, 
+    redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, updateTime
+  </sql>
+  
+    <sql id ="branchSearchWhereStatement">
+      <if test="soleDistNo != null"> AND soleDistNo = #{soleDistNo,jdbcType=INTEGER} </if>
+      <if test="branchNo != null"> AND branchNo = #{branchNo,jdbcType=INTEGER} </if>
+      <if test="branchStatus != null and branchStatus !=  '0'  and branchStatus !=  0">AND branchStatus = #{branchStatus,jdbcType=VARCHAR}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="recommenderNo != null"> AND recommenderNo = #{recommenderNo,jdbcType=INTEGER} </if>
+      <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="redPointAccStatus != null"> AND redPointAccStatus = #{redPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="greenPointUseStatus != null"> AND greenPointUseStatus = #{greenPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="redPointUseStatus != null"> AND redPointUseStatus = #{redPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="regType != null"> AND regType = #{regType,jdbcType=CHAR} </if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+      
+       <if test="branchCode != null or branchName != null or branchEmail != null or branchAddress != null or branchTel != null or branchPhone != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="branchCode != null"> OR branchCode  LIKE CONCAT('%',#{branchCode},'%') </if>
+      <if test="branchName != null">OR branchName  LIKE CONCAT('%',#{branchName},'%') </if>
+      <if test="branchEmail != null"> OR branchEmail  LIKE CONCAT('%',#{branchEmail},'%') </if>
+      <if test="branchAddress != null"> OR branchAddress  LIKE CONCAT('%',#{branchAddress},'%') </if>
+      <if test="branchTel != null"> OR branchTel  LIKE CONCAT('%',#{branchTel},'%')</if>
+      <if test="branchPhone != null"> OR branchPhone  LIKE CONCAT('%',#{branchPhone},'%') </if>
+     <if test="branchCode != null or branchName != null or branchEmail != null or branchAddress != null or branchTel != null or branchPhone != null">
+      	)
+      </if>
+	</sql>
+	
+  <select id="findBranches" parameterType="com.returnp.pointback.model.Branch"  resultMap="BranchResultMap" >
+    select 
+    <include refid="Branch_Column_List" />
+    from branch
+    where 
+    	1 = 1
+		<include refid = "branchSearchWhereStatement"/>
+  </select>
+  
+  
+  <!-- ===============================================================================================================    -->
+    <!-- SaleManager -->
+  <resultMap id="SaleManagerResultMap" type="com.returnp.pointback.model.SaleManager">
+<id column="saleManagerNo" jdbcType="INTEGER" property="saleManagerNo" />
+   <id column="saleManagerNo" jdbcType="INTEGER" property="saleManagerNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="saleManagerCode" jdbcType="VARCHAR" property="saleManagerCode" />
+    <result column="saleManagerName" jdbcType="VARCHAR" property="saleManagerName" />
+    <result column="saleManagerAddress" jdbcType="VARCHAR" property="saleManagerAddress" />
+    <result column="saleManagerTel" jdbcType="VARCHAR" property="saleManagerTel" />
+    <result column="saleManagerPhone" jdbcType="VARCHAR" property="saleManagerPhone" />
+    <result column="saleManagerStatus" jdbcType="VARCHAR" property="saleManagerStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="saleManagerEmail" jdbcType="VARCHAR" property="saleManagerEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="SaleManager_Column_List">
+saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, saleManagerTel, 
+    saleManagerPhone, saleManagerStatus, regType, regAdminNo, saleManagerEmail, greenPointAccStatus, 
+    redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, updateTime
+  </sql>
+ 
+   <sql id ="saleManagerSearchWhereStatement">
+      <if test="saleManagerNo != null"> AND saleManagerNo = #{saleManager,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="saleManagerStatus != null and saleManagerStatus !=  '0'  and saleManagerStatus !=  0"> AND saleManagerStatus = #{saleManagerStatus,jdbcType=VARCHAR}</if>
+      <if test="regType != null"> AND regType = #{regType,jdbcType=CHAR}</if>
+       <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="redPointAccStatus != null"> AND redPointAccStatus = #{redPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="greenPointUseStatus != null"> AND greenPointUseStatus = #{greenPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="redPointUseStatus != null"> AND redPointUseStatus = #{redPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER}</if>
+      <if test="saleManagerCode != null or saleManagerName != null or saleManagerAddress != null or saleManagerTel != null or saleManagerPhone != null or saleManagerEmail != null">
+      	AND ( 1 = 2 
+      </if>
+       <if test="saleManagerCode != null"> OR saleManagerCode  LIKE CONCAT('%',#{saleManagerCode},'%')</if>
+      <if test="saleManagerName != null"> OR saleManagerName  LIKE CONCAT('%',#{saleManagerName},'%')</if>
+      <if test="saleManagerEmail != null"> OR saleManagerEmail  LIKE CONCAT('%',#{saleManagerEmail},'%')</if>
+      <if test="saleManagerAddress != null"> OR saleManagerAddress  LIKE CONCAT('%',#{saleManagerAddress},'%')</if>
+      <if test="saleManagerTel != null"> OR saleManagerTel  LIKE CONCAT('%',#{saleManagerTel},'%')</if>
+      <if test="saleManagerPhone != null"> OR saleManagerPhone  LIKE CONCAT('%',#{saleManagerPhone},'%')</if>
+      <if test="saleManagerCode != null or saleManagerName != null or saleManagerAddress != null or saleManagerTel != null or saleManagerPhone != null or saleManagerEmail != null">
+      	)
+      </if>
+	</sql>
+	
+  <select id="findSaleManagers" parameterType="com.returnp.pointback.model.SaleManager"  resultMap="SaleManagerResultMap" >
+    select 
+    <include refid="SaleManager_Column_List" />
+    from sale_manager
+    where 
+    	1 = 1
+		<include refid = "saleManagerSearchWhereStatement"/>
+  </select>
+  
+  
+ <!-- ===============================================================================================================    --> 
+  <!-- Agency -->
+  <resultMap id="AgencyResultMap" type="com.returnp.pointback.model.Agency">
+    <id column="agencyNo" jdbcType="INTEGER" property="agencyNo" />
+    <result column="agencyCode" jdbcType="VARCHAR" property="agencyCode" />
+    <result column="agencyName" jdbcType="VARCHAR" property="agencyName" />
+    <result column="agencyAddress" jdbcType="VARCHAR" property="agencyAddress" />
+    <result column="agencyTel" jdbcType="VARCHAR" property="agencyTel" />
+    <result column="agencyPhone" jdbcType="VARCHAR" property="agencyPhone" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="branchNo" jdbcType="INTEGER" property="branchNo" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="agencyStatus" jdbcType="VARCHAR" property="agencyStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="agencyEmail" jdbcType="VARCHAR" property="agencyEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Agency_Column_List">
+    agencyNo, agencyCode, agencyName, agencyAddress, agencyTel, agencyPhone, memberNo, 
+    branchNo, recommenderNo, agencyStatus, regType, regAdminNo, agencyEmail, greenPointAccStatus, 
+    redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, updateTime
+  </sql>
+  
+   <sql id ="agencySearchWhereStatement">
+      <if test="agencyNo != null">AND agencyNo = #{agency,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="branchNo != null"> AND branchNo = #{branchNo,jdbcType=INTEGER}</if>
+      <if test="recommenderNo != null"> AND recommenderNo = #{recommenderNo,jdbcType=INTEGER}</if>
+      <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="redPointAccStatus != null"> AND redPointAccStatus = #{redPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="greenPointUseStatus != null"> AND greenPointUseStatus = #{greenPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="redPointUseStatus != null"> AND redPointUseStatus = #{redPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER}</if>
+      <if test="agencyStatus != null and agencyStatus != '0'  and agencyStatus != 0 "> AND agencyStatus = #{agencyStatus,jdbcType=VARCHAR}</if>
+      <if test="regType != null"> AND regType = #{regType,jdbcType=CHAR}</if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER}</if>
+       <if test="agencyEmail != null or agencyCode != null or agencyName != null or agencyAddress != null or agencyTel != null or agencyPhone != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="agencyEmail != null"> OR agencyEmail  LIKE CONCAT('%',#{agencyEmail},'%') </if>
+       <if test="agencyCode != null"> OR agencyCode  LIKE CONCAT('%',#{agencyCode},'%') </if>
+      <if test="agencyName != null"> OR agencyName  LIKE CONCAT('%',#{agencyName},'%') </if>
+      <if test="agencyAddress != null"> OR agencyAddress  LIKE CONCAT('%',#{agencyAddress},'%') </if>
+      <if test="agencyTel != null"> OR agencyTel  LIKE CONCAT('%',#{agencyTel},'%') </if>
+      <if test="agencyPhone != null"> OR agencyPhone  LIKE CONCAT('%',#{agencyPhone},'%') </if>
+    <if test="agencyEmail != null or agencyCode != null or agencyName != null or agencyAddress != null or agencyTel != null or agencyPhone != null">
+      	)
+      </if>
+	</sql>
+	
+	<select id="findAgencies" parameterType="com.returnp.pointback.model.Agency"  resultMap="AgencyResultMap" >
+    select 
+    <include refid="Agency_Column_List" />
+    from agency
+    where 
+    	1 = 1
+		<include refid = "agencySearchWhereStatement"/>
+  	</select>
+  	
+  	
+  <!-- ===============================================================================================================    -->
+  <!-- Affiliate -->
+  <resultMap id="AffiliateResultMap" type="com.returnp.pointback.model.Affiliate">
+    <id column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
+    <result column="affiliateCode" jdbcType="VARCHAR" property="affiliateCode" />
+    <result column="affiliateName" jdbcType="VARCHAR" property="affiliateName" />
+    <result column="affiliateAddress" jdbcType="VARCHAR" property="affiliateAddress" />
+    <result column="affiliateTel" jdbcType="VARCHAR" property="affiliateTel" />
+    <result column="affiliatePhone" jdbcType="VARCHAR" property="affiliatePhone" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="agencyNo" jdbcType="INTEGER" property="agencyNo" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="affiliateStatus" jdbcType="VARCHAR" property="affiliateStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="affiliateEmail" jdbcType="VARCHAR" property="affiliateEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <sql id="Affiliate_Column_List">
+    affiliateNo, affiliateSerial, affiliateCode, affiliateName, affiliateAddress, affiliateTel, 
+    affiliatePhone, memberNo, agencyNo, recommenderNo, affiliateStatus, regType, regAdminNo, 
+    affiliateEmail, greenPointAccStatus, redPointAccStatus, greenPointUseStatus, redPointUseStatus, 
+    createTime, updateTime
+  </sql>
+  
+    <sql id ="affiliateSearchWhereStatement">
+      <if test="affiliateNo != null">AND affiliateNo = #{affiliateNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null">AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="agencyNo != null">AND agencyNo = #{agencyNo,jdbcType=INTEGER} </if>
+      <if test="recommenderNo != null">AND recommenderNo = #{recommenderNo,jdbcType=INTEGER} </if>
+       <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="redPointAccStatus != null"> AND redPointAccStatus = #{redPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="greenPointUseStatus != null"> AND greenPointUseStatus = #{greenPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="redPointUseStatus != null"> AND redPointUseStatus = #{redPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="affiliateStatus != null and affiliateStatus !=  '0'  and affiliateStatus !=  0">AND affiliateStatus = #{affiliateStatus,jdbcType=VARCHAR} </if>
+      <if test="regType != null">AND regType = #{regType,jdbcType=CHAR} </if>
+      <if test="regAdminNo != null">AND regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+      <if test="affiliateSerial != null">AND affiliateSerial = #{affiliateSerial,jdbcType=INTEGER} </if>
+      
+       <if test="affiliateCode != null or affiliateAddress != null or affiliateTel != null or affiliatePhone != null or affiliateName != null  or affiliateEmail != null ">
+      	AND ( 1 = 2 
+      </if>
+       <if test="affiliateCode != null"> OR affiliateCode  LIKE CONCAT('%',#{affiliateCode},'%')</if>
+      <if test="affiliateAddress != null"> OR affiliateAddress  LIKE CONCAT('%',#{affiliateAddress},'%')</if>
+      <if test="affiliateEmail != null"> OR affiliateEmail  LIKE CONCAT('%',#{affiliateEmail},'%')</if>
+      <if test="affiliateTel != null"> OR affiliateTel  LIKE CONCAT('%',#{affiliateTel},'%')</if>
+      <if test="affiliatePhone != null">OR affiliatePhone  LIKE CONCAT('%',#{affiliatePhone},'%') </if>
+      <if test="affiliateName != null">OR affiliateName  LIKE CONCAT('%',#{affiliateName},'%')</if>
+       <if test="affiliateCode != null or affiliateAddress != null or affiliateTel != null or affiliatePhone != null or affiliateName != null  or affiliateEmail != null ">
+      	)
+      </if>
+   </sql>
+  
+    <select id="findAffiliates" parameterType="com.returnp.pointback.model.Affiliate"  resultMap="AffiliateResultMap" >
+    select 
+    <include refid="Affiliate_Column_List" />
+    from affiliate
+    where 
+    	1 = 1
+		<include refid = "affiliateSearchWhereStatement"/>
+  </select>
+  
+  
+  <!-- ===============================================================================================================    -->
+  <!-- Recommender -->
+  <resultMap id="RecommenderCommandResultMap" type="com.returnp.pointback.dto.command.RecommenderCommand">
+    <id column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="recommenderCode" jdbcType="VARCHAR" property="recommenderCode" />
+    <result column="recommenderName" jdbcType="VARCHAR" property="recommenderName" />
+    <result column="recommenderAddress" jdbcType="VARCHAR" property="recommenderAddress" />
+    <result column="recommenderTel" jdbcType="VARCHAR" property="recommenderTel" />
+    <result column="recommenderPhone" jdbcType="VARCHAR" property="recommenderPhone" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="saleManagerNo" jdbcType="INTEGER" property="saleManagerNo" />
+    <result column="recommenderStatus" jdbcType="VARCHAR" property="recommenderStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="recommenderEmail" jdbcType="VARCHAR" property="recommenderEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" /> 
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="membershipRequestNo" jdbcType="INTEGER" property="membershipRequestNo" />
+    <result column="companyBankAccountNo" jdbcType="INTEGER" property="companyBankAccountNo" />
+    <result column="paymentStatus" jdbcType="VARCHAR" property="paymentStatus" />
+    <result column="paymentType" jdbcType="VARCHAR" property="paymentType" />
+  </resultMap>
+  
+   <resultMap id="RecommenderResultMap" type="com.returnp.pointback.model.Recommender">
+    <id column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="recommenderCode" jdbcType="VARCHAR" property="recommenderCode" />
+    <result column="recommenderName" jdbcType="VARCHAR" property="recommenderName" />
+    <result column="recommenderAddress" jdbcType="VARCHAR" property="recommenderAddress" />
+    <result column="recommenderTel" jdbcType="VARCHAR" property="recommenderTel" />
+    <result column="recommenderPhone" jdbcType="VARCHAR" property="recommenderPhone" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="saleManagerNo" jdbcType="INTEGER" property="saleManagerNo" />
+    <result column="recommenderStatus" jdbcType="VARCHAR" property="recommenderStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="recommenderEmail" jdbcType="VARCHAR" property="recommenderEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <sql id="Recommender_Column_List">
+    recommenderNo, recommenderCode, recommenderName, recommenderAddress, recommenderTel, 
+    recommenderPhone, memberNo, saleManagerNo, recommenderStatus, regType, regAdminNo, 
+    recommenderEmail, greenPointAccStatus, redPointAccStatus, greenPointUseStatus, redPointUseStatus, 
+    createTime, updateTime
+  </sql>
+  
+  <sql id="RecommenderCommand_Column_List">
+ 	R.recommenderNo as recommenderNo, 
+ 	R.recommenderCode as recommenderCode, 
+ 	R.recommenderName as recommenderName, 
+ 	R.recommenderAddress as recommenderAddress,
+ 	R.recommenderTel as recommenderTel, 
+    R.recommenderPhone as recommenderPhone,
+    R.memberNo as memberNo, 
+    R.saleManagerNo as saleManagerNo, 
+    R.recommenderStatus as recommenderStatus,
+    R.regType as regType,
+    R.regAdminNo as regAdminNo , 
+    R.recommenderEmail as recommenderEmail,
+    R.greenPointAccStatus as greenPointAccStatus, 
+    R.redPointAccStatus as redPointAccStatus, 
+    R.greenPointUseStatus as greenPointUseStatus, 
+    R.redPointUseStatus as redPointUseStatus, 
+	MQ.membershipRequestNo as membershipRequestNo,
+    MQ.paymentStatus as paymentStatus, 
+    MQ.paymentAmount as paymentAmount, 
+    MQ.paymentType as paymentType,
+    MQ.companyBankAccountNo as companyBankAccountNo, 
+    R.createTime as createTime, 
+    R.updateTime as updateTime
+  </sql>
+  	
+  	<sql id ="recommender_WhereStatement">
+      <if test="recommenderNo != null"> AND recommenderNo = #{recommenderNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="saleManagerNo != null"> AND saleManagerNo = #{saleManagerNo,jdbcType=INTEGER} </if>
+      <if test="recommenderStatus != null and recommenderStatus !=  '0'  and recommenderStatus !=  0"> AND recommenderStatus = #{recommenderStatus,jdbcType=VARCHAR} </if>
+      <if test="regType != null"> AND regType = #{regType,jdbcType=CHAR} </if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+      <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="redPointAccStatus != null"> AND redPointAccStatus = #{redPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="greenPointUseStatus != null"> AND greenPointUseStatus = #{greenPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="redPointUseStatus != null"> AND redPointUseStatus = #{redPointUseStatus,jdbcType=INTEGER} </if>
+
+ 	 <if test="recommenderCode != null or recommenderName != null or recommenderAddress != null or recommenderPhone != null or recommenderEmail != null or recommenderPhone != null">
+      	AND ( 1 = 2 
+      </if>
+	
+      <if test="recommenderName != null">  OR R.recommenderName  LIKE CONCAT('%',#{recommenderName},'%') </if>
+      <if test="recommenderAddress != null"> OR R.recommenderAddress  LIKE CONCAT('%',#{recommenderAddress},'%') </if>
+      
+      <if test="recommenderTel != null">  OR R.recommenderTel  LIKE CONCAT('%',#{recommenderTel},'%') </if>
+      <if test="recommenderPhone != null">  OR R.recommenderPhone  LIKE CONCAT('%',#{recommenderPhone},'%') </if>
+      <if test="recommenderEmail != null">  OR R.recommenderEmail  LIKE CONCAT('%',#{recommenderEmail},'%')  </if>
+      <if test="recommenderCode != null or recommenderName != null or recommenderAddress != null or recommenderPhone != null or recommenderEmail != null or recommenderPhone != null">
+      	)
+      </if>
+	</sql>
+	
+    <sql id ="recommenderCommand_WhereStatement">
+      <if test="recommenderNo != null"> AND R.recommenderNo = #{recommenderNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null"> AND R.memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="saleManagerNo != null"> AND R.saleManagerNo = #{saleManagerNo,jdbcType=INTEGER} </if>
+      <if test="recommenderStatus != null and recommenderStatus !=  '0'  and recommenderStatus !=  0"> AND recommenderStatus = #{recommenderStatus,jdbcType=VARCHAR} </if>
+      <if test="regType != null"> AND R.regType = #{regType,jdbcType=CHAR} </if>
+      <if test="regAdminNo != null"> AND R.regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+      <if test="greenPointAccStatus != null"> AND R.greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="redPointAccStatus != null"> AND R.redPointAccStatus = #{redPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="greenPointUseStatus != null"> AND R.greenPointUseStatus = #{greenPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="redPointUseStatus != null"> AND R.redPointUseStatus = #{redPointUseStatus,jdbcType=INTEGER} </if>
+
+ 	 <if test="recommenderCode != null or recommenderName != null or recommenderAddress != null or recommenderPhone != null or recommenderEmail != null or recommenderPhone != null">
+      	AND ( 1 = 2 
+      </if>
+	
+      <if test="recommenderName != null">  OR R.recommenderName  LIKE CONCAT('%',#{recommenderName},'%') </if>
+      <if test="recommenderAddress != null"> OR R.recommenderAddress  LIKE CONCAT('%',#{recommenderAddress},'%') </if>
+      
+      <if test="recommenderTel != null">  OR R.recommenderTel  LIKE CONCAT('%',#{recommenderTel},'%') </if>
+      <if test="recommenderPhone != null">  OR R.recommenderPhone  LIKE CONCAT('%',#{recommenderPhone},'%') </if>
+      <if test="recommenderEmail != null">  OR R.recommenderEmail  LIKE CONCAT('%',#{recommenderEmail},'%')  </if>
+      <if test="recommenderCode != null or recommenderName != null or recommenderAddress != null or recommenderPhone != null or recommenderEmail != null or recommenderPhone != null">
+      	)
+      </if>
+	</sql>
+	
+  <select id="findRecommenderCommands" parameterType="com.returnp.pointback.model.Recommender"  resultMap="RecommenderCommandResultMap" >
+    select 
+    <include refid="RecommenderCommand_Column_List"/>
+    from Recommender as R
+    left outer join membership_request as MQ on (R.recommenderNo = MQ.recommenderNo) 
+    where 
+    	1 = 1
+		<include refid = "recommenderCommand_WhereStatement"/>
+  </select>
+
+  <select id="findRecommender" parameterType="com.returnp.pointback.model.Recommender"  resultMap="RecommenderResultMap" >
+    select 
+    <include refid="Recommender_Column_List" />
+    from Recommender
+    where 
+    	1 = 1
+		<include refid = "recommender_WhereStatement"/>
+  </select>
+  
+  <!-- ===============================================================================================================    -->
+  <!-- MembershipRequest  find Mapper -->
+  
+    <resultMap id="default_membershipRequestResultMap" type="com.returnp.pointback.model.MembershipRequest">
+    <id column="membershipRequestNo" jdbcType="INTEGER" property="membershipRequestNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="companyBankAccountNo" jdbcType="INTEGER" property="companyBankAccountNo" />
+    <result column="paymentAmount" jdbcType="INTEGER" property="paymentAmount" />
+    <result column="paymentStatus" jdbcType="CHAR" property="paymentStatus" />
+    <result column="gradeType" jdbcType="VARCHAR" property="gradeType" />
+    <result column="paymentType" jdbcType="VARCHAR" property="paymentType" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+    <resultMap id="membershipRequestCommand_ResultMap" type="com.returnp.pointback.dto.command.MembershipRequestCommand">
+    <id column="membershipRequestNo" jdbcType="INTEGER" property="membershipRequestNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="paymentAmount" jdbcType="INTEGER" property="paymentAmount" />
+    <result column="paymentStatus" jdbcType="CHAR" property="paymentStatus" />
+    <result column="gradeType" jdbcType="VARCHAR" property="gradeType" />
+    <result column="paymentType" jdbcType="VARCHAR" property="paymentType" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="companyBankAccountNo" jdbcType="INTEGER" property="companyBankAccountNo" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+    <result column="bankAccount" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="bankOwnerName" jdbcType="VARCHAR" property="bankOwnerName" />
+  </resultMap>
+  
+  <sql id="membershipRequestCommand_Column_List">
+    MQ.membershipRequestNo as membershipRequestNo, 
+    MQ.memberNo as memberNo, 
+    MQ.paymentAmount as paymentAmount, 
+    MQ.paymentStatus as paymentStatus , 
+    MQ.gradeType as gradeType, 
+    MQ.paymentType as paymentType, 
+    MQ.regType as regType, 
+    MQ.regAdminNo as regAdminNo, 
+    MQ.updateTime as updateTime, 
+    MQ.createTime as createTime,
+    M.memberEmail as memberEmail,
+    M.memberName as memberName,
+    CBA.companyBankAccountNo as companyBankAccountNo, 
+    CBA.bankName as bankName, 
+    CBA.bankAccount as bankAccount, 
+    CBA.bankOwnerName as bankOwnerName
+  </sql>
+  
+    <sql id="default_membershipRequest_Column_List">
+    membershipRequestNo as membershipRequestNo, 
+    companyBankAccountNo as companyBankAccountNo,
+    memberNo as memberNo, 
+    paymentAmount as paymentAmount, 
+    paymentStatus as paymentStatus , 
+    gradeType as gradeType, 
+    paymentType as paymentType, 
+    regType as regType, 
+    regAdminNo as regAdminNo, 
+    updateTime as updateTime, 
+    createTime as createTime
+  </sql>
+  
+  <sql id="default_membershipRequestSearchWhereStatement">
+      <if test="membershipRequestNo != null"> AND membershipRequestNo = #{membershipRequestNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="companyBankAccountNo != null"> AND companyBankAccountNo = #{companyBankAccountNo,jdbcType=INTEGER} </if>
+      <if test="paymentAmount != null"> AND paymentAmount = #{paymentAmount,jdbcType=INTEGER}  </if>
+      <if test="paymentStatus != null and paymentStatus != '0'  and paymentStatus != 0 "> AND paymentStatus = #{paymentStatus,jdbcType=CHAR}  </if>
+      <if test="gradeType != null and gradeType !=  '0'  and gradeType !=  0  "> AND gradeType = #{gradeType,jdbcType=VARCHAR}  </if>
+      <if test="paymentType != null and paymentType != '0'  and paymentType != 0 "> AND paymentType = #{paymentType,jdbcType=VARCHAR}  </if>
+      <if test="regType != null"> AND regType = #{regType,jdbcType=CHAR}  </if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER}  </if>
+  </sql>
+  
+  
+  <sql id="membershipRequestCommand_WhereStatement">
+      <if test="membershipRequestNo != null"> AND membershipRequestNo = #{membershipRequestNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="paymentAmount != null"> AND paymentAmount = #{paymentAmount,jdbcType=INTEGER}  </if>
+      <if test="paymentStatus != null and paymentStatus != '0'  and paymentStatus != 0 "> AND paymentStatus = #{paymentStatus,jdbcType=CHAR}  </if>
+      <if test="gradeType != null and gradeType !=  '0'  and gradeType !=  0  "> AND gradeType = #{gradeType,jdbcType=VARCHAR}  </if>
+      <if test="paymentType != null and paymentType != '0'  and paymentType != 0 "> AND paymentType = #{paymentType,jdbcType=VARCHAR}  </if>
+      <if test="regType != null"> AND regType = #{regType,jdbcType=CHAR}  </if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER}  </if>
+      <if test="memberName != null or memberEmail != null ">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">  OR M.memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null"> OR M.memberEmail  LIKE CONCAT('%',#{memberEmail},'%') </if>
+     <if test="memberName != null or memberEmail != null ">
+      	)
+      </if>
+  </sql>
+  
+    <select id="findMembershipRequest" parameterType="com.returnp.pointback.model.MembershipRequest"  resultMap="default_membershipRequestResultMap"  >
+    select 
+    <include refid="default_membershipRequest_Column_List" />
+    from membership_request
+    where 
+    	1 = 1
+		<include refid = "default_membershipRequestSearchWhereStatement"/>
+  </select>
+
+  <select id="findMembershipRequests" parameterType="com.returnp.pointback.dto.request.SearchCondition"  resultMap="membershipRequestCommand_ResultMap" >
+    select 
+    <include refid="membershipRequestCommand_Column_List" />
+    from membership_request as MQ
+    inner join company_bank_account as CBA on (MQ.companyBankAccountNo = CBA.companyBankAccountNo)
+    inner join member as M on (MQ.memberNo = M.memberNo)
+    where 
+    	1 = 1
+		<include refid = "membershipRequestCommand_WhereStatement"/>
+  </select>
+  
+  
+  <select id="findMembershipRequestCommands" parameterType="com.returnp.pointback.dto.command.MembershipRequestCommand"  resultMap="membershipRequestCommand_ResultMap" >
+    select 
+    <include refid="membershipRequestCommand_Column_List" />
+    from membership_request as MQ
+    inner join company_bank_account as CBA on (MQ.companyBankAccountNo = CBA.companyBankAccountNo)
+    inner join member as M on (MQ.memberNo = M.memberNo)
+    where 
+    	1 = 1
+		<include refid = "membershipRequestCommand_WhereStatement"/>
+  </select>
+  
+    <select id="findMembershipRequestCommand" parameterType="com.returnp.pointback.dto.command.MembershipRequestCommand"  resultMap="membershipRequestCommand_ResultMap" >
+    select 
+    <include refid="membershipRequestCommand_Column_List" />
+    from membership_request as MQ
+    inner join company_bank_account as CBA on (MQ.companyBankAccountNo = CBA.companyBankAccountNo)
+    inner join member as M on (MQ.memberNo = M.memberNo)
+    where 
+    	1 = 1
+		<include refid = "membershipRequestCommand_WhereStatement"/>
+  </select>
+  
+  
+  
+    <!-- ===============================================================================================================    -->
+  <!-- CompanyBancAccount  find Mapper -->
+  
+  <resultMap id="BankResultMap" type="com.returnp.pointback.model.CompanyBankAccount">
+    <id column="companyBankAccountNo" jdbcType="INTEGER" property="companyBankAccountNo" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+    <result column="bankOwnerName" jdbcType="VARCHAR" property="bankOwnerName" />
+    <result column="bankAccount" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <sql id="Bank_Column_List">
+    companyBankAccountNo, regAdminNo, bankName, bankOwnerName, bankAccount, createTime, 
+    updateTime
+  </sql>
+  
+  <select id="findCompanyBanks" parameterType="com.returnp.pointback.model.CompanyBankAccount"  resultMap="BankResultMap" >
+    select 
+    <include refid="Bank_Column_List" />
+    from company_bank_account
+    where 
+    	1 = 1
+  </select>
+  
+   <!-- ===============================================================================================================    -->
+  <!-- VanPaymentTransaction  find Mapper -->
+  
+  <resultMap id="PaymentTransaction_ResultMap" type="com.returnp.pointback.model.PaymentTransaction">
+   <id column="paymentTransactionNo" jdbcType="INTEGER" property="paymentTransactionNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
+    <result column="paymentApprovalAmount" jdbcType="INTEGER" property="paymentApprovalAmount" />
+    <result column="paymentApprovalNumber" jdbcType="VARCHAR" property="paymentApprovalNumber" />
+    <result column="paymentApprovalStatus" jdbcType="CHAR" property="paymentApprovalStatus" />
+    <result column="pointBackStatus" jdbcType="VARCHAR" property="pointBackStatus" />
+    <result column="paymentTransactionType" jdbcType="VARCHAR" property="paymentTransactionType" />
+    <result column="paymentApprovalDateTime" jdbcType="TIMESTAMP" property="paymentApprovalDateTime" />
+    <result column="orgPaymentData" jdbcType="VARCHAR" property="orgPaymentData" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <sql id="PaymentTransaction_Column_List">
+   paymentTransactionNo, memberNo, memberName, memberEmail, memberPhone, affiliateNo, 
+    affiliateSerial, paymentApprovalAmount, paymentApprovalNumber, paymentApprovalStatus, 
+    pointBackStatus, paymentTransactionType, paymentApprovalDateTime, orgPaymentData, 
+    regAdminNo, createTime, updateTime
+  </sql>
+  
+    <sql id="PaymentTransaction_Where">
+      <if test="paymentTransactionNo != null"> AND paymentTransactionNo = #{paymentTransactionNo,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="affiliateNo != null"> AND affiliateNo = #{affiliateNo,jdbcType=INTEGER}  </if>
+      <if test="paymentApprovalAmount != null"> AND paymentApprovalAmount = #{paymentApprovalAmount,jdbcType=INTEGER} </if>
+      <if test="pointBackStatus != null"> AND pointBackStatus = #{pointBackStatus,jdbcType=INTEGER} </if>
+      <if test="paymentApprovalStatus != null and paymentApprovalStatus != '0'  and paymentApprovalStatus != 0 "> AND paymentApprovalStatus = #{paymentApprovalStatus,jdbcType=CHAR} </if>
+      <if test="paymentTransactionType != null"> AND paymentTransactionType = #{paymentTransactionType,jdbcType=VARCHAR} </if>
+      <if test="paymentApprovalNumber != null"> AND paymentApprovalNumber = #{paymentApprovalNumber,jdbcType=VARCHAR} </if>
+      <if test="paymentApprovalDateTime != null"> AND paymentApprovalDateTime = #{paymentApprovalDateTime,jdbcType=TIMESTAMP} </if>
+      <if test="regAdminNo != null"> AND regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+       
+       <if test="memberName != null or memberEmail != null  or memberPhone != null  or affiliateSerial != null ">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">  OR memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null"> OR memberEmail  LIKE CONCAT('%',#{memberEmail},'%') </if>
+      <if test="memberPhone != null"> OR memberPhone  LIKE CONCAT('%',#{memberPhone},'%') </if>
+      <if test="affiliateSerial != null"> OR affiliateSerial  LIKE CONCAT('%',#{affiliateSerial},'%') </if>
+      <if test="memberName != null or memberEmail != null  or memberPhone != null  or affiliateSerial != null">
+      	)
+      </if>
+  </sql>
+  
+  <select id="findPaymentTransactions" parameterType="com.returnp.pointback.model.PaymentTransaction"  resultMap="PaymentTransaction_ResultMap" >
+    select 
+    <include refid="PaymentTransaction_Column_List" />
+    from payment_transaction
+    where 
+    	1 = 1
+    	<include refid = "PaymentTransaction_Where"/>
+  </select>
+  
+  <!-- ===============================================================================================================    -->
+  <!-- GreenPointCommand  find Mapper -->
+  
+    <resultMap id="GreenPoint_ResultMap" type="com.returnp.pointback.model.GreenPoint">
+    <id column="greenPointNo" jdbcType="INTEGER" property="greenPointNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="pointAmount" jdbcType="REAL" property="pointAmount" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+      <result column="nodeTypeName" jdbcType="VARCHAR" property="nodeTypeName" />
+    <result column="greenPointCreateTime" jdbcType="TIMESTAMP" property="greenPointCreateTime" />
+    <result column="greenPointUpdateTime" jdbcType="TIMESTAMP" property="greenPointUpdateTime" />
+  </resultMap>
+  
+  <resultMap id="GreenPointCommand_ResultMap" type="com.returnp.pointback.dto.command.GreenPointCommand">
+    <id column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberPassword" jdbcType="VARCHAR" property="memberPassword" />
+    <result column="memberPassword2" jdbcType="VARCHAR" property="memberPassword2" />
+    <result column="memberType" jdbcType="VARCHAR" property="memberType" />
+    <result column="memberStatus" jdbcType="VARCHAR" property="memberStatus" />
+    <result column="memberAuthType" jdbcType="VARCHAR" property="memberAuthType" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="joinRoute" jdbcType="VARCHAR" property="joinRoute" />
+    <result column="statusReason" jdbcType="VARCHAR" property="statusReason" />
+    <result column="isRecommender" jdbcType="CHAR" property="isRecommender" />
+    <result column="isSaleManager" jdbcType="CHAR" property="isSaleManager" />
+    <result column="isBranch" jdbcType="CHAR" property="isBranch" />
+    <result column="isAffiliate" jdbcType="CHAR" property="isAffiliate" />
+    <result column="isAgency" jdbcType="CHAR" property="isAgency" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    
+     <result column="greenPointNo" jdbcType="INTEGER" property="greenPointNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="pointAmount" jdbcType="REAL" property="pointAmount" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+     <result column="nodeTypeName" jdbcType="VARCHAR" property="nodeTypeName" />
+    <result column="greenPointCreateTime" jdbcType="TIMESTAMP" property="greenPointCreateTime" />
+    <result column="greenPointUpdateTime" jdbcType="TIMESTAMP" property="greenPointUpdateTime" />
+  </resultMap>
+  
+    <sql id="GreenPoint_Column_List">
+    greenPointNo, memberNo, nodeNo, pointAmount, nodeType, nodeTypeName, greenPointCreateTime, greenPointUpdateTime
+  </sql>
+  
+  <sql id="GreenPointCommand_ResultMap_Column_List">
+	M.memberNo AS memberNo, 
+    M.memberName AS memberName,  
+    M.memberEmail AS memberEmail, 
+    M.memberPassword AS memberPassword, 
+    M.memberPassword2 AS memberPassword2, 
+    M.memberType AS memberType, 
+    M.memberStatus AS memberStatus, 
+    M.memberAuthType AS memberAuthType, 
+    M.memberPhone AS memberPhone, 
+    M.recommenderNo AS recommenderNo, 
+    M.joinRoute AS joinRoute, 
+    M.statusReason AS statusReason, 
+    M.isRecommender AS isRecommender, 
+    M.isSaleManager AS isSaleManager,
+    M.isBranch AS isBranch,
+    M.isAffiliate AS isAffiliate, 
+    M.isAgency AS isAgency, 
+    M.regType AS regType, 
+    M.regAdminNo AS regAdminNo, 
+    M.greenPointAccStatus AS greenPointAccStatus, 
+    M.redPointAccStatus AS redPointAccStatus, 
+    M.greenPointUseStatus AS greenPointUseStatus, 
+    M.redPointUseStatus AS redPointUseStatus, 
+    M.createTime  AS createTime, 
+    M.updateTime AS updateTime,
+    
+    GP.greenPointNo as greenPointNo, 
+    GP.memberNo as memberNo, 
+    GP.nodeNo as nodeNo, 
+    GP.pointAmount as pointAmount,
+    GP.nodeType as nodeType, 
+    GP.nodeTypeName as nodeTypeName,
+    GP.greenPointCreateTime as greenPointCreateTime,
+	GP.greenPointUpdateTime as greenPointUpdateTime
+
+  </sql>
+  
+      <sql id="GreenPoint_Where">
+      <if test="greenPointNo != null and greenPointNo !=  '0'  and greenPointNo !=  0">AND  greenPointNo = #{greenPointNo,jdbcType=VARCHAR}</if>
+     <if test="memberNo != null and memberNo !=  '0'  and memberNo !=  0">AND  memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="nodeType != null and nodeType !=  '0'  and nodeType !=  0">AND  nodeType = #{nodeType,jdbcType=VARCHAR}</if>
+      <if test="nodeNo != null and nodeNo !=  '0'  and nodeNo !=  0">AND  nodeNo = #{nodeNo,jdbcType=VARCHAR}</if>
+  </sql>
+  
+    <sql id="GreenPointCommand_Where">
+     <if test="memberNo != null and memberNo !=  '0'  and memberNo !=  0">AND  M.memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="memberType != null">AND  M.memberType = #{memberType,jdbcType=VARCHAR}</if>
+      <if test="memberStatus != null and memberStatus !=  '0'  and memberStatus !=  0">AND  M.memberStatus = #{memberStatus,jdbcType=VARCHAR}</if>
+      <if test="memberAuthType != null">AND  M.memberAuthType = #{memberAuthType,jdbcType=VARCHAR}</if>
+      <if test="recommenderNo != null">AND  M.recommenderNo = #{recommenderNo,jdbcType=INTEGER}</if>
+      <if test="joinRoute != null">AND  M.joinRoute = #{joinRoute,jdbcType=VARCHAR}</if>
+      <if test="isRecommender != null">AND  M.isRecommender = #{isRecommender,jdbcType=CHAR}</if>
+      <if test="isSaleManager != null"> M.isSaleManager = #{isSaleManager,jdbcType=CHAR}</if>
+      <if test="isBranch != null">AND  M.isBranch = #{isBranch,jdbcType=CHAR}</if>
+      <if test="isAffiliate != null">AND  M.isAffiliate = #{isAffiliate,jdbcType=CHAR}</if>
+      <if test="isAgency != null">AND  M.isAgency = #{isAgency,jdbcType=CHAR}</if>
+      <if test="regType != null">AND  M.regType = #{regType,jdbcType=CHAR}</if>
+      <if test="regAdminNo != null">AND  M.regAdminNo = #{regAdminNo,jdbcType=INTEGER}</if>
+      <if test="greenPointAccStatus != null">AND  M.greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR}</if>
+      <if test="redPointAccStatus != null">AND  M.redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR}</if>
+      <if test="greenPointUseStatus != null">AND  M.greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR}</if>
+      <if test="redPointUseStatus != null">AND  M.redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR}</if>
+      <if test="redPointUseStatus != null">AND  M.redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR}</if>
+      
+      <if test="greenPointNo != null and greenPointNo !=  '0'  and greenPointNo !=  0">AND  GP.greenPointNo = #{greenPointNo,jdbcType=VARCHAR}</if>
+      <if test="nodeType != null and nodeType !=  '0'  and nodeType !=  0">AND  GP.nodeType = #{nodeType,jdbcType=VARCHAR}</if>
+      <if test="nodeNo != null and nodeNo !=  '0'  and nodeNo !=  0">AND  GP.nodeNo = #{nodeNo,jdbcType=VARCHAR}</if>
+
+      <if test="memberName != null or memberEmail != null or memberPhone != null or statusReason != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">OR M.memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null">OR M.memberEmail  LIKE CONCAT('%',#{memberEmail},'%' ) </if>
+      <if test="memberPhone != null">OR M.memberPhone  LIKE CONCAT('%',#{memberPhone},'%') </if>
+      <if test="statusReason != null">OR  M.statusReason = #{statusReason,jdbcType=VARCHAR}</if>
+      <if test="memberName != null or memberEmail != null or memberPhone != null or statusReason != null">
+      	)
+      </if>
+  </sql>
+  
+   <select id="findGreenPoints" parameterType="com.returnp.pointback.model.GreenPoint"  resultMap="GreenPoint_ResultMap" >
+    select 
+    <include refid="GreenPoint_Column_List" />
+    from green_point 
+    where 
+    	1 = 1
+    	<include refid = "GreenPoint_Where"/>
+  </select>
+
+  <select id="findGreenPointCommands" parameterType="com.returnp.pointback.dto.command.GreenPointCommand"  resultMap="GreenPointCommand_ResultMap" >
+    select 
+    <include refid="GreenPointCommand_ResultMap_Column_List" />
+    from green_point as GP
+ 	inner join member as M on (
+    	GP.memberNo = M.memberNo 
+    )
+    
+    where 
+    	1 = 1
+    	<include refid = "GreenPointCommand_Where"/>
+  </select>
+  
+  
+  
+  
+  <!-- ===============================================================================================================    -->
+  <!-- RedPointCommand  find Mapper -->
+  
+  <resultMap id="RedPointCommand_ResultMap" type="com.returnp.pointback.dto.command.RedPointCommand">
+    <id column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberPassword" jdbcType="VARCHAR" property="memberPassword" />
+    <result column="memberPassword2" jdbcType="VARCHAR" property="memberPassword2" />
+    <result column="memberType" jdbcType="VARCHAR" property="memberType" />
+    <result column="memberStatus" jdbcType="VARCHAR" property="memberStatus" />
+    <result column="memberAuthType" jdbcType="VARCHAR" property="memberAuthType" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="joinRoute" jdbcType="VARCHAR" property="joinRoute" />
+    <result column="statusReason" jdbcType="VARCHAR" property="statusReason" />
+    <result column="isRecommender" jdbcType="CHAR" property="isRecommender" />
+    <result column="isSaleManager" jdbcType="CHAR" property="isSaleManager" />
+    <result column="isBranch" jdbcType="CHAR" property="isBranch" />
+    <result column="isAffiliate" jdbcType="CHAR" property="isAffiliate" />
+    <result column="isAgency" jdbcType="CHAR" property="isAgency" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    
+     <result column="redPointNo" jdbcType="INTEGER" property="redPointNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="pointAmount" jdbcType="REAL" property="pointAmount" />
+    <result column="redPointCreateTime" jdbcType="TIMESTAMP" property="redPointCreateTime" />
+    <result column="redPointUpdateTime" jdbcType="TIMESTAMP" property="redPointUpdateTime" />
+  </resultMap>
+  
+  <sql id="RedPointCommand_Column_List">
+	M.memberNo AS memberNo, 
+    M.memberName AS memberName,  
+    M.memberEmail AS memberEmail, 
+    M.memberPassword AS memberPassword, 
+    M.memberPassword2 AS memberPassword2, 
+    M.memberType AS memberType, 
+    M.memberStatus AS memberStatus, 
+    M.memberAuthType AS memberAuthType, 
+    M.memberPhone AS memberPhone, 
+    M.recommenderNo AS recommenderNo, 
+    M.joinRoute AS joinRoute, 
+    M.statusReason AS statusReason, 
+    M.isRecommender AS isRecommender, 
+    M.isSaleManager AS isSaleManager,
+    M.isBranch AS isBranch,
+    M.isAffiliate AS isAffiliate, 
+    M.isAgency AS isAgency, 
+    M.regType AS regType, 
+    M.regAdminNo AS regAdminNo, 
+    M.greenPointAccStatus AS greenPointAccStatus, 
+    M.redPointAccStatus AS redPointAccStatus, 
+    M.greenPointUseStatus AS greenPointUseStatus, 
+    M.redPointUseStatus AS redPointUseStatus, 
+    M.createTime  AS createTime, 
+    M.updateTime AS updateTime,
+    
+    RP.redPointNo as redPointNo, 
+    RP.memberNo as memberNo, 
+    RP.pointAmount as pointAmount,
+    RP.redPointCreateTime as redPointCreateTime,
+	RP.redPointUpdateTime as redPointUpdateTime
+
+  </sql>
+  
+    <sql id="RedPointCommand_Where">
+     <if test="memberNo != null">AND  M.memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="memberType != null">AND  memberType = #{memberType,jdbcType=VARCHAR}</if>
+      <if test="memberStatus != null and memberStatus !=  '0'  and memberStatus !=  0">AND  memberStatus = #{memberStatus,jdbcType=VARCHAR}</if>
+      <if test="memberAuthType != null">AND  memberAuthType = #{memberAuthType,jdbcType=VARCHAR}</if>
+      <if test="recommenderNo != null">AND  recommenderNo = #{recommenderNo,jdbcType=INTEGER}</if>
+      <if test="joinRoute != null">AND  joinRoute = #{joinRoute,jdbcType=VARCHAR}</if>
+      <if test="isRecommender != null">AND  isRecommender = #{isRecommender,jdbcType=CHAR}</if>
+      <if test="isSaleManager != null"> isSaleManager = #{isSaleManager,jdbcType=CHAR}</if>
+      <if test="isBranch != null">AND  isBranch = #{isBranch,jdbcType=CHAR}</if>
+      <if test="isAffiliate != null">AND  isAffiliate = #{isAffiliate,jdbcType=CHAR}</if>
+      <if test="isAgency != null">AND  isAgency = #{isAgency,jdbcType=CHAR}</if>
+      <if test="regType != null">AND  regType = #{regType,jdbcType=CHAR}</if>
+      <if test="regAdminNo != null">AND  regAdminNo = #{regAdminNo,jdbcType=INTEGER}</if>
+      <if test="greenPointAccStatus != null">AND  greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR}</if>
+      <if test="redPointAccStatus != null">AND  redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR}</if>
+      <if test="greenPointUseStatus != null">AND  greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR}</if>
+      <if test="redPointUseStatus != null">AND  redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR}</if>
+      
+ 		<if test="redPointNo != null and redPointNo !=  '0'  and redPointNo !=  0">AND  RP.redPointNo = #{redPointNo,jdbcType=VARCHAR}</if>
+
+      <if test="memberName != null or memberEmail != null or memberPhone != null or statusReason != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">OR M.memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null">OR M.memberEmail  LIKE CONCAT('%',#{memberEmail},'%' ) </if>
+      <if test="memberPhone != null">OR M.memberPhone  LIKE CONCAT('%',#{memberPhone},'%') </if>
+      <if test="statusReason != null">OR  M.statusReason = #{statusReason,jdbcType=VARCHAR}</if>
+      <if test="memberName != null or memberEmail != null or memberPhone != null or statusReason != null">
+      	)
+      </if>
+  </sql>
+  
+  <select id="findRedPointCommands" parameterType="com.returnp.pointback.dto.command.RedPointCommand"  resultMap="RedPointCommand_ResultMap" >
+    select 
+    <include refid="RedPointCommand_Column_List" />
+    from red_point as RP
+ 	inner join member as M on (
+    	RP.memberNo = M.memberNo 
+    )
+    
+    where 
+    	1 = 1
+    	<include refid = "RedPointCommand_Where"/>
+  </select>
+  
+  
+  <!-- ===============================================================================================================    -->
+  <!-- PointConvertRequestCommand  find Mapper -->
+  
+  <resultMap id="PointConvertRequestCommand_ResultMap" type="com.returnp.pointback.dto.command.PointConvertRequestCommand">
+    <id column="pointConvertRequestNo" jdbcType="INTEGER" property="pointConvertRequestNo" />
+    <result column="rmemberNo" jdbcType="INTEGER" property="rmemberNo" />
+    <result column="greenPointNo" jdbcType="INTEGER" property="greenPointNo" />
+    <result column="pointAmount" jdbcType="REAL" property="pointAmount" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="requestNodeTypeName" jdbcType="VARCHAR" property="requestNodeTypeName" />
+    <result column="convertPointAmount" jdbcType="REAL" property="convertPointAmount" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />  		
+
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+  </resultMap>
+  
+  <sql id="PointConvertRequestCommand_Column_List">
+    PCR.pointConvertRequestNo as pointConvertRequestNo, 
+    PCR.memberNo as memberNo, 
+    PCR.greenPointNo as greenPointNo, 
+    GP.pointAmount as pointAmount, 
+    PCR.nodeType as nodeType, 
+    PCR.requestNodeTypeName as requestNodeTypeName, 
+    PCR.convertPointAmount as convertPointAmount, 
+    PCR.createTime as createTime, 
+    PCR.updateTime as updateTime,
+    M.memberEmail as memberEmail,
+    M.memberName as memberName,
+    M.memberPhone as memberPhone
+  </sql>
+  
+   <sql id="PointConvertRequestCommand_Where">
+       <if test="pointConvertRequestNo != null and pointConvertRequestNo !=  '0'  and pointConvertRequestNo !=  0">AND PCR.pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER} </if>
+       <if test="memberNo != null and memberNo !=  '0'  and memberNo !=  0">AND PCR.memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="greenPointNo != null and greenPointNo !=  '0'  and greenPointNo !=  0">AND  PCR.greenPointNo = #{greenPointNo,jdbcType=INTEGER} </if>
+       <if test="memberName != null or memberEmail != null or memberPhone != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">OR M.memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null">OR M.memberEmail  LIKE CONCAT('%',#{memberEmail},'%' ) </if>
+      <if test="memberPhone != null">OR M.memberPhone  LIKE CONCAT('%',#{memberPhone},'%') </if>
+      <if test="memberName != null or memberEmail != null or memberPhone != null">
+      	)
+      </if>
+  </sql>
+  
+  <select id="findPointConvertRequestCommands" parameterType="com.returnp.pointback.dto.command.PointConvertRequestCommand"  resultMap="PointConvertRequestCommand_ResultMap" >
+    select 
+    <include refid="PointConvertRequestCommand_Column_List" />
+    from point_convert_request as PCR
+ 	inner join member as M on (
+    	PCR.memberNo = M.memberNo 
+    )
+    inner join green_point as GP on (
+    	PCR.greenPointNo = gp.greenPointNo 
+    )
+    where 
+    	1 = 1
+    	<include refid = "PointConvertRequestCommand_Where"/>
+  </select>
+  
+    <!-- ===============================================================================================================    -->
+     <!-- PointConversionTransactionCommand  find Mapper -->
+    
+    <resultMap id="PointConversionTransactionCommand_ResultMap" type="com.returnp.pointback.dto.command.PointConversionTransactionCommand">
+    <id column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberPassword" jdbcType="VARCHAR" property="memberPassword" />
+    <result column="memberPassword2" jdbcType="VARCHAR" property="memberPassword2" />
+    <result column="memberType" jdbcType="VARCHAR" property="memberType" />
+    <result column="memberStatus" jdbcType="VARCHAR" property="memberStatus" />
+    <result column="memberAuthType" jdbcType="VARCHAR" property="memberAuthType" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="joinRoute" jdbcType="VARCHAR" property="joinRoute" />
+    <result column="statusReason" jdbcType="VARCHAR" property="statusReason" />
+    <result column="isRecommender" jdbcType="CHAR" property="isRecommender" />
+    <result column="isSaleManager" jdbcType="CHAR" property="isSaleManager" />
+    <result column="isBranch" jdbcType="CHAR" property="isBranch" />
+    <result column="isAffiliate" jdbcType="CHAR" property="isAffiliate" />
+    <result column="isAgency" jdbcType="CHAR" property="isAgency" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    
+    <result column="pointConversionTansactionNo" jdbcType="INTEGER" property="pointConversionTansactionNo" />
+    <result column="pointConvertRequestNo" jdbcType="INTEGER" property="pointConvertRequestNo" />
+    <result column="conversionTotalPoint" jdbcType="REAL" property="conversionTotalPoint" />
+    <result column="conversionAccPoint" jdbcType="REAL" property="conversionAccPoint" />
+    <result column="conversionAccRate" jdbcType="REAL" property="conversionAccRate" />
+    <result column="pointTransRate" jdbcType="REAL" property="pointTransRate" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="conversionStatus" jdbcType="REAL" property="conversionStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <resultMap id="PointConversionTransaction_ResultMap" type="com.returnp.pointback.model.PointConversionTransaction">
+     <id column="pointConversionTansactionNo" jdbcType="INTEGER" property="pointConversionTansactionNo" />
+    <result column="pointConvertRequestNo" jdbcType="INTEGER" property="pointConvertRequestNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="conversionTotalPoint" jdbcType="REAL" property="conversionTotalPoint" />
+    <result column="conversionAccPoint" jdbcType="REAL" property="conversionAccPoint" />
+    <result column="conversionAccRate" jdbcType="REAL" property="conversionAccRate" />
+    <result column="pointTransRate" jdbcType="REAL" property="pointTransRate" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="conversionStatus" jdbcType="VARCHAR" property="conversionStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  
+  <sql id="PointConversionTransactionCommand_Column_List">
+    M.memberName AS memberName,  
+    M.memberEmail AS memberEmail, 
+    M.memberPassword AS memberPassword, 
+    M.memberPassword2 AS memberPassword2, 
+    M.memberType AS memberType, 
+    M.memberStatus AS memberStatus, 
+    M.memberAuthType AS memberAuthType, 
+    M.memberPhone AS memberPhone, 
+    M.recommenderNo AS recommenderNo, 
+    M.joinRoute AS joinRoute, 
+    M.statusReason AS statusReason, 
+    M.isRecommender AS isRecommender, 
+    M.isSaleManager AS isSaleManager,
+    M.isBranch AS isBranch,
+    M.isAffiliate AS isAffiliate, 
+    M.isAgency AS isAgency, 
+    M.regType AS regType, 
+    M.regAdminNo AS regAdminNo, 
+    M.greenPointAccStatus AS greenPointAccStatus, 
+    M.redPointAccStatus AS redPointAccStatus, 
+    M.greenPointUseStatus AS greenPointUseStatus, 
+    M.redPointUseStatus AS redPointUseStatus, 
+    PCT.pointConversionTansactionNo as pointConversionTansactionNo, 
+    PCT.memberNo as memberNo,
+    PCT.pointConvertRequestNo as pointConvertRequestNo,
+    PCT.conversionTotalPoint as conversionTotalPoint, 
+    PCT.nodeType as nodeType, 
+    PCT.conversionTotalPoint as conversionTotalPoint, 
+    PCT.conversionAccPoint as conversionAccPoint, 
+    PCT.conversionAccRate as conversionAccRate, 
+    PCT.pointTransRate as pointTransRate, 
+    PCT.conversionStatus as conversionStatus, 
+    PCT.createTime as createTime, 
+    PCT.updateTime as updateTime
+  </sql>
+  
+    <sql id="PointConversionTransaction_Column_List">
+    pointConversionTansactionNo, pointConvertRequestNo, memberNo, conversionTotalPoint, conversionAccPoint, 
+    conversionAccRate, pointTransRate, conversionStatus, createTime, updateTime
+  </sql>
+  
+   <sql id="PointConversionTransactionCommand_Where">
+      <if test="pointConversionTansactionNo != null">AND PCT.pointConversionTansactionNo = #{pointConversionTansactionNo,jdbcType=INTEGER} </if>
+      <if test="pointConvertRequestNo != null">AND PCT.pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null">AND PCT.memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="nodeType != null">AND  PCT.nodeType = #{nodeType,jdbcType=REAL} </if>
+      <if test="conversionTotalPoint != null">AND  PCT.conversionTotalPoint = #{conversionTotalPoint,jdbcType=REAL} </if>
+      <if test="conversionAccPoint != null">AND  PCT.conversionAccPoint = #{conversionAccPoint,jdbcType=REAL} </if>
+      <if test="conversionAccRate != null">AND  PCT.conversionAccRate = #{conversionAccRate,jdbcType=REAL} </if>
+      <if test="pointTransRate != null">AND  PCT.pointTransRate = #{pointTransRate,jdbcType=REAL} </if>
+      <if test="conversionStatus != null">AND  PCT.conversioniStatus = #{conversioniStatus,jdbcType=VARCHAR} </if>
+       <if test="memberName != null or memberEmail != null or memberPhone != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">OR M.memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null">OR M.memberEmail  LIKE CONCAT('%',#{memberEmail},'%' ) </if>
+      <if test="memberPhone != null">OR M.memberPhone  LIKE CONCAT('%',#{memberPhone},'%') </if>
+      <if test="memberName != null or memberEmail != null or memberPhone != null">
+      	)
+      </if>
+  </sql>
+  
+     <sql id="PointConversionTransaction_Where">
+      <if test="pointConversionTansactionNo != null">AND pointConversionTansactionNo = #{pointConversionTansactionNo,jdbcType=INTEGER} </if>
+      <if test="pointConvertRequestNo != null">AND pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null">AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="nodeType != null">AND  PCT.nodeType = #{nodeType,jdbcType=REAL} </if>
+      <if test="conversionTotalPoint != null">AND  conversionTotalPoint = #{conversionTotalPoint,jdbcType=REAL} </if>
+      <if test="conversionAccPoint != null">AND  conversionAccPoint = #{conversionAccPoint,jdbcType=REAL} </if>
+      <if test="conversionAccRate != null">AND  conversionAccRate = #{conversionAccRate,jdbcType=REAL} </if>
+      <if test="pointTransRate != null">AND  pointTransRate = #{pointTransRate,jdbcType=REAL} </if>
+      <if test="conversionStatus != null">AND  PCT.conversioniStatus = #{conversioniStatus,jdbcType=VARCHAR} </if>
+  </sql>
+  
+   <select id="findPointConversionTransactions" parameterType="com.returnp.pointback.model.PointConversionTransaction"  resultMap="PointConversionTransaction_ResultMap" >
+    select 
+    	<include refid="PointConversionTransaction_Column_List" />
+    from point_conversion_transaction 
+    where 
+    	1 = 1
+    	<include refid = "PointConversionTransaction_Where"/>
+  </select>
+  
+   <select id="findPointConversionTransactionCommands" parameterType="com.returnp.pointback.dto.command.PointConversionTransactionCommand"  resultMap="PointConversionTransactionCommand_ResultMap" >
+    select 
+    	<include refid="PointConversionTransactionCommand_Column_List" />
+    from point_conversion_transaction as PCT
+ 	inner join member as M on (
+    	PCT.memberNo = M.memberNo 
+    )
+    where 
+    	1 = 1
+    	<include refid = "PointConversionTransactionCommand_Where"/>
+  </select>
+  
+   <!-- ===============================================================================================================    -->
+<resultMap id="PaymentPointbackRecord_ResultMap" type="com.returnp.pointback.model.PaymentPointbackRecord">
+     <id column="paymentPointbackRecordNo" jdbcType="INTEGER" property="paymentPointbackRecordNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="paymentTransactionNo" jdbcType="INTEGER" property="paymentTransactionNo" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="pointbackAmount" jdbcType="REAL" property="pointbackAmount" />
+    <result column="accRate" jdbcType="REAL" property="accRate" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+   <sql id ="PaymentPointbackRecord_WhereStatement">
+	 <if test="paymentPointbackRecordNo != null  and  paymentPointbackRecordNo  != 0"> AND paymentPointbackRecordNo = #{paymentPointbackRecordNo} </if>
+	 <if test="memberNo != null "> AND memberNo = #{memberNo} </if>
+	 <if test="paymentTransactionNo != null "> AND paymentTransactionNo = #{paymentTransactionNo} </if>
+	 <if test="nodeNo != null "> AND PPR.nodeNo = #{nodeNo} </if>
+	 <if test="nodeType != null "> AND PPR.nodeType = #{nodeType} </if>
+	</sql>
+
+ <select id="findPaymentPointbackRecords"  parameterType="com.returnp.pointback.model.PaymentPointbackRecord"  resultMap="PaymentPointbackRecord_ResultMap" >
+    select * 
+  	from payment_pointback_record 
+	where
+    	1 = 1
+		<include refid = "PaymentPointbackRecord_WhereStatement"/>
+  </select>
+  
+
+<resultMap id="PaymentPointbackRecordCommand_ResultMap" type="com.returnp.pointback.dto.command.PaymentPointbackRecordCommand">
+     <id column="paymentPointbackRecordNo" jdbcType="INTEGER" property="paymentPointbackRecordNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="paymentTransactionNo" jdbcType="INTEGER" property="paymentTransactionNo" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="pointbackAmount" jdbcType="REAL" property="pointbackAmount" />
+    <result column="accRate" jdbcType="REAL" property="accRate" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="mameberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="paymentApprovalAmount" jdbcType="REAL" property="paymentApprovalAmount" />
+    <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="paymentApprovalDateTime" jdbcType="TIMESTAMP" property="paymentApprovalDateTime" />
+  </resultMap>
+  
+  
+
+  <sql id="PaymentPointbackRecordCommand_Column_List">
+    PPR.paymentPointbackRecordNo, 
+    PPR.memberNo, 
+    PPR.paymentTransactionNo, 
+    PPR.nodeNo, 
+    PPR.nodeType, 
+    PPR.accRate, 
+    PPR.pointbackAmount, 
+    PPR.createTime, 
+    PPR.updateTime,
+    M.memberName,
+    M.memberPhone,
+    M.memberEmail,
+    VPT.paymentApprovalAmount,
+    VPT.affiliateSerial,
+    VPT.paymentApprovalDateTime
+  </sql>
+	
+    <sql id ="PaymentPointbackRecordCommand_WhereStatement">
+	 <if test="paymentPointbackRecordNo != null  and  paymentPointbackRecordNo  != 0"> AND paymentPointbackRecordNo = #{paymentPointbackRecordNo} </if>
+	 <if test="memberNo != null "> AND PPR.memberNo = #{memberNo} </if>
+	 <if test="paymentTransactionNo != null "> AND PPR.paymentTransactionNo = #{paymentTransactionNo} </if>
+	 <if test="nodeNo != null "> AND PPR.nodeNo = #{nodeNo} </if>
+	 <if test="nodeType != null "> AND PPR.nodeType = #{nodeType} </if>
+	</sql>
+	
+  <select id="findPaymentPointbackRecordCommands"  parameterType="com.returnp.pointback.dto.command.PaymentPointbackRecordCommand"  resultMap="PaymentPointbackRecordCommand_ResultMap" >
+    select 
+    <include refid="PaymentPointbackRecordCommand_Column_List" />
+  	from payment_pointback_record as PPR
+  	inner join member as M on (PPR.memberNo = M.memberNo)  
+    inner join payment_transaction as  VPT on (PPR.paymentTransactionNo = VPT.paymentTransactionNo)
+	where
+    	1 = 1
+		<include refid = "PaymentPointbackRecordCommand_WhereStatement"/>
+  </select>
+  
+
+   <!-- ===============================================================================================================    -->
+   <!-- 노드 트리 -->
+ <select id="selectDirectNodes"  parameterType="hashMap" resultType="hashMap" >
+   set @node_type := #{node_type};
+   set @node_no := #{node_no};
+   set @affiliate_no := #{affiliate_no};
+    
+   set @node_id := concat(case when @node_type <![CDATA[< ]]> 3 then '5' else @node_type end,'-',case when @node_type <![CDATA[<]]>  3 then @affiliate_no else @node_no end);
+   set @L := 0;
+    
+   select 
+   node_type,node_no,up_node_no,recommenderNo, saleManagerNo,
+   memberNo, recommenderMemberNo,saleManagerMemberNo
+   from(
+   select * from node_tree where node_id in(
+      select _node_id from(   
+         SELECT @node_id AS _node_id,         
+               (SELECT @node_id := up_node_id FROM node_tree WHERE node_id = _node_id) AS upper_id, 
+               (@L := @L + 1) AS depth
+         FROM node_tree AS h
+         WHERE @node_id is not null
+      )a
+    )
+   union all      
+   select '1' node_type,   concat('1-', a.memberNo) node_id,   
+   concat('5-',@affiliate_no) up_node_id,a.memberNo, @affiliate_no, memberName name , a.recommenderNo, b.saleManagerNo,
+   a.memberNo, b.memberNo as recommenderMemberNo,c.memberNo saleManagerMemberNo 
+   from member a 
+   left outer join recommender b 
+   on a.recommenderNo = b.recommenderNo
+   left outer join sale_manager c
+   on b.saleManagerNo = c.saleManagerNo    
+   where a.memberNo=@node_no
+   and @node_type = 1
+    
+   union all    
+    
+   select '2' node_type,   concat('2-', a.recommenderNo) node_id,   
+   concat('5-',@affiliate_no) up_node_id,a.recommenderNo, @affiliate_no, b.memberName name , null, a.saleManagerNo ,
+   a.memberNo, null as recommenderMemberNo, c.memberNo saleManagerMemberNo 
+   from recommender a 
+   left outer join member b 
+   on a.memberNo = b.memberNo
+   left outer join sale_manager c
+   on a.saleManagerNo = c.saleManagerNo    
+   where a.recommenderNo=@node_no
+   and @node_type = 2
+   )a
+ 
+ </select>  
+</mapper>

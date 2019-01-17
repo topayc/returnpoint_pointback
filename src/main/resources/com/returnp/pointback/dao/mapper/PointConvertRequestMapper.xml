@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PointConvertRequestMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PointConvertRequest">
+    <id column="pointConvertRequestNo" jdbcType="INTEGER" property="pointConvertRequestNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="greenPointNo" jdbcType="INTEGER" property="greenPointNo" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="requestNodeTypeName" jdbcType="VARCHAR" property="requestNodeTypeName" />
+    <result column="convertPointAmount" jdbcType="REAL" property="convertPointAmount" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pointConvertRequestNo, memberNo, greenPointNo, nodeType, requestNodeTypeName, convertPointAmount, 
+    regType, regAdminNo, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from point_convert_request
+    where pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from point_convert_request
+    where pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.PointConvertRequest">
+    insert into point_convert_request (pointConvertRequestNo, memberNo, 
+      greenPointNo, nodeType, requestNodeTypeName, 
+      convertPointAmount, regType, regAdminNo, 
+      createTime, updateTime)
+    values (#{pointConvertRequestNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, 
+      #{greenPointNo,jdbcType=INTEGER}, #{nodeType,jdbcType=VARCHAR}, #{requestNodeTypeName,jdbcType=VARCHAR}, 
+      #{convertPointAmount,jdbcType=REAL}, #{regType,jdbcType=CHAR}, #{regAdminNo,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PointConvertRequest">
+    insert into point_convert_request
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pointConvertRequestNo != null">
+        pointConvertRequestNo,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="greenPointNo != null">
+        greenPointNo,
+      </if>
+      <if test="nodeType != null">
+        nodeType,
+      </if>
+      <if test="requestNodeTypeName != null">
+        requestNodeTypeName,
+      </if>
+      <if test="convertPointAmount != null">
+        convertPointAmount,
+      </if>
+      <if test="regType != null">
+        regType,
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pointConvertRequestNo != null">
+        #{pointConvertRequestNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="greenPointNo != null">
+        #{greenPointNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="requestNodeTypeName != null">
+        #{requestNodeTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="convertPointAmount != null">
+        #{convertPointAmount,jdbcType=REAL},
+      </if>
+      <if test="regType != null">
+        #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PointConvertRequest">
+    update point_convert_request
+    <set>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="greenPointNo != null">
+        greenPointNo = #{greenPointNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        nodeType = #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="requestNodeTypeName != null">
+        requestNodeTypeName = #{requestNodeTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="convertPointAmount != null">
+        convertPointAmount = #{convertPointAmount,jdbcType=REAL},
+      </if>
+      <if test="regType != null">
+        regType = #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PointConvertRequest">
+    update point_convert_request
+    set memberNo = #{memberNo,jdbcType=INTEGER},
+      greenPointNo = #{greenPointNo,jdbcType=INTEGER},
+      nodeType = #{nodeType,jdbcType=VARCHAR},
+      requestNodeTypeName = #{requestNodeTypeName,jdbcType=VARCHAR},
+      convertPointAmount = #{convertPointAmount,jdbcType=REAL},
+      regType = #{regType,jdbcType=CHAR},
+      regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER}
+  </update>
+</mapper>

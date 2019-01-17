@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.SoleDistMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.SoleDist">
+    <id column="soleDistNo" jdbcType="INTEGER" property="soleDistNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="soleDistCode" jdbcType="VARCHAR" property="soleDistCode" />
+    <result column="soleDistEmail" jdbcType="VARCHAR" property="soleDistEmail" />
+    <result column="soleDistName" jdbcType="VARCHAR" property="soleDistName" />
+    <result column="soleDistAddress" jdbcType="VARCHAR" property="soleDistAddress" />
+    <result column="soleDistTel" jdbcType="VARCHAR" property="soleDistTel" />
+    <result column="soleDistPhone" jdbcType="VARCHAR" property="soleDistPhone" />
+    <result column="soleDistStatus" jdbcType="VARCHAR" property="soleDistStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    soleDistNo, memberNo, soleDistCode, soleDistEmail, soleDistName, soleDistAddress, 
+    soleDistTel, soleDistPhone, soleDistStatus, regType, regAdminNo, greenPointAccStatus, 
+    redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sole_dist
+    where soleDistNo = #{soleDistNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sole_dist
+    where soleDistNo = #{soleDistNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.SoleDist">
+    insert into sole_dist (soleDistNo, memberNo, soleDistCode, 
+      soleDistEmail, soleDistName, soleDistAddress, 
+      soleDistTel, soleDistPhone, soleDistStatus, 
+      regType, regAdminNo, greenPointAccStatus, 
+      redPointAccStatus, greenPointUseStatus, redPointUseStatus, 
+      createTime, updatetime)
+    values (#{soleDistNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, #{soleDistCode,jdbcType=VARCHAR}, 
+      #{soleDistEmail,jdbcType=VARCHAR}, #{soleDistName,jdbcType=VARCHAR}, #{soleDistAddress,jdbcType=VARCHAR}, 
+      #{soleDistTel,jdbcType=VARCHAR}, #{soleDistPhone,jdbcType=VARCHAR}, #{soleDistStatus,jdbcType=VARCHAR}, 
+      #{regType,jdbcType=CHAR}, #{regAdminNo,jdbcType=INTEGER}, #{greenPointAccStatus,jdbcType=CHAR}, 
+      #{redPointAccStatus,jdbcType=CHAR}, #{greenPointUseStatus,jdbcType=CHAR}, #{redPointUseStatus,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.SoleDist">
+    insert into sole_dist
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="soleDistNo != null">
+        soleDistNo,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="soleDistCode != null">
+        soleDistCode,
+      </if>
+      <if test="soleDistEmail != null">
+        soleDistEmail,
+      </if>
+      <if test="soleDistName != null">
+        soleDistName,
+      </if>
+      <if test="soleDistAddress != null">
+        soleDistAddress,
+      </if>
+      <if test="soleDistTel != null">
+        soleDistTel,
+      </if>
+      <if test="soleDistPhone != null">
+        soleDistPhone,
+      </if>
+      <if test="soleDistStatus != null">
+        soleDistStatus,
+      </if>
+      <if test="regType != null">
+        regType,
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo,
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus,
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus,
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus,
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="soleDistNo != null">
+        #{soleDistNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="soleDistCode != null">
+        #{soleDistCode,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistEmail != null">
+        #{soleDistEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistName != null">
+        #{soleDistName,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistAddress != null">
+        #{soleDistAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistTel != null">
+        #{soleDistTel,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistPhone != null">
+        #{soleDistPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistStatus != null">
+        #{soleDistStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="regType != null">
+        #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="greenPointAccStatus != null">
+        #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.SoleDist">
+    update sole_dist
+    <set>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="soleDistCode != null">
+        soleDistCode = #{soleDistCode,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistEmail != null">
+        soleDistEmail = #{soleDistEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistName != null">
+        soleDistName = #{soleDistName,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistAddress != null">
+        soleDistAddress = #{soleDistAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistTel != null">
+        soleDistTel = #{soleDistTel,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistPhone != null">
+        soleDistPhone = #{soleDistPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="soleDistStatus != null">
+        soleDistStatus = #{soleDistStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="regType != null">
+        regType = #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where soleDistNo = #{soleDistNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.SoleDist">
+    update sole_dist
+    set memberNo = #{memberNo,jdbcType=INTEGER},
+      soleDistCode = #{soleDistCode,jdbcType=VARCHAR},
+      soleDistEmail = #{soleDistEmail,jdbcType=VARCHAR},
+      soleDistName = #{soleDistName,jdbcType=VARCHAR},
+      soleDistAddress = #{soleDistAddress,jdbcType=VARCHAR},
+      soleDistTel = #{soleDistTel,jdbcType=VARCHAR},
+      soleDistPhone = #{soleDistPhone,jdbcType=VARCHAR},
+      soleDistStatus = #{soleDistStatus,jdbcType=VARCHAR},
+      regType = #{regType,jdbcType=CHAR},
+      regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where soleDistNo = #{soleDistNo,jdbcType=INTEGER}
+  </update>
+</mapper>

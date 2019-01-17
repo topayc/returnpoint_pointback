@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.RedPointMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.RedPoint">
+    <id column="redPointNo" jdbcType="INTEGER" property="redPointNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="pointAmount" jdbcType="REAL" property="pointAmount" />
+    <result column="redPointCreateTime" jdbcType="TIMESTAMP" property="redPointCreateTime" />
+    <result column="redPointUpdateTime" jdbcType="TIMESTAMP" property="redPointUpdateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    redPointNo, memberNo, pointAmount, redPointCreateTime, redPointUpdateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from red_point
+    where redPointNo = #{redPointNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from red_point
+    where redPointNo = #{redPointNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.RedPoint">
+    insert into red_point (redPointNo, memberNo, pointAmount, 
+      redPointCreateTime, redPointUpdateTime
+      )
+    values (#{redPointNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, #{pointAmount,jdbcType=REAL}, 
+      #{redPointCreateTime,jdbcType=TIMESTAMP}, #{redPointUpdateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.RedPoint">
+    insert into red_point
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="redPointNo != null">
+        redPointNo,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="pointAmount != null">
+        pointAmount,
+      </if>
+      <if test="redPointCreateTime != null">
+        redPointCreateTime,
+      </if>
+      <if test="redPointUpdateTime != null">
+        redPointUpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="redPointNo != null">
+        #{redPointNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointAmount != null">
+        #{pointAmount,jdbcType=REAL},
+      </if>
+      <if test="redPointCreateTime != null">
+        #{redPointCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="redPointUpdateTime != null">
+        #{redPointUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.RedPoint">
+    update red_point
+    <set>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointAmount != null">
+        pointAmount = #{pointAmount,jdbcType=REAL},
+      </if>
+      <if test="redPointCreateTime != null">
+        redPointCreateTime = #{redPointCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="redPointUpdateTime != null">
+        redPointUpdateTime = #{redPointUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where redPointNo = #{redPointNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.RedPoint">
+    update red_point
+    set memberNo = #{memberNo,jdbcType=INTEGER},
+      pointAmount = #{pointAmount,jdbcType=REAL},
+      redPointCreateTime = #{redPointCreateTime,jdbcType=TIMESTAMP},
+      redPointUpdateTime = #{redPointUpdateTime,jdbcType=TIMESTAMP}
+    where redPointNo = #{redPointNo,jdbcType=INTEGER}
+  </update>
+</mapper>

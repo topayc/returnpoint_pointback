@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.MemberMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.Member">
+    <id column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberPassword" jdbcType="VARCHAR" property="memberPassword" />
+    <result column="memberPassword2" jdbcType="VARCHAR" property="memberPassword2" />
+    <result column="memberType" jdbcType="VARCHAR" property="memberType" />
+    <result column="memberStatus" jdbcType="VARCHAR" property="memberStatus" />
+    <result column="memberAuthType" jdbcType="VARCHAR" property="memberAuthType" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="joinRoute" jdbcType="VARCHAR" property="joinRoute" />
+    <result column="statusReason" jdbcType="VARCHAR" property="statusReason" />
+    <result column="isSoleDist" jdbcType="CHAR" property="isSoleDist" />
+    <result column="isRecommender" jdbcType="CHAR" property="isRecommender" />
+    <result column="isSaleManager" jdbcType="CHAR" property="isSaleManager" />
+    <result column="isBranch" jdbcType="CHAR" property="isBranch" />
+    <result column="isAffiliate" jdbcType="CHAR" property="isAffiliate" />
+    <result column="isAgency" jdbcType="CHAR" property="isAgency" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="country" jdbcType="CHAR" property="country" />
+    <result column="language" jdbcType="CHAR" property="language" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    memberNo, memberName, memberEmail, memberPassword, memberPassword2, memberType, memberStatus, 
+    memberAuthType, memberPhone, recommenderNo, joinRoute, statusReason, isSoleDist, 
+    isRecommender, isSaleManager, isBranch, isAffiliate, isAgency, regType, regAdminNo, 
+    greenPointAccStatus, redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, 
+    updateTime, country, language
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member
+    where memberNo = #{memberNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from member
+    where memberNo = #{memberNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.Member">
+    insert into member (memberNo, memberName, memberEmail, 
+      memberPassword, memberPassword2, memberType, 
+      memberStatus, memberAuthType, memberPhone, 
+      recommenderNo, joinRoute, statusReason, 
+      isSoleDist, isRecommender, isSaleManager, 
+      isBranch, isAffiliate, isAgency, 
+      regType, regAdminNo, greenPointAccStatus, 
+      redPointAccStatus, greenPointUseStatus, redPointUseStatus, 
+      createTime, updateTime, country, 
+      language)
+    values (#{memberNo,jdbcType=INTEGER}, #{memberName,jdbcType=VARCHAR}, #{memberEmail,jdbcType=VARCHAR}, 
+      #{memberPassword,jdbcType=VARCHAR}, #{memberPassword2,jdbcType=VARCHAR}, #{memberType,jdbcType=VARCHAR}, 
+      #{memberStatus,jdbcType=VARCHAR}, #{memberAuthType,jdbcType=VARCHAR}, #{memberPhone,jdbcType=VARCHAR}, 
+      #{recommenderNo,jdbcType=INTEGER}, #{joinRoute,jdbcType=VARCHAR}, #{statusReason,jdbcType=VARCHAR}, 
+      #{isSoleDist,jdbcType=CHAR}, #{isRecommender,jdbcType=CHAR}, #{isSaleManager,jdbcType=CHAR}, 
+      #{isBranch,jdbcType=CHAR}, #{isAffiliate,jdbcType=CHAR}, #{isAgency,jdbcType=CHAR}, 
+      #{regType,jdbcType=CHAR}, #{regAdminNo,jdbcType=INTEGER}, #{greenPointAccStatus,jdbcType=CHAR}, 
+      #{redPointAccStatus,jdbcType=CHAR}, #{greenPointUseStatus,jdbcType=CHAR}, #{redPointUseStatus,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{country,jdbcType=CHAR}, 
+      #{language,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.Member">
+    insert into member
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="memberName != null">
+        memberName,
+      </if>
+      <if test="memberEmail != null">
+        memberEmail,
+      </if>
+      <if test="memberPassword != null">
+        memberPassword,
+      </if>
+      <if test="memberPassword2 != null">
+        memberPassword2,
+      </if>
+      <if test="memberType != null">
+        memberType,
+      </if>
+      <if test="memberStatus != null">
+        memberStatus,
+      </if>
+      <if test="memberAuthType != null">
+        memberAuthType,
+      </if>
+      <if test="memberPhone != null">
+        memberPhone,
+      </if>
+      <if test="recommenderNo != null">
+        recommenderNo,
+      </if>
+      <if test="joinRoute != null">
+        joinRoute,
+      </if>
+      <if test="statusReason != null">
+        statusReason,
+      </if>
+      <if test="isSoleDist != null">
+        isSoleDist,
+      </if>
+      <if test="isRecommender != null">
+        isRecommender,
+      </if>
+      <if test="isSaleManager != null">
+        isSaleManager,
+      </if>
+      <if test="isBranch != null">
+        isBranch,
+      </if>
+      <if test="isAffiliate != null">
+        isAffiliate,
+      </if>
+      <if test="isAgency != null">
+        isAgency,
+      </if>
+      <if test="regType != null">
+        regType,
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo,
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus,
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus,
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus,
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+      <if test="country != null">
+        country,
+      </if>
+      <if test="language != null">
+        language,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberName != null">
+        #{memberName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberEmail != null">
+        #{memberEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="memberPassword != null">
+        #{memberPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="memberPassword2 != null">
+        #{memberPassword2,jdbcType=VARCHAR},
+      </if>
+      <if test="memberType != null">
+        #{memberType,jdbcType=VARCHAR},
+      </if>
+      <if test="memberStatus != null">
+        #{memberStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="memberAuthType != null">
+        #{memberAuthType,jdbcType=VARCHAR},
+      </if>
+      <if test="memberPhone != null">
+        #{memberPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderNo != null">
+        #{recommenderNo,jdbcType=INTEGER},
+      </if>
+      <if test="joinRoute != null">
+        #{joinRoute,jdbcType=VARCHAR},
+      </if>
+      <if test="statusReason != null">
+        #{statusReason,jdbcType=VARCHAR},
+      </if>
+      <if test="isSoleDist != null">
+        #{isSoleDist,jdbcType=CHAR},
+      </if>
+      <if test="isRecommender != null">
+        #{isRecommender,jdbcType=CHAR},
+      </if>
+      <if test="isSaleManager != null">
+        #{isSaleManager,jdbcType=CHAR},
+      </if>
+      <if test="isBranch != null">
+        #{isBranch,jdbcType=CHAR},
+      </if>
+      <if test="isAffiliate != null">
+        #{isAffiliate,jdbcType=CHAR},
+      </if>
+      <if test="isAgency != null">
+        #{isAgency,jdbcType=CHAR},
+      </if>
+      <if test="regType != null">
+        #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="greenPointAccStatus != null">
+        #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null">
+        #{country,jdbcType=CHAR},
+      </if>
+      <if test="language != null">
+        #{language,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.Member">
+    update member
+    <set>
+      <if test="memberName != null">
+        memberName = #{memberName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberEmail != null">
+        memberEmail = #{memberEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="memberPassword != null">
+        memberPassword = #{memberPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="memberPassword2 != null">
+        memberPassword2 = #{memberPassword2,jdbcType=VARCHAR},
+      </if>
+      <if test="memberType != null">
+        memberType = #{memberType,jdbcType=VARCHAR},
+      </if>
+      <if test="memberStatus != null">
+        memberStatus = #{memberStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="memberAuthType != null">
+        memberAuthType = #{memberAuthType,jdbcType=VARCHAR},
+      </if>
+      <if test="memberPhone != null">
+        memberPhone = #{memberPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderNo != null">
+        recommenderNo = #{recommenderNo,jdbcType=INTEGER},
+      </if>
+      <if test="joinRoute != null">
+        joinRoute = #{joinRoute,jdbcType=VARCHAR},
+      </if>
+      <if test="statusReason != null">
+        statusReason = #{statusReason,jdbcType=VARCHAR},
+      </if>
+      <if test="isSoleDist != null">
+        isSoleDist = #{isSoleDist,jdbcType=CHAR},
+      </if>
+      <if test="isRecommender != null">
+        isRecommender = #{isRecommender,jdbcType=CHAR},
+      </if>
+      <if test="isSaleManager != null">
+        isSaleManager = #{isSaleManager,jdbcType=CHAR},
+      </if>
+      <if test="isBranch != null">
+        isBranch = #{isBranch,jdbcType=CHAR},
+      </if>
+      <if test="isAffiliate != null">
+        isAffiliate = #{isAffiliate,jdbcType=CHAR},
+      </if>
+      <if test="isAgency != null">
+        isAgency = #{isAgency,jdbcType=CHAR},
+      </if>
+      <if test="regType != null">
+        regType = #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null">
+        country = #{country,jdbcType=CHAR},
+      </if>
+      <if test="language != null">
+        language = #{language,jdbcType=CHAR},
+      </if>
+    </set>
+    where memberNo = #{memberNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.Member">
+    update member
+    set memberName = #{memberName,jdbcType=VARCHAR},
+      memberEmail = #{memberEmail,jdbcType=VARCHAR},
+      memberPassword = #{memberPassword,jdbcType=VARCHAR},
+      memberPassword2 = #{memberPassword2,jdbcType=VARCHAR},
+      memberType = #{memberType,jdbcType=VARCHAR},
+      memberStatus = #{memberStatus,jdbcType=VARCHAR},
+      memberAuthType = #{memberAuthType,jdbcType=VARCHAR},
+      memberPhone = #{memberPhone,jdbcType=VARCHAR},
+      recommenderNo = #{recommenderNo,jdbcType=INTEGER},
+      joinRoute = #{joinRoute,jdbcType=VARCHAR},
+      statusReason = #{statusReason,jdbcType=VARCHAR},
+      isSoleDist = #{isSoleDist,jdbcType=CHAR},
+      isRecommender = #{isRecommender,jdbcType=CHAR},
+      isSaleManager = #{isSaleManager,jdbcType=CHAR},
+      isBranch = #{isBranch,jdbcType=CHAR},
+      isAffiliate = #{isAffiliate,jdbcType=CHAR},
+      isAgency = #{isAgency,jdbcType=CHAR},
+      regType = #{regType,jdbcType=CHAR},
+      regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      country = #{country,jdbcType=CHAR},
+      language = #{language,jdbcType=CHAR}
+    where memberNo = #{memberNo,jdbcType=INTEGER}
+  </update>
+</mapper>

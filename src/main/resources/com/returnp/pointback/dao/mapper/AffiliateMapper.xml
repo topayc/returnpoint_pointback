@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.AffiliateMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.Affiliate">
+    <id column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
+    <result column="affiliateComm" jdbcType="REAL" property="affiliateComm" />
+    <result column="affiliateCode" jdbcType="VARCHAR" property="affiliateCode" />
+    <result column="affiliateName" jdbcType="VARCHAR" property="affiliateName" />
+    <result column="affiliateAddress" jdbcType="VARCHAR" property="affiliateAddress" />
+    <result column="affiliateTel" jdbcType="VARCHAR" property="affiliateTel" />
+    <result column="affiliatePhone" jdbcType="VARCHAR" property="affiliatePhone" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="agencyNo" jdbcType="INTEGER" property="agencyNo" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="affiliateStatus" jdbcType="VARCHAR" property="affiliateStatus" />
+    <result column="affiliateType" jdbcType="VARCHAR" property="affiliateType" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="affiliateEmail" jdbcType="VARCHAR" property="affiliateEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    affiliateNo, affiliateSerial, affiliateComm, affiliateCode, affiliateName, affiliateAddress, 
+    affiliateTel, affiliatePhone, memberNo, agencyNo, recommenderNo, affiliateStatus, 
+    affiliateType, regType, regAdminNo, affiliateEmail, greenPointAccStatus, redPointAccStatus, 
+    greenPointUseStatus, redPointUseStatus, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from affiliate
+    where affiliateNo = #{affiliateNo,jdbcType=INTEGER}
+  </select>
+  
+   <select id="selectBySerial" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from affiliate
+    where affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from affiliate
+    where affiliateNo = #{affiliateNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.Affiliate">
+    insert into affiliate (affiliateNo, affiliateSerial, affiliateComm, 
+      affiliateCode, affiliateName, affiliateAddress, 
+      affiliateTel, affiliatePhone, memberNo, 
+      agencyNo, recommenderNo, affiliateStatus, 
+      affiliateType, regType, regAdminNo, 
+      affiliateEmail, greenPointAccStatus, redPointAccStatus, 
+      greenPointUseStatus, redPointUseStatus, createTime, 
+      updateTime)
+    values (#{affiliateNo,jdbcType=INTEGER}, #{affiliateSerial,jdbcType=VARCHAR}, #{affiliateComm,jdbcType=REAL}, 
+      #{affiliateCode,jdbcType=VARCHAR}, #{affiliateName,jdbcType=VARCHAR}, #{affiliateAddress,jdbcType=VARCHAR}, 
+      #{affiliateTel,jdbcType=VARCHAR}, #{affiliatePhone,jdbcType=VARCHAR}, #{memberNo,jdbcType=INTEGER}, 
+      #{agencyNo,jdbcType=INTEGER}, #{recommenderNo,jdbcType=INTEGER}, #{affiliateStatus,jdbcType=VARCHAR}, 
+      #{affiliateType,jdbcType=VARCHAR}, #{regType,jdbcType=CHAR}, #{regAdminNo,jdbcType=INTEGER}, 
+      #{affiliateEmail,jdbcType=VARCHAR}, #{greenPointAccStatus,jdbcType=CHAR}, #{redPointAccStatus,jdbcType=CHAR}, 
+      #{greenPointUseStatus,jdbcType=CHAR}, #{redPointUseStatus,jdbcType=CHAR}, NOW(), NOW())
+      
+        <selectKey keyProperty="affiliateNo" resultType="java.lang.Integer" order ="AFTER">
+            SELECT LAST_INSERT_ID()
+       </selectKey> 
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.Affiliate">
+    insert into affiliate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="affiliateNo != null">
+        affiliateNo,
+      </if>
+      <if test="affiliateSerial != null">
+        affiliateSerial,
+      </if>
+      <if test="affiliateComm != null">
+        affiliateComm,
+      </if>
+      <if test="affiliateCode != null">
+        affiliateCode,
+      </if>
+      <if test="affiliateName != null">
+        affiliateName,
+      </if>
+      <if test="affiliateAddress != null">
+        affiliateAddress,
+      </if>
+      <if test="affiliateTel != null">
+        affiliateTel,
+      </if>
+      <if test="affiliatePhone != null">
+        affiliatePhone,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="agencyNo != null">
+        agencyNo,
+      </if>
+      <if test="recommenderNo != null">
+        recommenderNo,
+      </if>
+      <if test="affiliateStatus != null">
+        affiliateStatus,
+      </if>
+      <if test="affiliateType != null">
+        affiliateType,
+      </if>
+      <if test="regType != null">
+        regType,
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo,
+      </if>
+      <if test="affiliateEmail != null">
+        affiliateEmail,
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus,
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus,
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus,
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="affiliateNo != null">
+        #{affiliateNo,jdbcType=INTEGER},
+      </if>
+      <if test="affiliateSerial != null">
+        #{affiliateSerial,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateComm != null">
+        #{affiliateComm,jdbcType=REAL},
+      </if>
+      <if test="affiliateCode != null">
+        #{affiliateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateName != null">
+        #{affiliateName,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateAddress != null">
+        #{affiliateAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateTel != null">
+        #{affiliateTel,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliatePhone != null">
+        #{affiliatePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="agencyNo != null">
+        #{agencyNo,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderNo != null">
+        #{recommenderNo,jdbcType=INTEGER},
+      </if>
+      <if test="affiliateStatus != null">
+        #{affiliateStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateType != null">
+        #{affiliateType,jdbcType=VARCHAR},
+      </if>
+      <if test="regType != null">
+        #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="affiliateEmail != null">
+        #{affiliateEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="greenPointAccStatus != null">
+        #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.Affiliate">
+    update affiliate
+    <set>
+      <if test="affiliateSerial != null">
+        affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateComm != null">
+        affiliateComm = #{affiliateComm,jdbcType=REAL},
+      </if>
+      <if test="affiliateCode != null">
+        affiliateCode = #{affiliateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateName != null">
+        affiliateName = #{affiliateName,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateAddress != null">
+        affiliateAddress = #{affiliateAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateTel != null">
+        affiliateTel = #{affiliateTel,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliatePhone != null">
+        affiliatePhone = #{affiliatePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="agencyNo != null">
+        agencyNo = #{agencyNo,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderNo != null">
+        recommenderNo = #{recommenderNo,jdbcType=INTEGER},
+      </if>
+      <if test="affiliateStatus != null">
+        affiliateStatus = #{affiliateStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateType != null">
+        affiliateType = #{affiliateType,jdbcType=VARCHAR},
+      </if>
+      <if test="regType != null">
+        regType = #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="affiliateEmail != null">
+        affiliateEmail = #{affiliateEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where affiliateNo = #{affiliateNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.Affiliate">
+    update affiliate
+    set affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR},
+      affiliateComm = #{affiliateComm,jdbcType=REAL},
+      affiliateCode = #{affiliateCode,jdbcType=VARCHAR},
+      affiliateName = #{affiliateName,jdbcType=VARCHAR},
+      affiliateAddress = #{affiliateAddress,jdbcType=VARCHAR},
+      affiliateTel = #{affiliateTel,jdbcType=VARCHAR},
+      affiliatePhone = #{affiliatePhone,jdbcType=VARCHAR},
+      memberNo = #{memberNo,jdbcType=INTEGER},
+      agencyNo = #{agencyNo,jdbcType=INTEGER},
+      recommenderNo = #{recommenderNo,jdbcType=INTEGER},
+      affiliateStatus = #{affiliateStatus,jdbcType=VARCHAR},
+      affiliateType = #{affiliateType,jdbcType=VARCHAR},
+      regType = #{regType,jdbcType=CHAR},
+      regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      affiliateEmail = #{affiliateEmail,jdbcType=VARCHAR},
+      greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = NOW()
+    where affiliateNo = #{affiliateNo,jdbcType=INTEGER}
+  </update>
+</mapper>

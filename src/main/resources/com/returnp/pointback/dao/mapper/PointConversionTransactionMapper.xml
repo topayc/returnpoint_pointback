@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PointConversionTransactionMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PointConversionTransaction">
+    <id column="pointConversionTansactionNo" jdbcType="INTEGER" property="pointConversionTansactionNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="conversionTotalPoint" jdbcType="REAL" property="conversionTotalPoint" />
+    <result column="conversionAccPoint" jdbcType="REAL" property="conversionAccPoint" />
+    <result column="conversionAccRate" jdbcType="REAL" property="conversionAccRate" />
+    <result column="conversionStatus" jdbcType="VARCHAR" property="conversionStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="pointConvertRequestNo" jdbcType="INTEGER" property="pointConvertRequestNo" />
+    <result column="pointTransRate" jdbcType="REAL" property="pointTransRate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pointConversionTansactionNo, memberNo, nodeType, conversionTotalPoint, conversionAccPoint, 
+    conversionAccRate, conversionStatus, createTime, updateTime, pointConvertRequestNo, 
+    pointTransRate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from point_conversion_transaction
+    where pointConversionTansactionNo = #{pointConversionTansactionNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from point_conversion_transaction
+    where pointConversionTansactionNo = #{pointConversionTansactionNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.PointConversionTransaction">
+    insert into point_conversion_transaction (pointConversionTansactionNo, memberNo, 
+      nodeType, conversionTotalPoint, conversionAccPoint, 
+      conversionAccRate, conversionStatus, createTime, 
+      updateTime, pointConvertRequestNo, pointTransRate
+      )
+    values (#{pointConversionTansactionNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, 
+      #{nodeType,jdbcType=VARCHAR}, #{conversionTotalPoint,jdbcType=REAL}, #{conversionAccPoint,jdbcType=REAL}, 
+      #{conversionAccRate,jdbcType=REAL}, #{conversionStatus,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{pointConvertRequestNo,jdbcType=INTEGER}, #{pointTransRate,jdbcType=REAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PointConversionTransaction">
+    insert into point_conversion_transaction
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pointConversionTansactionNo != null">
+        pointConversionTansactionNo,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="nodeType != null">
+        nodeType,
+      </if>
+      <if test="conversionTotalPoint != null">
+        conversionTotalPoint,
+      </if>
+      <if test="conversionAccPoint != null">
+        conversionAccPoint,
+      </if>
+      <if test="conversionAccRate != null">
+        conversionAccRate,
+      </if>
+      <if test="conversionStatus != null">
+        conversionStatus,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+      <if test="pointConvertRequestNo != null">
+        pointConvertRequestNo,
+      </if>
+      <if test="pointTransRate != null">
+        pointTransRate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pointConversionTansactionNo != null">
+        #{pointConversionTansactionNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="conversionTotalPoint != null">
+        #{conversionTotalPoint,jdbcType=REAL},
+      </if>
+      <if test="conversionAccPoint != null">
+        #{conversionAccPoint,jdbcType=REAL},
+      </if>
+      <if test="conversionAccRate != null">
+        #{conversionAccRate,jdbcType=REAL},
+      </if>
+      <if test="conversionStatus != null">
+        #{conversionStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pointConvertRequestNo != null">
+        #{pointConvertRequestNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointTransRate != null">
+        #{pointTransRate,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PointConversionTransaction">
+    update point_conversion_transaction
+    <set>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        nodeType = #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="conversionTotalPoint != null">
+        conversionTotalPoint = #{conversionTotalPoint,jdbcType=REAL},
+      </if>
+      <if test="conversionAccPoint != null">
+        conversionAccPoint = #{conversionAccPoint,jdbcType=REAL},
+      </if>
+      <if test="conversionAccRate != null">
+        conversionAccRate = #{conversionAccRate,jdbcType=REAL},
+      </if>
+      <if test="conversionStatus != null">
+        conversionStatus = #{conversionStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pointConvertRequestNo != null">
+        pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointTransRate != null">
+        pointTransRate = #{pointTransRate,jdbcType=REAL},
+      </if>
+    </set>
+    where pointConversionTansactionNo = #{pointConversionTansactionNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PointConversionTransaction">
+    update point_conversion_transaction
+    set memberNo = #{memberNo,jdbcType=INTEGER},
+      nodeType = #{nodeType,jdbcType=VARCHAR},
+      conversionTotalPoint = #{conversionTotalPoint,jdbcType=REAL},
+      conversionAccPoint = #{conversionAccPoint,jdbcType=REAL},
+      conversionAccRate = #{conversionAccRate,jdbcType=REAL},
+      conversionStatus = #{conversionStatus,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      pointConvertRequestNo = #{pointConvertRequestNo,jdbcType=INTEGER},
+      pointTransRate = #{pointTransRate,jdbcType=REAL}
+    where pointConversionTansactionNo = #{pointConversionTansactionNo,jdbcType=INTEGER}
+  </update>
+</mapper>

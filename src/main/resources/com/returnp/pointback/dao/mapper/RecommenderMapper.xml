@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.RecommenderMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.Recommender">
+    <id column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="recommenderCode" jdbcType="VARCHAR" property="recommenderCode" />
+    <result column="recommenderName" jdbcType="VARCHAR" property="recommenderName" />
+    <result column="recommenderAddress" jdbcType="VARCHAR" property="recommenderAddress" />
+    <result column="recommenderTel" jdbcType="VARCHAR" property="recommenderTel" />
+    <result column="recommenderPhone" jdbcType="VARCHAR" property="recommenderPhone" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="saleManagerNo" jdbcType="INTEGER" property="saleManagerNo" />
+    <result column="recommenderStatus" jdbcType="VARCHAR" property="recommenderStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="recommenderEmail" jdbcType="VARCHAR" property="recommenderEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    recommenderNo, recommenderCode, recommenderName, recommenderAddress, recommenderTel, 
+    recommenderPhone, memberNo, saleManagerNo, recommenderStatus, regType, regAdminNo, 
+    recommenderEmail, greenPointAccStatus, redPointAccStatus, greenPointUseStatus, redPointUseStatus, 
+    createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from recommender
+    where recommenderNo = #{recommenderNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from recommender
+    where recommenderNo = #{recommenderNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.Recommender">
+    insert into recommender (recommenderNo, recommenderCode, recommenderName, 
+      recommenderAddress, recommenderTel, recommenderPhone, 
+      memberNo, saleManagerNo, recommenderStatus, 
+      regType, regAdminNo, recommenderEmail, 
+      greenPointAccStatus, redPointAccStatus, greenPointUseStatus, 
+      redPointUseStatus, createTime, updateTime
+      )
+    values (#{recommenderNo,jdbcType=INTEGER}, #{recommenderCode,jdbcType=VARCHAR}, #{recommenderName,jdbcType=VARCHAR}, 
+      #{recommenderAddress,jdbcType=VARCHAR}, #{recommenderTel,jdbcType=VARCHAR}, #{recommenderPhone,jdbcType=VARCHAR}, 
+      #{memberNo,jdbcType=INTEGER}, #{saleManagerNo,jdbcType=INTEGER}, #{recommenderStatus,jdbcType=VARCHAR}, 
+      #{regType,jdbcType=CHAR}, #{regAdminNo,jdbcType=INTEGER}, #{recommenderEmail,jdbcType=VARCHAR}, 
+      #{greenPointAccStatus,jdbcType=CHAR}, #{redPointAccStatus,jdbcType=CHAR}, #{greenPointUseStatus,jdbcType=CHAR}, 
+      #{redPointUseStatus,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.Recommender">
+    insert into recommender
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="recommenderNo != null">
+        recommenderNo,
+      </if>
+      <if test="recommenderCode != null">
+        recommenderCode,
+      </if>
+      <if test="recommenderName != null">
+        recommenderName,
+      </if>
+      <if test="recommenderAddress != null">
+        recommenderAddress,
+      </if>
+      <if test="recommenderTel != null">
+        recommenderTel,
+      </if>
+      <if test="recommenderPhone != null">
+        recommenderPhone,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="saleManagerNo != null">
+        saleManagerNo,
+      </if>
+      <if test="recommenderStatus != null">
+        recommenderStatus,
+      </if>
+      <if test="regType != null">
+        regType,
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo,
+      </if>
+      <if test="recommenderEmail != null">
+        recommenderEmail,
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus,
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus,
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus,
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="recommenderNo != null">
+        #{recommenderNo,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderCode != null">
+        #{recommenderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderName != null">
+        #{recommenderName,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderAddress != null">
+        #{recommenderAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderTel != null">
+        #{recommenderTel,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderPhone != null">
+        #{recommenderPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="saleManagerNo != null">
+        #{saleManagerNo,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderStatus != null">
+        #{recommenderStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="regType != null">
+        #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderEmail != null">
+        #{recommenderEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="greenPointAccStatus != null">
+        #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.Recommender">
+    update recommender
+    <set>
+      <if test="recommenderCode != null">
+        recommenderCode = #{recommenderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderName != null">
+        recommenderName = #{recommenderName,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderAddress != null">
+        recommenderAddress = #{recommenderAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderTel != null">
+        recommenderTel = #{recommenderTel,jdbcType=VARCHAR},
+      </if>
+      <if test="recommenderPhone != null">
+        recommenderPhone = #{recommenderPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="saleManagerNo != null">
+        saleManagerNo = #{saleManagerNo,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderStatus != null">
+        recommenderStatus = #{recommenderStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="regType != null">
+        regType = #{regType,jdbcType=CHAR},
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="recommenderEmail != null">
+        recommenderEmail = #{recommenderEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="greenPointAccStatus != null">
+        greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointAccStatus != null">
+        redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      </if>
+      <if test="greenPointUseStatus != null">
+        greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="redPointUseStatus != null">
+        redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where recommenderNo = #{recommenderNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.Recommender">
+    update recommender
+    set recommenderCode = #{recommenderCode,jdbcType=VARCHAR},
+      recommenderName = #{recommenderName,jdbcType=VARCHAR},
+      recommenderAddress = #{recommenderAddress,jdbcType=VARCHAR},
+      recommenderTel = #{recommenderTel,jdbcType=VARCHAR},
+      recommenderPhone = #{recommenderPhone,jdbcType=VARCHAR},
+      memberNo = #{memberNo,jdbcType=INTEGER},
+      saleManagerNo = #{saleManagerNo,jdbcType=INTEGER},
+      recommenderStatus = #{recommenderStatus,jdbcType=VARCHAR},
+      regType = #{regType,jdbcType=CHAR},
+      regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      recommenderEmail = #{recommenderEmail,jdbcType=VARCHAR},
+      greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR},
+      redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR},
+      greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR},
+      redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where recommenderNo = #{recommenderNo,jdbcType=INTEGER}
+  </update>
+</mapper>

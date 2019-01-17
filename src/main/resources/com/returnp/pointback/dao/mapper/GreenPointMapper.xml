@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.GreenPointMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.GreenPoint">
+    <id column="greenPointNo" jdbcType="INTEGER" property="greenPointNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="nodeTypeName" jdbcType="VARCHAR" property="nodeTypeName" />
+    <result column="pointAmount" jdbcType="REAL" property="pointAmount" />
+    <result column="greenPointCreateTime" jdbcType="TIMESTAMP" property="greenPointCreateTime" />
+    <result column="greenPointUpdateTime" jdbcType="TIMESTAMP" property="greenPointUpdateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    greenPointNo, memberNo, nodeNo, nodeType, nodeTypeName, pointAmount, greenPointCreateTime, 
+    greenPointUpdateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from green_point
+    where greenPointNo = #{greenPointNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from green_point
+    where greenPointNo = #{greenPointNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.GreenPoint">
+    insert into green_point (greenPointNo, memberNo, nodeNo, 
+      nodeType, nodeTypeName, pointAmount, 
+      greenPointCreateTime, greenPointUpdateTime
+      )
+    values (#{greenPointNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, #{nodeNo,jdbcType=INTEGER}, 
+      #{nodeType,jdbcType=VARCHAR}, #{nodeTypeName,jdbcType=VARCHAR}, #{pointAmount,jdbcType=REAL}, 
+      #{greenPointCreateTime,jdbcType=TIMESTAMP}, #{greenPointUpdateTime,jdbcType=TIMESTAMP}
+      )
+      
+      <selectKey keyProperty="greenPointNo" resultType="java.lang.Integer" order ="AFTER">
+            SELECT LAST_INSERT_ID()
+     </selectKey>  
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.GreenPoint">
+    insert into green_point
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="greenPointNo != null">
+        greenPointNo,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="nodeNo != null">
+        nodeNo,
+      </if>
+      <if test="nodeType != null">
+        nodeType,
+      </if>
+      <if test="nodeTypeName != null">
+        nodeTypeName,
+      </if>
+      <if test="pointAmount != null">
+        pointAmount,
+      </if>
+      <if test="greenPointCreateTime != null">
+        greenPointCreateTime,
+      </if>
+      <if test="greenPointUpdateTime != null">
+        greenPointUpdateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="greenPointNo != null">
+        #{greenPointNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeNo != null">
+        #{nodeNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeTypeName != null">
+        #{nodeTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="pointAmount != null">
+        #{pointAmount,jdbcType=REAL},
+      </if>
+      <if test="greenPointCreateTime != null">
+        #{greenPointCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="greenPointUpdateTime != null">
+        #{greenPointUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.GreenPoint">
+    update green_point
+    <set>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeNo != null">
+        nodeNo = #{nodeNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        nodeType = #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeTypeName != null">
+        nodeTypeName = #{nodeTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="pointAmount != null">
+        pointAmount = #{pointAmount,jdbcType=REAL},
+      </if>
+      <if test="greenPointCreateTime != null">
+        greenPointCreateTime = #{greenPointCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="greenPointUpdateTime != null">
+        greenPointUpdateTime = #{greenPointUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where greenPointNo = #{greenPointNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.GreenPoint">
+    update green_point
+    set memberNo = #{memberNo,jdbcType=INTEGER},
+      nodeNo = #{nodeNo,jdbcType=INTEGER},
+      nodeType = #{nodeType,jdbcType=VARCHAR},
+      nodeTypeName = #{nodeTypeName,jdbcType=VARCHAR},
+      pointAmount = #{pointAmount,jdbcType=REAL},
+      greenPointCreateTime = #{greenPointCreateTime,jdbcType=TIMESTAMP},
+      greenPointUpdateTime = #{greenPointUpdateTime,jdbcType=TIMESTAMP}
+    where greenPointNo = #{greenPointNo,jdbcType=INTEGER}
+  </update>
+</mapper>

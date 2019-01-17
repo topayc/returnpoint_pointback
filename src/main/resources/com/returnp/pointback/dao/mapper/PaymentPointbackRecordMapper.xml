@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PaymentPointbackRecordMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PaymentPointbackRecord">
+    <id column="paymentPointbackRecordNo" jdbcType="INTEGER" property="paymentPointbackRecordNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="paymentTransactionNo" jdbcType="INTEGER" property="paymentTransactionNo" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="accRate" jdbcType="REAL" property="accRate" />
+    <result column="pointbackAmount" jdbcType="REAL" property="pointbackAmount" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    paymentPointbackRecordNo, memberNo, paymentTransactionNo, nodeNo, nodeType, accRate, 
+    pointbackAmount, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from payment_pointback_record
+    where paymentPointbackRecordNo = #{paymentPointbackRecordNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payment_pointback_record
+    where paymentPointbackRecordNo = #{paymentPointbackRecordNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.PaymentPointbackRecord">
+    insert into payment_pointback_record (paymentPointbackRecordNo, memberNo, 
+      paymentTransactionNo, nodeNo, nodeType, 
+      accRate, pointbackAmount, createTime, 
+      updateTime)
+    values (#{paymentPointbackRecordNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, 
+      #{paymentTransactionNo,jdbcType=INTEGER}, #{nodeNo,jdbcType=INTEGER}, #{nodeType,jdbcType=VARCHAR}, 
+      #{accRate,jdbcType=REAL}, #{pointbackAmount,jdbcType=REAL}, NOW(), NOW())
+      
+          <selectKey keyProperty="paymentPointbackRecordNo" resultType="java.lang.Integer" order ="AFTER">
+            SELECT LAST_INSERT_ID()
+     </selectKey>   
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PaymentPointbackRecord">
+    insert into payment_pointback_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="paymentPointbackRecordNo != null">
+        paymentPointbackRecordNo,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="paymentTransactionNo != null">
+        paymentTransactionNo,
+      </if>
+      <if test="nodeNo != null">
+        nodeNo,
+      </if>
+      <if test="nodeType != null">
+        nodeType,
+      </if>
+      <if test="accRate != null">
+        accRate,
+      </if>
+      <if test="pointbackAmount != null">
+        pointbackAmount,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="paymentPointbackRecordNo != null">
+        #{paymentPointbackRecordNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTransactionNo != null">
+        #{paymentTransactionNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeNo != null">
+        #{nodeNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="accRate != null">
+        #{accRate,jdbcType=REAL},
+      </if>
+      <if test="pointbackAmount != null">
+        #{pointbackAmount,jdbcType=REAL},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PaymentPointbackRecord">
+    update payment_pointback_record
+    <set>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTransactionNo != null">
+        paymentTransactionNo = #{paymentTransactionNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeNo != null">
+        nodeNo = #{nodeNo,jdbcType=INTEGER},
+      </if>
+      <if test="nodeType != null">
+        nodeType = #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="accRate != null">
+        accRate = #{accRate,jdbcType=REAL},
+      </if>
+      <if test="pointbackAmount != null">
+        pointbackAmount = #{pointbackAmount,jdbcType=REAL},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where paymentPointbackRecordNo = #{paymentPointbackRecordNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PaymentPointbackRecord">
+    update payment_pointback_record
+    set memberNo = #{memberNo,jdbcType=INTEGER},
+      paymentTransactionNo = #{paymentTransactionNo,jdbcType=INTEGER},
+      nodeNo = #{nodeNo,jdbcType=INTEGER},
+      nodeType = #{nodeType,jdbcType=VARCHAR},
+      accRate = #{accRate,jdbcType=REAL},
+      pointbackAmount = #{pointbackAmount,jdbcType=REAL},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = NOW()
+    where paymentPointbackRecordNo = #{paymentPointbackRecordNo,jdbcType=INTEGER}
+  </update>
+</mapper>

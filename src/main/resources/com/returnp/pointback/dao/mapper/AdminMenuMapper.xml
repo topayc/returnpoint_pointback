@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.AdminMenuMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.AdminMenu">
+    <id column="adminMenuNo" jdbcType="INTEGER" property="adminMenuNo" />
+    <result column="menuNameKr" jdbcType="VARCHAR" property="menuNameKr" />
+    <result column="menuNameEn" jdbcType="VARCHAR" property="menuNameEn" />
+    <result column="menuDeps" jdbcType="INTEGER" property="menuDeps" />
+    <result column="link" jdbcType="VARCHAR" property="link" />
+    <result column="viewReqCode" jdbcType="VARCHAR" property="viewReqCode" />
+    <result column="menuDesKr" jdbcType="VARCHAR" property="menuDesKr" />
+    <result column="menuDesEn" jdbcType="VARCHAR" property="menuDesEn" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    adminMenuNo, menuNameKr, menuNameEn, menuDeps, link, viewReqCode, menuDesKr, menuDesEn, 
+    createTime, updateTime, regAdminNo
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from admin_menu
+    where adminMenuNo = #{adminMenuNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from admin_menu
+    where adminMenuNo = #{adminMenuNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.AdminMenu">
+    insert into admin_menu (adminMenuNo, menuNameKr, menuNameEn, 
+      menuDeps, link, viewReqCode, 
+      menuDesKr, menuDesEn, createTime, 
+      updateTime, regAdminNo)
+    values (#{adminMenuNo,jdbcType=INTEGER}, #{menuNameKr,jdbcType=VARCHAR}, #{menuNameEn,jdbcType=VARCHAR}, 
+      #{menuDeps,jdbcType=INTEGER}, #{link,jdbcType=VARCHAR}, #{viewReqCode,jdbcType=VARCHAR}, 
+      #{menuDesKr,jdbcType=VARCHAR}, #{menuDesEn,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{regAdminNo,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.AdminMenu">
+    insert into admin_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="adminMenuNo != null">
+        adminMenuNo,
+      </if>
+      <if test="menuNameKr != null">
+        menuNameKr,
+      </if>
+      <if test="menuNameEn != null">
+        menuNameEn,
+      </if>
+      <if test="menuDeps != null">
+        menuDeps,
+      </if>
+      <if test="link != null">
+        link,
+      </if>
+      <if test="viewReqCode != null">
+        viewReqCode,
+      </if>
+      <if test="menuDesKr != null">
+        menuDesKr,
+      </if>
+      <if test="menuDesEn != null">
+        menuDesEn,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="adminMenuNo != null">
+        #{adminMenuNo,jdbcType=INTEGER},
+      </if>
+      <if test="menuNameKr != null">
+        #{menuNameKr,jdbcType=VARCHAR},
+      </if>
+      <if test="menuNameEn != null">
+        #{menuNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDeps != null">
+        #{menuDeps,jdbcType=INTEGER},
+      </if>
+      <if test="link != null">
+        #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="viewReqCode != null">
+        #{viewReqCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesKr != null">
+        #{menuDesKr,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesEn != null">
+        #{menuDesEn,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="regAdminNo != null">
+        #{regAdminNo,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.AdminMenu">
+    update admin_menu
+    <set>
+      <if test="menuNameKr != null">
+        menuNameKr = #{menuNameKr,jdbcType=VARCHAR},
+      </if>
+      <if test="menuNameEn != null">
+        menuNameEn = #{menuNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDeps != null">
+        menuDeps = #{menuDeps,jdbcType=INTEGER},
+      </if>
+      <if test="link != null">
+        link = #{link,jdbcType=VARCHAR},
+      </if>
+      <if test="viewReqCode != null">
+        viewReqCode = #{viewReqCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesKr != null">
+        menuDesKr = #{menuDesKr,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesEn != null">
+        menuDesEn = #{menuDesEn,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      </if>
+    </set>
+    where adminMenuNo = #{adminMenuNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.AdminMenu">
+    update admin_menu
+    set menuNameKr = #{menuNameKr,jdbcType=VARCHAR},
+      menuNameEn = #{menuNameEn,jdbcType=VARCHAR},
+      menuDeps = #{menuDeps,jdbcType=INTEGER},
+      link = #{link,jdbcType=VARCHAR},
+      viewReqCode = #{viewReqCode,jdbcType=VARCHAR},
+      menuDesKr = #{menuDesKr,jdbcType=VARCHAR},
+      menuDesEn = #{menuDesEn,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      regAdminNo = #{regAdminNo,jdbcType=INTEGER}
+    where adminMenuNo = #{adminMenuNo,jdbcType=INTEGER}
+  </update>
+</mapper>

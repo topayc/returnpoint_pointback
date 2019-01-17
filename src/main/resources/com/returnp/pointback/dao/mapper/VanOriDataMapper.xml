@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.VanOriDataMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.VanOriData">
+    <id column="vanOriDataNo" jdbcType="INTEGER" property="vanOriDataNo" />
+    <result column="vanData" jdbcType="VARCHAR" property="vanData" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    vanOriDataNo, vanData, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from van_ori_data
+    where vanOriDataNo = #{vanOriDataNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from van_ori_data
+    where vanOriDataNo = #{vanOriDataNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.VanOriData">
+    insert into van_ori_data (vanOriDataNo, vanData, createTime, 
+      updateTime)
+    values (#{vanOriDataNo,jdbcType=INTEGER}, #{vanData,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.VanOriData">
+    insert into van_ori_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="vanOriDataNo != null">
+        vanOriDataNo,
+      </if>
+      <if test="vanData != null">
+        vanData,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="vanOriDataNo != null">
+        #{vanOriDataNo,jdbcType=INTEGER},
+      </if>
+      <if test="vanData != null">
+        #{vanData,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.VanOriData">
+    update van_ori_data
+    <set>
+      <if test="vanData != null">
+        vanData = #{vanData,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where vanOriDataNo = #{vanOriDataNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.VanOriData">
+    update van_ori_data
+    set vanData = #{vanData,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where vanOriDataNo = #{vanOriDataNo,jdbcType=INTEGER}
+  </update>
+</mapper>

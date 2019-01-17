@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.MemberCardInfoMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.MemberCardInfo">
+    <id column="memberCardInfoNo" jdbcType="INTEGER" property="memberCardInfoNo" />
+    <result column="cardName" jdbcType="VARCHAR" property="cardName" />
+    <result column="cardAccount" jdbcType="VARCHAR" property="cardAccount" />
+    <result column="cardExpiration" jdbcType="VARCHAR" property="cardExpiration" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    memberCardInfoNo, cardName, cardAccount, cardExpiration, memberNo, regAdminNo, createTime, 
+    updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member_card_info
+    where memberCardInfoNo = #{memberCardInfoNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from member_card_info
+    where memberCardInfoNo = #{memberCardInfoNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.MemberCardInfo">
+    insert into member_card_info (memberCardInfoNo, cardName, cardAccount, 
+      cardExpiration, memberNo, regAdminNo, 
+      createTime, updateTime)
+    values (#{memberCardInfoNo,jdbcType=INTEGER}, #{cardName,jdbcType=VARCHAR}, #{cardAccount,jdbcType=VARCHAR}, 
+      #{cardExpiration,jdbcType=VARCHAR}, #{memberNo,jdbcType=INTEGER}, #{regAdminNo,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.MemberCardInfo">
+    insert into member_card_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="memberCardInfoNo != null">
+        memberCardInfoNo,
+      </if>
+      <if test="cardName != null">
+        cardName,
+      </if>
+      <if test="cardAccount != null">
+        cardAccount,
+      </if>
+      <if test="cardExpiration != null">
+        cardExpiration,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="memberCardInfoNo != null">
+        #{memberCardInfoNo,jdbcType=INTEGER},
+      </if>
+      <if test="cardName != null">
+        #{cardName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardAccount != null">
+        #{cardAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="cardExpiration != null">
+        #{cardExpiration,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="regAdminNo != null">
+        #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.MemberCardInfo">
+    update member_card_info
+    <set>
+      <if test="cardName != null">
+        cardName = #{cardName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardAccount != null">
+        cardAccount = #{cardAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="cardExpiration != null">
+        cardExpiration = #{cardExpiration,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="regAdminNo != null">
+        regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where memberCardInfoNo = #{memberCardInfoNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.MemberCardInfo">
+    update member_card_info
+    set cardName = #{cardName,jdbcType=VARCHAR},
+      cardAccount = #{cardAccount,jdbcType=VARCHAR},
+      cardExpiration = #{cardExpiration,jdbcType=VARCHAR},
+      memberNo = #{memberNo,jdbcType=INTEGER},
+      regAdminNo = #{regAdminNo,jdbcType=INTEGER},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where memberCardInfoNo = #{memberCardInfoNo,jdbcType=INTEGER}
+  </update>
+</mapper>
