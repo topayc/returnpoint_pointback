@@ -690,6 +690,12 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			String  phoneNumberCountry) {
 		BaseResponse res = new BaseResponse();
 		String decode64Qr;
+		/*
+		 * 기본 결제 번호만으로는 중복이 될 수 있기 때문에 
+		 * 결제 번호에 TID 를 연결하여 TID 별 결제 번호를 생성
+		 *  */
+		pan = afId + "-" + pan;
+		
 		try {
 			decode64Qr = BASE64Util.decodeString(qrOrg);
 			URL url = new URL(decode64Qr);

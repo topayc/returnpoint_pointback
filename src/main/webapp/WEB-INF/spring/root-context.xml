@@ -50,6 +50,7 @@
 		<property name="basenames">
 			<list>
 				<value>classpath:/messages/messages</value>
+				 <value>classpath:/messages/remote_messages</value>
 			</list>
 		</property>
 		<property name="fallbackToSystemLocale" value="false" />
