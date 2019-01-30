@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.ApiMapper">
+	
+	<!-- count 가져오기-->
+	<select id="selectMemberCount" parameterType="ApiRequest" resultType="int">
+		SELECT 
+			count(*)
+		FROM  member
+			<!-- #{tableName} -->
+		WHERE 	
+			1 = 1
+			<if test="memberEmail != null">AND  memberEmail= #{memberEmail,jdbcType=VARCHAR}</if>
+      		<if test="memberPhone != null"> AND memberPhone = #{memberPhone,jdbcType=VARCHAR}</if>
+	</select>
+	
+	<!-- 회원 기본 정보 가져오기 -->
+	<select id="selectMemberInfo" parameterType="ApiRequest" resultType="HashMap">
+		SELECT 
+			M.memberNo,
+			M.memberEmail,
+			M.memberPhone,
+			M.memberName,
+			M.greenPointAccStatus,
+			M.greenPointUseStatus,
+			M.redPointAccStatus,
+			M.redPointUseStatus,
+			M.createTime,
+			M.updateTime,
+			M.isSoleDist,
+			M.isBranch,
+			M.isAgency,
+			M.isAffiliate,
+			M.recommenderNo,
+			M.isRecommender,
+			G.pointAmount as greenPointAmount,
+			R.pointAmount as redPointAmount
+		FROM (select * from member where memberNo = #{memberNo}) as M 
+		inner join green_point as G on (M.memberNo = G.memberNo and G.nodeType = '1')
+		inner join red_point as R on (M.memberNo = R.memberNo)
+		left outer join member as M2 on (M.recommenderNo = M2.memberNo)
+	</select>
+	
+	<!-- 회원 정보 생성-->
+	<insert id="createMember" parameterType="ApiRequest">
+		INSERT INTO member (
+			memberName,
+			memberEmail,
+			memberPassword,
+			memberStatus,    
+			memberPhone,
+			recommenderNo,
+			<!-- isTerms,
+			isPrivacy,
+			isSpam, -->		
+			regType,
+			country,
+			language,
+			createTime,
+			updateTime
+		) VALUES (
+			#{memberName},
+			#{memberEmail},
+			#{memberPassword},
+			'1',
+			#{phone},
+			#{recommenderNo},
+			<!-- #{terms},
+			#{privacy},
+			#{spam}, -->		
+			'U',   
+			#{country},		
+			#{language},		
+			NOW(),
+			NOW(),
+		)
+		
+	   <selectKey keyProperty="memberNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	   </selectKey>	
+	</insert> 
+	
+	<!-- 회원 정보 업데이트-->
+	<update id="updateMember" parameterType="ApiRequest" >
+    update member
+    <set>
+      <if test="memberName != null"> memberName = #{memberName,jdbcType=VARCHAR}, </if>
+      <if test="memberEmail != null"> memberEmail = #{memberEmail,jdbcType=VARCHAR}, </if>
+      <if test="memberPassword != null"> memberPassword = #{memberPassword,jdbcType=VARCHAR}, </if>
+      <if test="memberPassword2 != null"> memberPassword2 = #{memberPassword2,jdbcType=VARCHAR}, </if>
+      <if test="memberType != null"> memberType = #{memberType,jdbcType=VARCHAR}, </if>
+      <if test="memberStatus != null"> memberStatus = #{memberStatus,jdbcType=VARCHAR}, </if>
+      <if test="memberAuthType != null"> memberAuthType = #{memberAuthType,jdbcType=VARCHAR}, </if>
+      <if test="memberPhone != null"> memberPhone = #{memberPhone,jdbcType=VARCHAR}, </if>
+      <if test="recommenderNo != null"> recommenderNo = #{recommenderNo,jdbcType=INTEGER}, </if>
+      <if test="joinRoute != null"> joinRoute = #{joinRoute,jdbcType=VARCHAR}, </if>
+      <if test="statusReason != null"> statusReason = #{statusReason,jdbcType=VARCHAR}, </if>
+      <if test="isSoleDist != null"> isSoleDist = #{isSoleDist,jdbcType=CHAR}, </if>
+      <if test="isRecommender != null"> isRecommender = #{isRecommender,jdbcType=CHAR}, </if>
+      <if test="isSaleManager != null"> isSaleManager = #{isSaleManager,jdbcType=CHAR}, </if>
+      <if test="isBranch != null"> isBranch = #{isBranch,jdbcType=CHAR}, </if>
+      <if test="isAffiliate != null"> isAffiliate = #{isAffiliate,jdbcType=CHAR}, </if>
+      <if test="isAgency != null"> isAgency = #{isAgency,jdbcType=CHAR}, </if>
+      <if test="regType != null"> regType = #{regType,jdbcType=CHAR}, </if>
+      <if test="regAdminNo != null"> regAdminNo = #{regAdminNo,jdbcType=INTEGER}, </if>
+      <if test="greenPointAccStatus != null"> greenPointAccStatus = #{greenPointAccStatus,jdbcType=CHAR}, </if>
+      <if test="redPointAccStatus != null"> redPointAccStatus = #{redPointAccStatus,jdbcType=CHAR}, </if>
+      <if test="greenPointUseStatus != null"> greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR}, </if>
+      <if test="redPointUseStatus != null"> redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR}, </if>
+      <if test="createTime != null"> createTime = #{createTime,jdbcType=TIMESTAMP}, </if>
+      <if test="updateTime != null"> updateTime = NOW(), </if>
+    </set> where memberNo = #{memberNo,jdbcType=INTEGER} </update>
+  
+	<!-- 회원 정보 삭제-->
+	<delete id="deleteMember" parameterType="ApiRequest">
+   		 delete from member
+  		 where memberNo= #{memberNo,jdbcType=INTEGER}
+  </delete>
+  
+	<!-- 추천인 정보 가져오기 -->
+	<select id="selectRecommenderInfo" parameterType="ApiRequest" resultType="HashMap">
+		SELECT * FROM member where memberEmail = #{recommenderEmail}
+	</select>
+  	
+  	<!--  Green point default-->
+	<insert id="createGreenPoint" parameterType="ApiRequest">
+		INSERT INTO green_point (
+			memberNo,
+			nodeType,
+			nodeTypeName,
+			pointAmount,    
+			nodeNo,
+			greenPointCreateTime,
+			greenPointUpdateTime
+		) VALUES (
+			#{memberNo},
+			#{nodeType},
+			#{nodeTypeName},
+			0,
+			#{nodeNo},
+			NOW(),
+			NOW(),
+		)
+		
+	 <selectKey keyProperty="greenPointNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	   </selectKey>
+	</insert> 
+	
+	<!-- Red point 조회 -->
+	<select id="selectRedPoint" parameterType="ApiRequest" resultType="HashMap">
+		SELECT redPointNo, memberNo, pointAmount, redPointCreateTime, redPointUpdateTime
+		FROM red_point  
+		WHERE memberNo = #{memberNo}
+	</select> 
+	
+	<update id="updateRedPoint" parameterType="ApiRequest" >
+		update red_point	
+		set pointAmount=#{pointAmount}
+		where redPointNo= #{redPointNo}
+	</update>
+	
+	<!-- 회원가입 Red point default-->
+	<insert id="createRedPoint" parameterType="ApiRequest">
+		INSERT INTO red_point (
+			memberNo,
+			pointAmount,
+			redPointCreateTime,
+			redPointUpdateTime
+		) VALUES (
+			#{memberNo},
+			'0',
+			NOW(),
+			NOW()		
+		)
+		<selectKey keyProperty="redPointNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	   </selectKey>
+	</insert> 
+
+	<!-- 언어 목록 가져요기 -->
+	<select id="selectLanguages"  resultType="HashMap">
+		SELECT * FROM language 
+	</select>
+
+	<!-- 정책 가져요기 -->
+	<select id="selectPolicy"  resultType="HashMap">
+		SELECT * FROM policy order by createTime desc limit 1
+	</select>
+	
+	<!-- 복수 은행 계좌 목록 가져오기-->
+	<select id="selectBankAccounts"  parameterType="ApiRequest" resultType="HashMap">
+		SELECT 
+			* 
+		FROM 
+			member_bank_account 
+		where 
+			memberNo= #{memberNo,jdbcType=INTEGER}
+		order by createTime asc
+	</select>
+	
+	<!--  1개의 은행 계좌 가져오기-->
+	<select id="selectBankAccount"  parameterType="ApiRequest" resultType="HashMap">
+		SELECT 
+			* 
+		FROM 
+			member_bank_account 
+		where 
+			memberBankAccountNo= #{memberBankAccountNo,jdbcType=INTEGER}
+	</select>
+
+	<insert id="createMemberBankAccount" parameterType="ApiRequest" >
+		INSERT INTO member_bank_account (
+				memberNo
+				,bankName
+				,accountOwner
+				,bankAccount
+				,accountStatus
+				,statusMessage
+				,regAdminNo
+				,regType
+				,createTime
+				,updateTime
+		) VALUES (
+				#{memberNo}
+				,#{bankName}
+				,#{accountOwner}
+				,#{bankAccount}
+				,#{accountStatus}
+				,#{statusMessage}
+				,#{regAdminNo}
+				,#{regType}
+				,NOW()
+				,NOW()	
+		)
+	   <selectKey keyProperty="memberBankAccountNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	   </selectKey>	
+	</insert>	
+	
+	<!-- 은행 계좌 삭제-->
+	<delete id="deleteMemberBankAccount" parameterType="ApiRequest">
+   		 delete from 
+   		 	member_bank_account
+  		 where 
+  		 	memberBankAccountNo = #{memberBankAccountNo,jdbcType=Integer} and memberNo= #{memberNo,jdbcType=INTEGER}
+  </delete>
+  
+  <update id="updateMemberBankAccount" parameterType="ApiRequest" >
+		UPDATE member_bank_account
+		<set>
+			<if test="bankName !=null and bankName !='' ">
+				bankName=#{bankName},
+			</if>
+			<if test="accountOwner !=null and accountOwner !='' ">
+				accountOwner=#{accountOwner},
+			</if>
+			<if test="bankAccount !=null and bankAccount !='' ">
+				bankAccount=#{bankAccount},
+			</if>
+				updateTime=NOW()
+		</set>
+		<where>
+			AND memberBankAccountNo= #{memberBankAccountNo} AND memberNo= #{memberNo,jdbcType=INTEGER}
+		</where>		 
+	</update>
+	
+	
+	<!-- 회원 포인트 출금 요청 리스트 가져오기-->
+	<select id="selectPointwithdrawals" parameterType="ApiRequest" resultType="HashMap">
+		SELECT 
+		    PW.pointWithdrawalNo, 
+		    PW.memberNo, 
+		    PW.memberBankAccountNo, 
+		    PW.withdrawalAmount, 
+			PW.withdrawalStatus,
+		    CASE
+			    WHEN PW.withdrawalStatus = 1 THEN "출금 처리중"
+			    WHEN PW.withdrawalStatus = 2 THEN "출금 완료"
+			    WHEN PW.withdrawalStatus = 3 THEN "출금 보류"
+			    WHEN PW.withdrawalStatus = 4 THEN "출금 취소"
+			    WHEN PW.withdrawalStatus = 5 THEN "관리자 취소"
+			END as withdrawalStatusText,
+		    PW.withdrawalPointType, 
+		    PW.regAdminNo, 
+		    PW.regType, 
+		    M.memberName, 
+		    M.memberEmail, 
+		    M.memberPhone, 
+		    MBA.bankName, 
+		    MBA.accountOwner, 
+		    MBA.bankAccount, 
+		    PW.createTime, 
+		    PW.updateTime
+  		from point_withdrawal as PW
+    	inner join member as M  on (PW.memberNo = M.memberNo)
+    	inner join member_bank_account as MBA  on (PW.memberBankAccountNo = MBA.memberBankAccountNo)
+   		where 
+    		PW.memberNo = #{memberNo}
+    	ORDER by createTime DESC
+	</select>
+	
+	<!-- 회원 포인트 출금 요청 단일 항목 가져오기-->
+	<select id="selectPointwithdrawal" parameterType="ApiRequest" resultType="HashMap">
+		SELECT 
+		    PW.pointWithdrawalNo, 
+		    PW.memberNo, 
+		    PW.memberBankAccountNo, 
+		    PW.withdrawalAmount, 
+			PW.withdrawalStatus,
+		    CASE
+			    WHEN PW.withdrawalStatus = 1 THEN "출금 처리중"
+			    WHEN PW.withdrawalStatus = 2 THEN "출금 완료"
+			    WHEN PW.withdrawalStatus = 3 THEN "출금 보류"
+			    WHEN PW.withdrawalStatus = 4 THEN "출금 취소"
+			    WHEN PW.withdrawalStatus = 5 THEN "관리자 취소"
+			END as withdrawalStatusText,
+		    PW.withdrawalPointType, 
+		    PW.regAdminNo, 
+		    PW.regType, 
+		    M.memberName, 
+		    M.memberEmail, 
+		    M.memberPhone, 
+		    MBA.bankName, 
+		    MBA.accountOwner, 
+		    MBA.bankAccount, 
+		    PW.createTime, 
+		    PW.updateTime
+  		from point_withdrawal as PW
+    	inner join member as M  on (PW.memberNo = M.memberNo)
+    	inner join member_bank_account as MBA  on (PW.memberBankAccountNo = MBA.memberBankAccountNo)
+   		where 
+    		PW.pointWithdrawalNo = #{pointWithdrawalNo}
+    	ORDER by createTime DESC
+	</select>
+	
+	
+	<!-- 출금 정보 생성-->
+	<insert id="creatPointWithdrawal" parameterType="ApiRequest">
+		INSERT INTO point_withdrawal(
+				memberNo
+				,memberBankAccountNo
+				,withdrawalAmount
+				,withdrawalStatus
+				,withdrawalPointType
+				,withdrawalMessage
+				,regType
+				,regAdminNo
+				,createTime
+				,updateTime
+		) VALUES (
+				#{memberNo}
+				,#{memberBankAccountNo}
+				,#{withdrawalAmount}
+				,'1'
+				,'R'
+				,#{statusMessage}
+				,'U'
+				,0
+				,NOW()
+				,NOW()	
+		)
+		   <selectKey keyProperty="pointWithdrawalNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	   </selectKey>	
+	</insert>	
+	
+	<!-- 출금 정보 삭제-->
+	<delete id="deletePointWithdrawal" parameterType="ApiRequest">
+   		 delete from 
+   		 	point_withdrawal
+  		 where 
+  		 	pointWithdrawalNo = #{pointWithdrawalNo,jdbcType=Integer} and memeberNo = #{memberNo,jdbcType=INTEGER}
+  </delete>
+  
+<!-- 출금 정보 수정-->
+  <update id="updatePointwithdrawal" parameterType="ApiRequest" >
+		UPDATE point_withdrawal
+		<set>
+			<if test="memberNo !=null and memberNo !='' "> memberNo=#{memberNo}, </if>
+			<if test="memberBankAccountNo !=null and memberBankAccountNo !='' "> memberBankAccountNo=#{memberBankAccountNo}, </if>
+			<if test="withdrawalAmount !=null and withdrawalAmount !='' "> withdrawalAmount=#{withdrawalAmount}, </if>
+			<if test="withdrawalStatus !=null and withdrawalStatus !='' "> withdrawalStatus=#{withdrawalStatus}, </if>
+			<if test="withdrawalPointType !=null and withdrawalPointType !='' "> withdrawalPointType=#{withdrawalPointType}, </if>
+			<if test="withdrawalMessage !=null and withdrawalMessage !='' "> withdrawalMessage=#{withdrawalMessage}, </if>
+				updateTime=NOW()
+		</set>
+		<where>
+			AND pointWithdrawalNo= #{pointWithdrawalNo} and memeberNo = #{memberNo,jdbcType=INTEGER}
+		</where>		 
+	</update>
+	
+	<!-- 나의 회원 리스트 --> 
+	<select id="selectMyMembers" parameterType="ApiRequest" resultType="HashMap">
+		SELECT * FROM member  where recommenderNo = #{memberNo}
+	</select> 
+	
+</mapper>

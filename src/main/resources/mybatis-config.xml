@@ -10,4 +10,8 @@
 		<setting name="defaultExecutorType" value="REUSE" />
 		<setting name="defaultStatementTimeout" value="20" />
 	</settings>
+	
+<typeAliases>
+    <typeAlias type="com.returnp.pointback.dto.command.api.ApiRequest" alias="ApiRequest"/>
+</typeAliases>
 </configuration>

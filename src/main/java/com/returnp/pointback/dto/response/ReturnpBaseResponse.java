@@ -1,6 +1,6 @@
 package com.returnp.pointback.dto.response;
 
-public class BaseResponse {
+public class ReturnpBaseResponse {
 	public String result;
 	public String summary;
 	public String message;

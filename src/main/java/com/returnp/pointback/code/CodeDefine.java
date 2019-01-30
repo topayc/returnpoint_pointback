@@ -135,6 +135,7 @@ public class CodeDefine {
 		list.add(new CodeKeyValuePair("1", "QR Code", "Y", "Y" ,""));
 		list.add(new CodeKeyValuePair("2", "VAN", "Y", "Y" ,""));
 		list.add(new CodeKeyValuePair("3", "관리자 수동 등록", "Y", "Y" ,""));
+		list.add(new CodeKeyValuePair("4", "쇼핑몰 연동 매출", "Y", "Y" ,""));
 		return list;
 	}
 	

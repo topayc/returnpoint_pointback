@@ -9,36 +9,36 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.returnp.pointback.common.AppConstants;
-import com.returnp.pointback.dto.response.BaseResponse;
-import com.returnp.pointback.dto.response.SingleDataObjectResponse;
+import com.returnp.pointback.dto.response.ReturnpBaseResponse;
+import com.returnp.pointback.dto.response.ObjectResponse;
 
 public class ApplicationController {
 	
-	protected void setRespone(BaseResponse res, String resultCode, String result,String message ){ 
+	protected void setRespone(ReturnpBaseResponse res, String resultCode, String result,String message ){ 
 		res.setResult(result);
 		res.setResultCode(resultCode);	
 		res.setMessage(message);
 	}
 	
-	protected void setSuccessRespone(BaseResponse res){ 
+	protected void setSuccessRespone(ReturnpBaseResponse res){ 
 		res.setResult(AppConstants.ResponseResult.SUCCESS);
 		res.setResultCode(AppConstants.ResponsResultCode.SUCCESS);	
 		res.setMessage("요청이 처리 되었습니다");
 	}
 	
-	protected void setSuccessRespone(BaseResponse res, String mes){ 
+	protected void setSuccessRespone(ReturnpBaseResponse res, String mes){ 
 		res.setResult(AppConstants.ResponseResult.SUCCESS);
 		res.setResultCode(AppConstants.ResponsResultCode.SUCCESS);	
 		res.setMessage(mes);
 	}
 	
-	protected void setErrorRespone(BaseResponse res, String mes){ 
+	protected void setErrorRespone(ReturnpBaseResponse res, String mes){ 
 		res.setResult(AppConstants.ResponseResult.ERROR);
 		res.setResultCode(AppConstants.ResponsResultCode.ERROR);	
 		res.setMessage(mes);
 	}
 	
-	protected void setErrorRespone(BaseResponse res){ 
+	protected void setErrorRespone(ReturnpBaseResponse res){ 
 		res.setResult(AppConstants.ResponseResult.FAILED);
 		res.setResultCode(AppConstants.ResponsResultCode.ERROR);	
 		res.setMessage("요청에러");
@@ -46,9 +46,9 @@ public class ApplicationController {
 	
 	@ExceptionHandler(TypeMismatchException.class)
 	@ResponseBody
-	protected BaseResponse typeMismatchExceptionHandler(TypeMismatchException e,
+	protected ReturnpBaseResponse typeMismatchExceptionHandler(TypeMismatchException e,
 			HttpServletResponse response){
-		SingleDataObjectResponse<String> res = new SingleDataObjectResponse<String>();
+		ObjectResponse<String> res = new ObjectResponse<String>();
 		res.setData(e.getMessage());
 		this.setErrorRespone(res);
 		return res;
@@ -56,10 +56,10 @@ public class ApplicationController {
 	
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	@ResponseBody
-	protected BaseResponse missingServletRequestParameterExceptionHandler(
+	protected ReturnpBaseResponse missingServletRequestParameterExceptionHandler(
 			MissingServletRequestParameterException e, 
 			HttpServletResponse response){
-		SingleDataObjectResponse<String> res = new SingleDataObjectResponse<String>();
+		ObjectResponse<String> res = new ObjectResponse<String>();
 		res.setData(e.getMessage());
 		this.setErrorRespone(res);
 		return res;
@@ -67,9 +67,9 @@ public class ApplicationController {
 	
 	@ExceptionHandler(DataAccessException.class)
 	@ResponseBody
-	protected  BaseResponse dataAccessExceptionHandler(DataAccessException e,
+	protected  ReturnpBaseResponse dataAccessExceptionHandler(DataAccessException e,
 			HttpServletResponse response ) {
-		SingleDataObjectResponse<String> res = new SingleDataObjectResponse<String>();
+		ObjectResponse<String> res = new ObjectResponse<String>();
 		res.setData(e.getMessage());
 		this.setErrorRespone(res);
 		return res;

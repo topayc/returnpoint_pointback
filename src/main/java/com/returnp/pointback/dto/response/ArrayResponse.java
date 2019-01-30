@@ -2,21 +2,19 @@ package com.returnp.pointback.dto.response;
 
 import java.util.ArrayList;
 
-public class SearchListResponse<T> extends BaseResponse{
+public class ArrayResponse<T> extends ReturnpBaseResponse{
 	public int total;
-	public ArrayList<T> rows;
-
-	
+	public ArrayList<T> data;
 	public int getTotal() {
 		return total;
 	}
 	public void setTotal(int total) {
 		this.total = total;
 	}
-	public ArrayList<T> getRows() {
-		return rows;
+	public ArrayList<T> getData() {
+		return data;
 	}
-	public void setRows(ArrayList<T> rows) {
-		this.rows = rows;
+	public void setData(ArrayList<T> data) {
+		this.data = data;
 	}
 }

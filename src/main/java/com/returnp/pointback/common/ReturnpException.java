@@ -1,17 +1,17 @@
 package com.returnp.pointback.common;
 
-import com.returnp.pointback.dto.response.BaseResponse;
+import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 
-public class ReturnpException extends Exception {
-	private BaseResponse data;
-	public ReturnpException(BaseResponse res) {
+public class ReturnpException extends RuntimeException {
+	private ReturnpBaseResponse data;
+	public ReturnpException(ReturnpBaseResponse res) {
 		this.data = res;
 	} 
-	public BaseResponse getBaseResponse() {
+	public ReturnpBaseResponse getBaseResponse() {
 		return data;
 	}
 
-	public void setBaseResponse(BaseResponse data) {
+	public void setBaseResponse(ReturnpBaseResponse data) {
 		this.data = data;
 	}
 }

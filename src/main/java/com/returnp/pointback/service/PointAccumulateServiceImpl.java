@@ -21,7 +21,7 @@ import com.returnp.pointback.dao.mapper.PolicyMapper;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PointBackTarget;
-import com.returnp.pointback.dto.response.BaseResponse;
+import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
@@ -49,8 +49,8 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 	 * @see com.returnp.pointback.service.interfaces.PointBackService#cancelGreenPointAccProcess(int)
 	 */
 	@Override
-	public BaseResponse processByAdmin(int paymentTransactionNo) {
-		BaseResponse res = new BaseResponse();
+	public ReturnpBaseResponse processByAdmin(int paymentTransactionNo) {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		System.out.println("excuteGreenPointAccProcess");
 		
 		/* 적립해야할 VanPaymentTransaction 데이타 조회*/
@@ -121,9 +121,9 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 	 * @return
 	 */
 	@Override
-	public BaseResponse accumulateByAdmin(int paymentTransactionNo, int accType) {
+	public ReturnpBaseResponse accumulateByAdmin(int paymentTransactionNo, int accType) {
 		try {
-		BaseResponse res = new BaseResponse();
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		
 		/*
 		 * 유일한 1개의 SoleDist 검색
@@ -470,8 +470,8 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 	 * 현재는 소스틑 구현되어 있지 않지만 사용하지 않으며, 추후 필요시 주석 제거함 
 	 */
 	@Override
-	public BaseResponse accumulateByAdminEx(int paymentTransactionNo, int accType) {
-		BaseResponse res = new BaseResponse();
+	public ReturnpBaseResponse accumulateByAdminEx(int paymentTransactionNo, int accType) {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
 /*		PaymentTransaction paymentTransaction = this.paymentTransactionMapper.selectByPrimaryKey(paymentTransactionNo);
 		System.out.println("노드 타입  : " + paymentTransaction.getNodeType());
 		System.out.println("노드 no : " + paymentTransaction.getNodeType());
@@ -678,7 +678,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 	 * 인코딩된 큐알 코드 스캔에 의한 적립 및 취소 처리 
 	 */
 	@Override
-	public BaseResponse processByEncQr(
+	public ReturnpBaseResponse processByEncQr(
 			String qrOrg, 
 			int pam, 
 			String pas, 
@@ -688,7 +688,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			String memberEmail,
 			String phoneNumber,
 			String  phoneNumberCountry) {
-		BaseResponse res = new BaseResponse();
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		String decode64Qr;
 		/*
 		 * 기본 결제 번호만으로는 중복이 될 수 있기 때문에 
@@ -879,8 +879,8 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 	 * 연결된 노드 및 추천인이 없을 경우, 모두 총판으로 해당 포인트를 적립함
 	 */
 	@Override
-	public BaseResponse accumulatePoint(PaymentTransaction transaction, int accType) {
-		BaseResponse res = new BaseResponse();
+	public ReturnpBaseResponse accumulatePoint(PaymentTransaction transaction, int accType) {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		
 		/*정책 조회*/
 		Policy policy = new Policy();
@@ -1285,13 +1285,13 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 	}
 	
 	@Override
-	public BaseResponse cancelQRPayment(HashMap<String, String> qrparseMap) {
+	public ReturnpBaseResponse cancelQRPayment(HashMap<String, String> qrparseMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public BaseResponse accQRPayment(HashMap<String, String> qrparseMap) {
+	public ReturnpBaseResponse accQRPayment(HashMap<String, String> qrparseMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -5,13 +5,13 @@ package com.returnp.pointback.dto.response;
  *
  * @param <T>
  */
-public class SingleDataObjectResponse <T> extends BaseResponse {
+public class ObjectResponse <T> extends ReturnpBaseResponse {
 	T data;
 
 	public T getData() {
 		return data;
 	}
-
+	
 	public void setData(T data) {
 		this.data = data;
 	}

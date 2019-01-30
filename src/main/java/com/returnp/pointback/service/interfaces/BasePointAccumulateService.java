@@ -7,7 +7,7 @@ import com.returnp.pointback.common.ReturnpException;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PointBackTarget;
-import com.returnp.pointback.dto.response.BaseResponse;
+import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
@@ -15,13 +15,15 @@ import com.returnp.pointback.model.PaymentTransaction;
 
 @Transactional
 public interface BasePointAccumulateService {
-	public BaseResponse accumulate(DataMap dataMap);
+	public ReturnpBaseResponse accumulate(DataMap dataMap);
 
-	public BaseResponse cancelAccumulate(DataMap dataMap);
+	public ReturnpBaseResponse cancelAccumulate(DataMap dataMap);
 
 	public void restorePoint(DataMap dataMap) throws ReturnpException;
 	
-	public void   accumuatePoint(int paymentTransactioinNo) throws ReturnpException;
+	public ReturnpBaseResponse   accumuatePoint(int paymentTransactioinNo) throws ReturnpException;
+	
+	public ReturnpBaseResponse   accumuatePoint(String paymentApprovalNumber) throws ReturnpException;
 	
 	public void accumuatePoint(PaymentTransaction paymentTransaction) throws ReturnpException;
 
@@ -37,9 +39,9 @@ public interface BasePointAccumulateService {
 	
 	public InnerPointBackTarget findInnerPointBackTarget(String affiliateCode);
 
-	public BaseResponse cancelAccumuate(String pan);
+	public ReturnpBaseResponse cancelAccumuate(String pan);
 
-	public BaseResponse cancelAccumuate(int paymentTrasactionNo);
+	public ReturnpBaseResponse cancelAccumuate(int paymentTrasactionNo);
 	
 	public Member validateMemberAuth(String MemberEmail, String phoneNumber, String phoneNumberCountry) throws ReturnpException;
 

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.returnp.pointback.common.AppConstants.AccumulateRequestFrom;
 import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.DataMap;
-import com.returnp.pointback.dto.response.BaseResponse;
+import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.service.interfaces.PointAccumulateService;
 import com.returnp.pointback.web.message.MessageUtils;
@@ -71,7 +71,7 @@ public class PointAccumulateController extends ApplicationController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/control", method = RequestMethod.GET)
-	public BaseResponse control(
+	public ReturnpBaseResponse control(
 		@RequestParam(value = "apiKey", required = true )String apiKey, 
 		@RequestParam(value = "command", required = true ) String command ) {
 		System.out.println("control");
@@ -85,7 +85,7 @@ public class PointAccumulateController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/QR/iD", method = RequestMethod.GET)
-	public BaseResponse accumulateByEncrptQr(
+	public ReturnpBaseResponse accumulateByEncrptQr(
 		@RequestParam(value = "qr_org", required = true ) String qrOrg, 
 		@RequestParam(value = "pam", required = true ) int pam,
 		@RequestParam(value = "pas", required = true ) String pas,
@@ -107,7 +107,7 @@ public class PointAccumulateController extends ApplicationController{
 		System.out.println(phoneNumber);
 		System.out.println(phoneNumberCountry);
 		
-		BaseResponse res = null;
+		ReturnpBaseResponse res = null;
 		if (this.keys.contains(key)) {
 			res = this.pointBackService.processByEncQr(
 				qrOrg, 
@@ -121,7 +121,7 @@ public class PointAccumulateController extends ApplicationController{
 				phoneNumberCountry
 			);
 		}else {
-			res = new BaseResponse();
+			res = new ReturnpBaseResponse();
 			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
 		}
 		return res;
@@ -136,13 +136,13 @@ public class PointAccumulateController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/accumulateByAdmin", method = RequestMethod.GET)
-	public BaseResponse accumulateByAdmin(
+	public ReturnpBaseResponse accumulateByAdmin(
 		@RequestParam(value = "cmd", required = true ) String command, 
 		@RequestParam(value = "paymentTransactionNo", required = true ) int paymentTransactionNo,
 		@RequestParam(value = "key", required = true ) String key) {
 		
 		System.out.println("PointAccumulateController - accumulateByAdmin");
-		BaseResponse res = new BaseResponse();
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		if (!this.keys.contains(key)) {
 			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
@@ -173,6 +173,7 @@ public class PointAccumulateController extends ApplicationController{
 	/********************************************************************************************************************************************************************
 	 * 기존에은 위에 컨트롤러 메서드를 사용했으나. 
 	 * 아래의 신규 추가된 메서드로 이후 처리할 예정이며, 완료되면 이전 메서드는 삭제 
+	 * 앞으로은 아래의 컨트롤러를 이용하도록 관련 소스를 수정해야 함 
 	 * 
 	 ********************************************************************************************************************************************************************/
 	
@@ -194,7 +195,7 @@ public class PointAccumulateController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/manualAccumulatePoint", method = RequestMethod.GET)
-	public BaseResponse handleAccumulateAdminRequest( 
+	public ReturnpBaseResponse manualAccumulatePoint( 
 			@RequestParam(value = "qr_org", required = false) String qr_org, 
 			@RequestParam(value = "pam", required = true ) int pam,
 			@RequestParam(value = "pas", required = true ) String pas,
@@ -208,11 +209,11 @@ public class PointAccumulateController extends ApplicationController{
 			){
 		
 		System.out.println("####### handleAccumulateAdminRequest");
-		BaseResponse res= null;
+		ReturnpBaseResponse res= null;
 		
 		DataMap dataMap = new DataMap();
 		if (!this.keys.contains(key)) {
-			res = new BaseResponse();
+			res = new ReturnpBaseResponse();
 			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
@@ -247,94 +248,6 @@ public class PointAccumulateController extends ApplicationController{
 	}
 	
 	/**
-	 * PaymentTransactionNo 에 의한 적립 처리 
-	 * @param paymentTrasactionNo
-	 * @param key
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/accumuateByPaymentTransactionNo", method = RequestMethod.GET)
-	public BaseResponse accumuateByPaymentTransactionNo( 
-			@RequestParam(value = "paymentTrasactionNo", required = true ) int paymentTrasactionNo,  
-			@RequestParam(value = "key", required = true ) String key
-			){
-		System.out.println("####### accumuateByPaymentTransactionNo");
-		BaseResponse res= null;
-		
-		return res;
-	}
-	
-	/**
-	 * PaymentTransactionNo 에 의한 적립 처리 
-	 * @param paymentTrasactionNo
-	 * @param key
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/accumuateByPan", method = RequestMethod.GET)
-	public BaseResponse accumuateByPan( 
-			@RequestParam(value = "pan", required = true ) String pan,  
-			@RequestParam(value = "key", required = true ) String key
-			){
-		
-		System.out.println("####### accumuateByPan");
-		BaseResponse res= null;
-		return res;
-	}
-	
-	
-	/**
-	 * PaymentTransactionNo 에 의한 적립 취소 처리 
-	 * @param paymentTrasactionNo
-	 * @param key
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/cancelAccByPaymentTransactionNo", method = RequestMethod.GET)
-	public BaseResponse cancelAccumulateByPaymentTransactionNo( 
-			@RequestParam(value = "paymentTransactionNo", required = true ) int paymentTrasactionNo,  
-			@RequestParam(value = "key", required = true ) String key
-			){
-		
-		System.out.println("####### cancelAccumulateByPaymentTransactionNo");
-		BaseResponse res= null;
-		if (!this.keys.contains(key)) {
-			res = new BaseResponse();
-			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
-			return res;
-		}else {
-			res = this.basePointAccumulateService.cancelAccumuate(paymentTrasactionNo);
-		}
-		return res;
-	}
-	
-	/**
-	 * 결제 승인 번호(pan) 에 의한 적립 취소 처리
-	 * @param paymentTrasactionNo
-	 * @param key
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/cancelAccByPaymentApprovalNumber", method = RequestMethod.GET)
-	public BaseResponse cancelAccumulateByPaymentApprovalNumber( 
-			@RequestParam(value = "pan", required = true ) String pan,  
-			@RequestParam(value = "key", required = true ) String key
-			){
-		
-		System.out.println("####### cancelAccumulateByPaymentApprovalNumber");
-		BaseResponse res= null;
-		
-		if (!this.keys.contains(key)) {
-			res = new BaseResponse();
-			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
-			return res;
-		}else {
-			res = this.basePointAccumulateService.cancelAccumuate(pan);
-		}
-		return res;
-	}
-	
-	/**
 	 * 새로 추가된 메서드로 qr 로 부터 매출 및 적립 처리 
 	 * qr 에서 호출은 이 메서드로 단일화 함 
 	 * @param qr_org
@@ -351,7 +264,7 @@ public class PointAccumulateController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/qrAccumulatePoint", method = RequestMethod.GET)
-	public BaseResponse handleAccumulateQRRequest( 
+	public ReturnpBaseResponse handleAccumulateQRRequest( 
 			@RequestParam(value = "qr_org", required = false) String qr_org, 
 			@RequestParam(value = "pam", required = true ) int pam,
 			@RequestParam(value = "pas", required = true ) String pas,
@@ -364,16 +277,102 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "key", required = true ) String key
 			){
 		System.out.println("accumulatePoint");
-		BaseResponse res= null;
+		ReturnpBaseResponse res= null;
+		return res;
+	}
+	
+	/**
+	 * PaymentTransactionNo 에 의한 적립 처리 
+	 * @param paymentTrasactionNo
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/accumuateByPaymentTransactionNo", method = RequestMethod.GET)
+	public ReturnpBaseResponse accumuateByPaymentTransactionNo( 
+			@RequestParam(value = "paymentTrasactionNo", required = true ) int paymentTrasactionNo,  
+			@RequestParam(value = "key", required = true ) String key
+			){
+		System.out.println("####### accumuateByPaymentTransactionNo");
+		ReturnpBaseResponse res= null;
+		
+		return res;
+	}
+	
+	/**
+	 * 결제 승인 번호에 의한 의한 적립 처리 
+	 * @param paymentTrasactionNo
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/accumuateByPan", method = RequestMethod.GET)
+	public ReturnpBaseResponse accumuateByPan( 
+			@RequestParam(value = "pan", required = true ) String pan,  
+			@RequestParam(value = "key", required = true ) String key
+			){
+		
+		System.out.println("####### accumuateByPan");
+		ReturnpBaseResponse res= null;
 		return res;
 	}
 	
 	
+	/**
+	 * PaymentTransactionNo 에 의한 적립 취소 처리 
+	 * @param paymentTrasactionNo
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cancelAccByPaymentTransactionNo", method = RequestMethod.GET)
+	public ReturnpBaseResponse cancelAccumulateByPaymentTransactionNo( 
+			@RequestParam(value = "paymentTransactionNo", required = true ) int paymentTrasactionNo,  
+			@RequestParam(value = "key", required = true ) String key
+			){
+		
+		System.out.println("####### cancelAccumulateByPaymentTransactionNo");
+		ReturnpBaseResponse res= null;
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			res = this.basePointAccumulateService.cancelAccumuate(paymentTrasactionNo);
+		}
+		return res;
+	}
+	
+	/**
+	 * 결제 승인 번호(pan) 에 의한 적립 취소 처리
+	 * @param paymentTrasactionNo
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cancelAccByPaymentApprovalNumber", method = RequestMethod.GET)
+	public ReturnpBaseResponse cancelAccumulateByPaymentApprovalNumber( 
+			@RequestParam(value = "pan", required = true ) String pan,  
+			@RequestParam(value = "key", required = true ) String key
+			){
+		
+		System.out.println("####### cancelAccumulateByPaymentApprovalNumber");
+		ReturnpBaseResponse res= null;
+		
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			res = this.basePointAccumulateService.cancelAccumuate(pan);
+		}
+		return res;
+	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/test_mode", method = RequestMethod.GET)
-	public BaseResponse accumulateByAdmin() {
-		BaseResponse res = new BaseResponse();
+	public ReturnpBaseResponse accumulateByAdmin() {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		this.setErrorRespone(res,"test 접속 성공");
 		return res;
 	}
