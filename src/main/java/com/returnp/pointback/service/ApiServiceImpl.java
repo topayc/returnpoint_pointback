@@ -669,7 +669,6 @@ public class ApiServiceImpl implements com.returnp.pointback.service.interfaces.
 			
 			apiRequest.setMemberNo((int)memberInfoMap.get("memberNo"));
 			int count = this.apiMapper.updatePointWithdrawal(apiRequest);
-			
 			if (count < 1) {
 				ResponseUtil.setResponse(res, "2007", this.messageUtils.getMessage( "api.create_withdrawal_info_udpate_fail"));
 				throw new ReturnpException(res);
