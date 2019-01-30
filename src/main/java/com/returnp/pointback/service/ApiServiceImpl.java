@@ -701,18 +701,20 @@ public class ApiServiceImpl implements com.returnp.pointback.service.interfaces.
 	 */
 	@Override
 	public ReturnpBaseResponse getMyMembers(ApiRequest apiRequest) {
-		ArrayResponse<ArrayList<HashMap<String, Object>>> res = new ArrayResponse<ArrayList<HashMap<String, Object>>>();
+		ArrayResponse<HashMap<String, Object>> res = new ArrayResponse<HashMap<String, Object>>();
 		try {
 			Map<String, Object> memberInfoMap = this.apiMapper.selectMemberInfo(apiRequest);
 			if (memberInfoMap == null) {
 				ResponseUtil.setResponse(res, "20002", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
+			
 			apiRequest.setMemberNo((int)memberInfoMap.get("memberNo"));
 			ArrayList<HashMap<String, Object>> myMembers = this.apiMapper.selectMyMembers(apiRequest);
+			res.setData(myMembers);
+			res.setTotal(myMembers.size());
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
-			
 		}catch(ReturnpException e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -760,6 +762,4 @@ public class ApiServiceImpl implements com.returnp.pointback.service.interfaces.
 	public ReturnpBaseResponse getRpointConversionHistory(ApiRequest apiRequest) {
 		return null;
 	}
-
-
 }
