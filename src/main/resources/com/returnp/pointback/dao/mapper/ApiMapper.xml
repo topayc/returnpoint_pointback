@@ -14,6 +14,14 @@
       		<if test="memberPhone != null"> AND memberPhone = #{memberPhone,jdbcType=VARCHAR}</if>
 	</select>
 	
+		<!-- 회원 기본 정보 가져오기 -->
+	<select id="selectMember" parameterType="ApiRequest" resultType="HashMap">
+		SELECT 
+		*
+		FROM member
+		where memberEmail =#{memberEmail}
+	</select>
+	
 	<!-- 회원 기본 정보 가져오기 -->
 	<select id="selectMemberInfo" parameterType="ApiRequest" resultType="HashMap">
 		SELECT 
