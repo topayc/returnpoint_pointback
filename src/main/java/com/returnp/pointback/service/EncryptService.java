@@ -7,6 +7,6 @@ import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 
 @Transactional
 public interface EncryptService {
-	public String encrypt(String encyptKey, ReturnpBaseResponse res);
-	public ApiRequest decrypt(String encyptKey, String data);
+	public String encode(String encyptKey, ReturnpBaseResponse res);
+	public ApiRequest decode(String encyptKey, String data);
 }

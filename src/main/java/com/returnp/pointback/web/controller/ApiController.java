@@ -60,7 +60,7 @@ public class ApiController extends ApplicationController{
 	public String saveDataCache(ApiRequest apiRequest, HttpSession session) {
 		System.out.println("## saveDataCache " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.saveDataCache(apiRequest, session));
+		String result = this.encryptService.encode(key, this.apiService.saveDataCache(apiRequest, session));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -75,7 +75,7 @@ public class ApiController extends ApplicationController{
 	public String getDataCache(ApiRequest apiRequest,HttpSession session) {
 		System.out.println("## getDataCache " );
 		String key = "aes256-test-key!!";
-		String result = this.encryptService.encrypt(key, this.apiService.getDataCache(apiRequest, session));
+		String result = this.encryptService.encode(key, this.apiService.getDataCache(apiRequest, session));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -91,9 +91,10 @@ public class ApiController extends ApplicationController{
 	public  String getMemberInfo(ApiRequest apiRequest) throws JsonProcessingException {
 		System.out.println("## getMemberInfo " );
 		String key = "1123456789123456";
-		String result = this.encryptService.encrypt(key, this.apiService.getMemberInfo(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.getMemberInfo(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
+		this.encryptService.decode(key, result);
 		return result;
 	}
 	
@@ -109,7 +110,7 @@ public class ApiController extends ApplicationController{
 	public String checkDuplicated(ApiRequest apiRequest) {
 		System.out.println("## checkDuplicated " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.checkDuplicated(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.checkDuplicated(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -125,7 +126,7 @@ public class ApiController extends ApplicationController{
 	public String join(ApiRequest apiRequest) {
 		System.out.println("## join " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.join(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.join(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -140,7 +141,7 @@ public class ApiController extends ApplicationController{
 	public String deleteMember(ApiRequest apiRequest) {
 		System.out.println("## deleteMember " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.deleteMember(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.deleteMember(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -155,7 +156,7 @@ public class ApiController extends ApplicationController{
 	public String modifyMember(ApiRequest apiRequest) {
 		System.out.println("## modifyMember " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.modifyMember(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.modifyMember(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -197,7 +198,7 @@ public class ApiController extends ApplicationController{
 		}
 		
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, res);
+		String result = this.encryptService.encode(key, res);
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -214,7 +215,7 @@ public class ApiController extends ApplicationController{
 		System.out.println("## accumulateByPan " );
 		String key = "11121212";
 		String result = 
-			this.encryptService.encrypt(
+			this.encryptService.encode(
 				key, this.basePointAccumulateService.accumuatePoint(apiRequest.getPaymentApprovalNumber()));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
@@ -234,7 +235,7 @@ public class ApiController extends ApplicationController{
 		System.out.println("## cancelAccumulatgeByPan " );
 		String key = "11121212";
 		String result = 
-			this.encryptService.encrypt(
+			this.encryptService.encode(
 				key, this.basePointAccumulateService.cancelAccumuate(apiRequest.getPaymentApprovalNumber()));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
@@ -250,7 +251,7 @@ public class ApiController extends ApplicationController{
 	public String getLangs(ApiRequest apiRequest) {
 		System.out.println("## getLangs " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.getLanguages(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.getLanguages(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -265,7 +266,7 @@ public class ApiController extends ApplicationController{
 	public String getMemberBankAccounts(ApiRequest apiRequest) {
 		System.out.println("## getMemberBankAccounts " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.getBankAccounts(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.getBankAccounts(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -280,7 +281,7 @@ public class ApiController extends ApplicationController{
 	public String registerBankAccount(ApiRequest apiRequest) {
 		System.out.println("## registerBankAccount " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.registerBankAccount(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.registerBankAccount(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -295,7 +296,7 @@ public class ApiController extends ApplicationController{
 	public String updateBankAccount(ApiRequest apiRequest) {
 		System.out.println("## updateBankAccount " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.updateBankAccount(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.updateBankAccount(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -310,7 +311,7 @@ public class ApiController extends ApplicationController{
 	public String deleteBankAccount(ApiRequest apiRequest) {
 		System.out.println("## deleteBankAccount " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.deleteBankAccount(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.deleteBankAccount(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -326,7 +327,7 @@ public class ApiController extends ApplicationController{
 	public String getPolicy(ApiRequest apiRequest) {
 		System.out.println("## getPolicy " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.getPolicy(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.getPolicy(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -362,7 +363,7 @@ public class ApiController extends ApplicationController{
 	public String withdrawalRpay(ApiRequest apiRequest) {
 		System.out.println("## withdrawalRpay " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.withdrawaPoint(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.withdrawaPoint(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -377,7 +378,7 @@ public class ApiController extends ApplicationController{
 	public String getPointWithdrawals(ApiRequest apiRequest) {
 		System.out.println("## getPointWithdrawals " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.getPointwithdrawals(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.getPointwithdrawals(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
@@ -392,7 +393,7 @@ public class ApiController extends ApplicationController{
 	public String getMyMembers(ApiRequest apiRequest) {
 		System.out.println("## ApiRequest " );
 		String key = "11121212";
-		String result = this.encryptService.encrypt(key, this.apiService.getMyMembers(apiRequest));
+		String result = this.encryptService.encode(key, this.apiService.getMyMembers(apiRequest));
 		System.out.println("- 암호화 응답 " );
 		System.out.println(result );
 		return result;
