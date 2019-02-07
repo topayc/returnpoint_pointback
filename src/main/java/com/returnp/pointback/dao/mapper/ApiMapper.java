@@ -8,6 +8,8 @@ import com.returnp.pointback.dto.command.api.ApiRequest;
 public interface ApiMapper {
 	HashMap<String,Object> selectMemberInfo(ApiRequest apiRequest);
 	HashMap<String,Object> selectMember(ApiRequest apiRequest);
+	HashMap<String,Object> selectApiService(ApiRequest apiRequest);
+	
 	int  createMember(ApiRequest apiRequest);
 	int  updateMember(ApiRequest apiRequest);
 	int  deleteMember(ApiRequest apiRequest);

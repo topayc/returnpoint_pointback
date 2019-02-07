@@ -85,11 +85,10 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 					
 					HashMap<String, String> qrParsemap = QRManager.parseQRToMap(queryParmStr);
 					if (qrParsemap == null) {
-						res.setMessage(this.messageUtils.getMessage("pointback.message.invalid_qr"));
-						res.setResultCode("10001");
-						res.setResult("error");
-						return res;
+						 ResponseUtil.setResponse(res, "600", this.messageUtils.getMessage("pointback.message.invalid_qr"));
+							throw new ReturnpException(res);
 					}
+					break;
 				case AppConstants.PaymentTransactionType.ADMIN:
 					break;
 				case AppConstants.PaymentTransactionType.SHOPPING_MAL:
@@ -114,11 +113,195 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
 	
+	@Override
+	public Member validateMemberAuth(String memberEmail, String phoneNumber, String phoneNumberCountry) throws ReturnpException {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		try {
+			/*존재 하는 회원 인지 검사*/
+			Member member = new Member();;
+			member.setMemberEmail(memberEmail);
+			ArrayList<Member> members = this.pointBackMapper.findMembers(member);
+			
+			if (members.size() !=1 || members == null) {
+				ResponseUtil.setResponse(res, "601", 
+						this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {memberEmail}));
+				throw new ReturnpException(res);
+			}
+			
+			/*member = members.get(0);*/
+			
+			/*
+			 * 기기의 전화번호와 해당 이메일 계정의 전화번호가 같은 비교
+			 */
+			if (!members.get(0).getMemberPhone().equals(phoneNumber) && 
+					!members.get(0).getMemberPhone().equals(phoneNumberCountry)) {
+				ResponseUtil.setResponse(res, "602", this.messageUtils.getMessage("pointback.message.invalid_argu_phonenumber",
+					new Object[] { phoneNumber, phoneNumberCountry, members.get(0).getMemberPhone()}));
+				throw new ReturnpException(res);
+			}
+		return member;
+		} catch (ReturnpException e1) {
+			e1.printStackTrace();
+			throw e1;
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			throw e2;
+		}
+	}
+
+	@Override
+	public Affiliate validateAffiliateAuth(String afId) throws ReturnpException {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		try {
+			/* * 존재하는 가맹점인지 검사 */
+			Affiliate affiliate = new Affiliate();
+			affiliate.setAffiliateSerial(afId);
+			ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
+			
+			if (affiliates == null || affiliates.size() != 1) {
+				ResponseUtil.setResponse(res, "603", 
+						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
+				throw new ReturnpException(res);
+			}
+			return affiliate;
+		} catch (ReturnpException e1) {
+			e1.printStackTrace();
+			throw e1;
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			throw e2;
+		}
+	}
+	
+	@Override
+	public PaymentTransaction validate(String pan, String pas) throws ReturnpException {
+		ReturnpBaseResponse res =  new ReturnpBaseResponse();
+		try {
+			/* * 해당 결제 내역이 이미 등록되어 있는지 여부에 그에 따른 적립 처리 여부 검사 */
+			PaymentTransaction paymentTransaction = new PaymentTransaction();
+			paymentTransaction.setPaymentApprovalNumber(pan);
+			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(paymentTransaction);
+			
+			/* 해당 결제 승인 번호로 2개의 내역이 존재하는 경우 
+			 * 적립 후 취소가 된 내역으로 처리 중지 
+			 * */
+			if (paymentTransactions.size() == 2  ) {
+				 ResponseUtil.setResponse(res, "604", this.messageUtils.getMessage("pointback.message.invalid_req"));
+					throw new ReturnpException(res);
+			}
+			
+			/* 해당 결제 번호로 3개 이상 등록되어 있는 경우
+			 * 같은 결제 승인 번호로는 적립과 취소가 이루어진 경우, 즉 최대 2개까지 등록될 수 있기 때문에 
+			 * 이 경우는 시스템 오류임 
+			 *  */
+			if (paymentTransactions.size() > 2  ) {
+				 ResponseUtil.setResponse(res, "605", this.messageUtils.getMessage("pointback.message.error_many_payment_record"));
+					throw new ReturnpException(res);
+			}
+			
+			/* 결제내역이 1개가 존재하지만, POS 자체 결제 에러인 경우 처리 불가 */
+			if (paymentTransactions.size() == 1) {
+				paymentTransaction = paymentTransactions.get(0);
+				if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_ERROR)){
+					ResponseUtil.setResponse(res, "606", this.messageUtils.getMessage("pointback.message.error_paymenttransaction"));
+					throw new ReturnpException(res);
+				}
+			}
+			/*
+			 * 적립 요청인 경우 해당 내역이 존재하지 않는 경우에만 유효한 요청임
+			 */
+			if ( pas.equals("0") ) {
+				/*
+				 * 적립 요청인 경우, 결제내역이 사실상 등록되어 있으면 에러이며
+				 * 아래는 세부 조건에 따라 에러메시지를 생성
+				 */
+				if (paymentTransactions.size() == 1) {
+					paymentTransaction = paymentTransactions.get(0);
+					 /* 부적절한 요청 - 현재 적립 처리중인 내역에 대한 중복 적립 요청*/
+					 if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
+						 if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
+								 paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_PROGRESS)) {
+							 ResponseUtil.setResponse(res, "607", this.messageUtils.getMessage("pointback.message.already_accumulating_req"));
+							 throw new ReturnpException(res);
+						 }
+						
+						 /* 부적절한 요청 - 적립 처리가 완료된 내역에 대한 중복 적립 요청*/
+						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_COMPLETE) ) {
+							ResponseUtil.setResponse(res, "608", this.messageUtils.getMessage("pointback.message.already_complete_req"));
+							throw new ReturnpException(res);
+						}
+						
+						/* 부적절한 요청 - 적립 처리 에러 내역에 대한 중복 적립 요청*/
+						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_STOP) ) {
+							ResponseUtil.setResponse(res, "609", this.messageUtils.getMessage("pointback.message.error_accumulate"));
+							throw new ReturnpException(res);
+						}
+					}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL)){
+						/* 이미 결제 취소된 중이거나 결제 취소가 완료, 혹은 결제 취소 에러가 발생한 내역에 대한 적립 요청인 경우 - 부적절한 적립 요청  */
+						ResponseUtil.setResponse(res, "610", this.messageUtils.getMessage("pointback.message.error_acc_req_to_already_canceled_payement"));
+						throw new ReturnpException(res);
+					}
+				 }
+			}
+			
+			/*
+			 * 적립 취소 요청인 경우, 현재 등록 내역이 적립이 완료된 경우에만 유효한 요청
+			 */
+			else if (pas.equals("1") ) {
+				 if (paymentTransactions.size() == 1) {
+					 paymentTransaction = paymentTransactions.get(0);
+					 if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL)){ 
+						 
+						 /* 부적절한 취소 요청 - 현재 적립 취소중인 내역  */
+						 if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_START) || 
+								 paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_PROGRESS)) {
+							ResponseUtil.setResponse(res, "611", this.messageUtils.getMessage("pointback.message.already_canceling_req"));
+							throw new ReturnpException(res);
+						}
+						
+						 /* 부적절한 취소 요청 - 현재 적립 취소가 완료된 내역 */
+						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_COMPLETE) ) {
+							ResponseUtil.setResponse(res, "612", this.messageUtils.getMessage("pointback.message.already_canceled_req"));
+							throw new ReturnpException(res);
+						}
+						
+						 /* 부적절한 취소 요청 - 현재 적립 취소 에러가 발생한 내역 */
+						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_STOP) ) {
+							ResponseUtil.setResponse(res, "613", this.messageUtils.getMessage("pointback.message.error_acc_canceling"));
+							throw new ReturnpException(res);
+						}
+					}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)){
+						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
+								paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_PROGRESS)) {
+							ResponseUtil.setResponse(res, "614", this.messageUtils.getMessage("pointback.message.now_accumulating_wait"));
+							throw new ReturnpException(res);
+						}
+						
+						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_STOP)) {
+							ResponseUtil.setResponse(res, "615", this.messageUtils.getMessage("pointback.message.cancle_for_error_acc"));
+							throw new ReturnpException(res);
+						}
+					}
+				 }else {
+					 /* 존재하지 않는 내역에 대한 취소 요청  */	
+					 ResponseUtil.setResponse(res, "616", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
+						throw new ReturnpException(res);
+				 }
+			}
+			return paymentTransaction;
+		} catch(ReturnpException ee) {
+			ee.printStackTrace();
+			throw ee;
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
 	
 	@Override
 	public ReturnpBaseResponse  accumuatePoint(int paymentTransactioinNo) throws ReturnpException {
@@ -127,7 +310,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			PaymentTransaction paymentTransaction = this.paymentTransactionMapper.selectByPrimaryKey(paymentTransactioinNo);
 			if (paymentTransaction == null) {
 				/* 존재하지 않는 내역에 대한 취소 요청  */	
-				 ResponseUtil.setResponse(res, "10016", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
+				 ResponseUtil.setResponse(res, "617", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
 					throw new ReturnpException(res);
 			}
 			this.accumuatePoint(paymentTransaction);
@@ -141,7 +324,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -155,7 +338,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(pt);
 			if (paymentTransactions.size() != 1) {
 				 /* 존재하지 않는 내역에 대한 취소 요청  */	
-				 ResponseUtil.setResponse(res, "10016", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
+				 ResponseUtil.setResponse(res, "618", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
 					throw new ReturnpException(res);
 			}		
 			this.accumuatePoint(paymentTransactions.get(0));
@@ -170,7 +353,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -202,7 +385,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			outerTarget = this.findOuterPointBackTarget(outerTarget);
 			
 			if (outerTarget == null) {
-				ResponseUtil.setResponse(res, "10020", this.messageUtils.getMessage("pointback.message.cant_searching_outer_node"));
+				ResponseUtil.setResponse(res, "619", this.messageUtils.getMessage("pointback.message.cant_searching_outer_node"));
 				throw new ReturnpException(res);
 			}
 			
@@ -521,7 +704,47 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			throw e;
 		}catch(Exception e2) {
 			e2.printStackTrace();
-			ResponseUtil.setResponse(res, "9000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			throw new ReturnpException(res);
+		}
+	}
+	
+	@Override
+	public void  increasePoint( PaymentTransaction transaction, int memberNo, int nodeNo, String nodeType, String nodeTypeName, float accRate) 
+			throws ReturnpException {
+		try {
+			/* G Point 증가 업데이트 */
+			GreenPoint point =  new GreenPoint();
+			ArrayList<GreenPoint> greenPoints = null;
+
+			point.setMemberNo(memberNo);
+			point.setNodeType(nodeType);
+
+			if (nodeType.equals(AppConstants.NodeType.RECOMMENDER)) {
+				greenPoints = this.pointBackMapper.findGreenPoints(point);
+				point = greenPoints == null || greenPoints.size() < 1 ? this.createRecommenderRPoint(memberNo) : greenPoints.get(0);
+			}else {
+				point = this.pointBackMapper.findGreenPoints(point).get(0);
+			}
+
+			point.setNodeNo(nodeNo);
+			point.setNodeTypeName(nodeTypeName);
+			point.setPointAmount(point.getPointAmount() + (transaction.getPaymentApprovalAmount() * accRate));
+			this.greenPointMapper.updateByPrimaryKey(point);
+
+			/* G Point 적립 내역 저장*/
+			PaymentPointbackRecord pointBackRecord = new PaymentPointbackRecord();
+			pointBackRecord.setPaymentTransactionNo(transaction.getPaymentTransactionNo());
+			pointBackRecord.setMemberNo(memberNo);
+			pointBackRecord.setNodeNo(nodeNo);
+			pointBackRecord.setNodeType(nodeType);
+			pointBackRecord.setAccRate(accRate);
+			pointBackRecord.setPointbackAmount(transaction.getPaymentApprovalAmount() * accRate);
+			paymentPointbackRecordMapper.insert(pointBackRecord);
+		} catch (Exception e) {
+			e.printStackTrace();
+			ReturnpBaseResponse res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			throw new ReturnpException(res);
 		}
 	}
@@ -586,238 +809,11 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			
 		}catch(Exception e) {
 			e.printStackTrace();
-			ResponseUtil.setResponse(res, "9000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			throw new ReturnpException(res);
 		}
 	}
 	
-	@Override
-	public void  increasePoint( PaymentTransaction transaction, int memberNo, int nodeNo, String nodeType, String nodeTypeName, float accRate) 
-			throws ReturnpException {
-		try {
-			/* G Point 증가 업데이트 */
-			GreenPoint point =  new GreenPoint();
-			ArrayList<GreenPoint> greenPoints = null;
-
-			point.setMemberNo(memberNo);
-			point.setNodeType(nodeType);
-
-			if (nodeType.equals(AppConstants.NodeType.RECOMMENDER)) {
-				greenPoints = this.pointBackMapper.findGreenPoints(point);
-				point = greenPoints == null || greenPoints.size() < 1 ? this.createRecommenderRPoint(memberNo) : greenPoints.get(0);
-			}else {
-				point = this.pointBackMapper.findGreenPoints(point).get(0);
-			}
-
-			point.setNodeNo(nodeNo);
-			point.setNodeTypeName(nodeTypeName);
-			point.setPointAmount(point.getPointAmount() + (transaction.getPaymentApprovalAmount() * accRate));
-			this.greenPointMapper.updateByPrimaryKey(point);
-
-			/* G Point 적립 내역 저장*/
-			PaymentPointbackRecord pointBackRecord = new PaymentPointbackRecord();
-			pointBackRecord.setPaymentTransactionNo(transaction.getPaymentTransactionNo());
-			pointBackRecord.setMemberNo(memberNo);
-			pointBackRecord.setNodeNo(nodeNo);
-			pointBackRecord.setNodeType(nodeType);
-			pointBackRecord.setAccRate(accRate);
-			pointBackRecord.setPointbackAmount(transaction.getPaymentApprovalAmount() * accRate);
-			paymentPointbackRecordMapper.insert(pointBackRecord);
-		} catch (Exception e) {
-			e.printStackTrace();
-			ReturnpBaseResponse res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "9000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
-			throw new ReturnpException(res);
-		}
-	}
-	
-	@Override
-	public Member validateMemberAuth(String memberEmail, String phoneNumber, String phoneNumberCountry) throws ReturnpException {
-		ReturnpBaseResponse res = new ReturnpBaseResponse();
-		try {
-			/*존재 하는 회원 인지 검사*/
-			Member member = new Member();;
-			member.setMemberEmail(memberEmail);
-			ArrayList<Member> members = this.pointBackMapper.findMembers(member);
-			
-			if (members.size() !=1 || members == null) {
-				ResponseUtil.setResponse(res, "10002", 
-						this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {memberEmail}));
-				throw new ReturnpException(res);
-			}
-			
-			/*member = members.get(0);*/
-			
-			/*
-			 * 기기의 전화번호와 해당 이메일 계정의 전화번호가 같은 비교
-			 */
-			if (!members.get(0).getMemberPhone().equals(phoneNumber) && 
-					!members.get(0).getMemberPhone().equals(phoneNumberCountry)) {
-				ResponseUtil.setResponse(res, "10003", this.messageUtils.getMessage("pointback.message.invalid_argu_phonenumber",
-					new Object[] { phoneNumber, phoneNumberCountry, members.get(0).getMemberPhone()}));
-				throw new ReturnpException(res);
-			}
-		return member;
-		} catch (ReturnpException e1) {
-			e1.printStackTrace();
-			throw e1;
-		} catch (Exception e2) {
-			e2.printStackTrace();
-			throw e2;
-		}
-	}
-
-	@Override
-	public Affiliate validateAffiliateAuth(String afId) throws ReturnpException {
-		ReturnpBaseResponse res = new ReturnpBaseResponse();
-		try {
-			/* * 존재하는 가맹점인지 검사 */
-			Affiliate affiliate = new Affiliate();
-			affiliate.setAffiliateSerial(afId);
-			ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
-			
-			if (affiliates == null || affiliates.size() != 1) {
-				ResponseUtil.setResponse(res, "10004", 
-						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
-				throw new ReturnpException(res);
-			}
-			return affiliate;
-		} catch (ReturnpException e1) {
-			e1.printStackTrace();
-			throw e1;
-		} catch (Exception e2) {
-			e2.printStackTrace();
-			throw e2;
-		}
-	}
-	
-	@Override
-	public PaymentTransaction validate(String pan, String pas) throws ReturnpException {
-		ReturnpBaseResponse res =  new ReturnpBaseResponse();
-		try {
-			/* * 해당 결제 내역이 이미 등록되어 있는지 여부에 그에 따른 적립 처리 여부 검사 */
-			PaymentTransaction paymentTransaction = new PaymentTransaction();
-			paymentTransaction.setPaymentApprovalNumber(pan);
-			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(paymentTransaction);
-			
-			/* 해당 결제 승인 번호로 2개의 내역이 존재하는 경우 
-			 * 적립 후 취소가 된 내역으로 처리 중지 
-			 * */
-			if (paymentTransactions.size() == 2  ) {
-				 ResponseUtil.setResponse(res, "10005", this.messageUtils.getMessage("pointback.message.invalid_req"));
-					throw new ReturnpException(res);
-			}
-			
-			/* 해당 결제 번호로 3개 이상 등록되어 있는 경우
-			 * 같은 결제 승인 번호로는 적립과 취소가 이루어진 경우, 즉 최대 2개까지 등록될 수 있기 때문에 
-			 * 이 경우는 시스템 오류임 
-			 *  */
-			if (paymentTransactions.size() > 2  ) {
-				 ResponseUtil.setResponse(res, "10005", this.messageUtils.getMessage("pointback.message.error_many_payment_record"));
-					throw new ReturnpException(res);
-			}
-			
-			/* 결제내역이 1개가 존재하지만, POS 자체 결제 에러인 경우 처리 불가 */
-			if (paymentTransactions.size() == 1) {
-				paymentTransaction = paymentTransactions.get(0);
-				if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_ERROR)){
-					ResponseUtil.setResponse(res, "10006", this.messageUtils.getMessage("pointback.message.error_paymenttransaction"));
-					throw new ReturnpException(res);
-				}
-			}
-			/*
-			 * 적립 요청인 경우 해당 내역이 존재하지 않는 경우에만 유효한 요청임
-			 */
-			if ( pas.equals("0") ) {
-				/*
-				 * 적립 요청인 경우, 결제내역이 사실상 등록되어 있으면 에러이며
-				 * 아래는 세부 조건에 따라 에러메시지를 생성
-				 */
-				if (paymentTransactions.size() == 1) {
-					paymentTransaction = paymentTransactions.get(0);
-					 /* 부적절한 요청 - 현재 적립 처리중인 내역에 대한 중복 적립 요청*/
-					 if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
-						 if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
-								 paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_PROGRESS)) {
-							 ResponseUtil.setResponse(res, "10007", this.messageUtils.getMessage("pointback.message.already_accumulating_req"));
-							 throw new ReturnpException(res);
-						 }
-						
-						 /* 부적절한 요청 - 적립 처리가 완료된 내역에 대한 중복 적립 요청*/
-						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_COMPLETE) ) {
-							ResponseUtil.setResponse(res, "10008", this.messageUtils.getMessage("pointback.message.already_complete_req"));
-							throw new ReturnpException(res);
-						}
-						
-						/* 부적절한 요청 - 적립 처리 에러 내역에 대한 중복 적립 요청*/
-						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_STOP) ) {
-							ResponseUtil.setResponse(res, "10009", this.messageUtils.getMessage("pointback.message.error_accumulate"));
-							throw new ReturnpException(res);
-						}
-					}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL)){
-						/* 이미 결제 취소된 중이거나 결제 취소가 완료, 혹은 결제 취소 에러가 발생한 내역에 대한 적립 요청인 경우 - 부적절한 적립 요청  */
-						ResponseUtil.setResponse(res, "10010", this.messageUtils.getMessage("pointback.message.error_acc_req_to_already_canceled_payement"));
-						throw new ReturnpException(res);
-					}
-				 }
-			}
-			
-			/*
-			 * 적립 취소 요청인 경우, 현재 등록 내역이 적립이 완료된 경우에만 유효한 요청
-			 */
-			else if (pas.equals("1") ) {
-				 if (paymentTransactions.size() == 1) {
-					 paymentTransaction = paymentTransactions.get(0);
-					 if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL)){ 
-						 
-						 /* 부적절한 취소 요청 - 현재 적립 취소중인 내역  */
-						 if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_START) || 
-								 paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_PROGRESS)) {
-							ResponseUtil.setResponse(res, "10011", this.messageUtils.getMessage("pointback.message.already_canceling_req"));
-							throw new ReturnpException(res);
-						}
-						
-						 /* 부적절한 취소 요청 - 현재 적립 취소가 완료된 내역 */
-						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_COMPLETE) ) {
-							ResponseUtil.setResponse(res, "10012", this.messageUtils.getMessage("pointback.message.already_canceled_req"));
-							throw new ReturnpException(res);
-						}
-						
-						 /* 부적절한 취소 요청 - 현재 적립 취소 에러가 발생한 내역 */
-						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_STOP) ) {
-							ResponseUtil.setResponse(res, "10013", this.messageUtils.getMessage("pointback.message.error_acc_canceling"));
-							throw new ReturnpException(res);
-						}
-					}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)){
-						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
-								paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_PROGRESS)) {
-							ResponseUtil.setResponse(res, "10014", this.messageUtils.getMessage("pointback.message.now_accumulating_wait"));
-							throw new ReturnpException(res);
-						}
-						
-						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_STOP)) {
-							ResponseUtil.setResponse(res, "10015", this.messageUtils.getMessage("pointback.message.cancle_for_error_acc"));
-							throw new ReturnpException(res);
-						}
-					}
-				 }else {
-					 /* 존재하지 않는 내역에 대한 취소 요청  */	
-					 ResponseUtil.setResponse(res, "10016", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
-						throw new ReturnpException(res);
-				 }
-			}
-			return paymentTransaction;
-		} catch(ReturnpException ee) {
-			ee.printStackTrace();
-			throw ee;
-		} catch(Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
-		
-		
-	}
-
 	@Override
 	public ReturnpBaseResponse cancelAccumulate(DataMap dataMap) {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
@@ -830,11 +826,10 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 					
 					HashMap<String, String> qrParsemap = QRManager.parseQRToMap(queryParmStr);
 					if (qrParsemap == null) {
-						res.setMessage(this.messageUtils.getMessage("pointback.message.invalid_qr"));
-						res.setResultCode("10001");
-						res.setResult("error");
-						return res;
+						ResponseUtil.setResponse(res, "620", this.messageUtils.getMessage("pointback.message.invalid_qr"));
+						throw new ReturnpException(res);
 					}
+					break;
 				case AppConstants.PaymentTransactionType.ADMIN:
 					break;
 				case AppConstants.PaymentTransactionType.SHOPPING_MAL:
@@ -855,7 +850,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -874,7 +869,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			pt = new PaymentTransaction();
 			pts = this.pointBackMapper.findPaymentTransactions(pt);
 			if (pts == null || pts.size() !=1) {
-				 ResponseUtil.setResponse(res, "19091", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+				 ResponseUtil.setResponse(res, "621", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
 					throw new ReturnpException(res);
 			}
 			
@@ -892,7 +887,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			}
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -908,7 +903,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		try {
 			pt = paymentTransactionMapper.selectByPrimaryKey(paymentTrasactionNo);
 			if (pt == null) {
-				 ResponseUtil.setResponse(res, "19091", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+				 ResponseUtil.setResponse(res, "622", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
 					throw new ReturnpException(res);
 			}
 			
@@ -926,7 +921,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			}
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -940,7 +935,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		ArrayList<PaymentTransaction>  ptList = this.pointBackMapper.findPaymentTransactions(pt);
 		
 		if (ptList == null || ptList.size() != 1) {
-			ResponseUtil.setResponse(res, "10020", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+			ResponseUtil.setResponse(res, "623", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
 			throw new ReturnpException(res);
 		}
 		
@@ -1035,6 +1030,4 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		dataMap.put("acc_from", AppConstants.PaymentTransactionType.ADMIN);
 		return dataMap;
 	}
-
-
 }

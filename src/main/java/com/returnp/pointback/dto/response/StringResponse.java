@@ -1,28 +1,20 @@
 package com.returnp.pointback.dto.response;
 
-/**
- * @author user01
- *
- * @param <T>
- */
-public class ObjectResponse <T> extends ReturnpBaseResponse {
-	T data;
-	int total;
-	
+import java.util.ArrayList;
+
+public class StringResponse extends ReturnpBaseResponse {
+	public int total;
+	public String data;
 	public int getTotal() {
 		return total;
 	}
-
 	public void setTotal(int total) {
 		this.total = total;
 	}
-
-	public T getData() {
+	public String getData() {
 		return data;
 	}
-	
-	public void setData(T data) {
+	public void setData(String data) {
 		this.data = data;
 	}
-	
 }

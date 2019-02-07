@@ -2,6 +2,7 @@ package com.returnp.pointback.web.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,36 +14,37 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.DataMap;
+import com.returnp.pointback.common.ResponseUtil;
+import com.returnp.pointback.dao.mapper.ApiMapper;
 import com.returnp.pointback.dto.command.api.ApiRequest;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
-import com.returnp.pointback.service.EncryptService;
-import com.returnp.pointback.service.interfaces.ApiService;
+import com.returnp.pointback.dto.response.StringResponse;
+import com.returnp.pointback.service.ApiResponseService;
+import com.returnp.pointback.service.interfaces.ApiServiceProvider;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.web.message.MessageUtils;
 import com.returnp.pointback.web.validator.ApiRequestValidator;
 
 @Controller
 @RequestMapping("/v1/api")
-public class ApiController extends ApplicationController{
+public class ApiProviderController extends ApplicationController{
 	
-	private static final Logger logger = LoggerFactory.getLogger(ApiController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ApiProviderController.class);
 	
 	@Autowired MessageUtils messageUtils;
 	@Autowired Environment env;
-	@Autowired  ApiRequestValidator apiRequestValidator;
-	@Autowired  ApiService apiService;
+	@Autowired ApiRequestValidator apiRequestValidator;
+	@Autowired ApiServiceProvider apiServiceProvider;
 	@Autowired BasePointAccumulateService basePointAccumulateService;
-	@Autowired EncryptService encryptService;
+	@Autowired ApiResponseService apiResponseService;
+	@Autowired ApiMapper apiMapper;
+	public static final String DEFAULT_KEY = "qwertyuiopasdfghjklzxcvbnm123456";
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -57,13 +59,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/save_cache_data", method = RequestMethod.POST, produces="text/html;charset=UTF-8")
-	public String saveDataCache(ApiRequest apiRequest, HttpSession session) {
+	public ReturnpBaseResponse  saveDataCache(ApiRequest apiRequest, HttpSession session) {
 		System.out.println("## saveDataCache " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.saveDataCache(apiRequest, session));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.saveDataCache(apiRequest, session);
+		}
+		return res;
 	}
 	
 	/**
@@ -72,13 +78,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/get_cache_data", method = RequestMethod.POST, produces="text/html;charset=UTF-8")
-	public String getDataCache(ApiRequest apiRequest,HttpSession session) {
+	public ReturnpBaseResponse getDataCache(ApiRequest apiRequest,HttpSession session) {
 		System.out.println("## getDataCache " );
-		String key = "aes256-test-key!!";
-		String result = this.encryptService.encode(key, this.apiService.getDataCache(apiRequest, session));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.getDataCache(apiRequest, session);
+		}
+		return res;
 	}
 	
 	/*
@@ -87,15 +97,24 @@ public class ApiController extends ApplicationController{
 	 * @throws JsonProcessingException 
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/get_member_info", method = RequestMethod.GET ,produces="text/html;charset=UTF-8" )
-	public  String getMemberInfo(ApiRequest apiRequest) throws JsonProcessingException {
+	@RequestMapping(value = "/get_member_info", method = RequestMethod.GET ,produces="application/json" )
+	public  ReturnpBaseResponse getMemberInfo(ApiRequest apiRequest) {
 		System.out.println("## getMemberInfo " );
-		String key = "1123456789123456";
-		String result = this.encryptService.encode(key, this.apiService.getMemberInfo(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		this.encryptService.decode(key, result);
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		/*if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
+		}else {*/
+			res = this.apiServiceProvider.getMemberInfo(apiRequest);
+			StringResponse res2 = this.apiResponseService.generateResponse(res, "ZFYzH5HOffrXc6MV2H4+HRD0Z6g1qmRw");
+			//return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			String data = apiResponseService.decode(res2.getData(),  "ZFYzH5HOffrXc6MV2H4+HRD0Z6g1qmRw");
+			res2.setData(data);
+			return res2;
+			//return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+	//	}
 	}
 	
 	/**
@@ -107,13 +126,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/check_duplicated", method = RequestMethod.GET , produces="text/html;charset=UTF-8")
-	public String checkDuplicated(ApiRequest apiRequest) {
+	public ReturnpBaseResponse checkDuplicated(ApiRequest apiRequest) {
 		System.out.println("## checkDuplicated " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.checkDuplicated(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.checkDuplicated(apiRequest);
+		}
+		return res;
 	}
 	
 	
@@ -123,13 +146,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/join_up", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String join(ApiRequest apiRequest) {
+	public ReturnpBaseResponse join(ApiRequest apiRequest) {
 		System.out.println("## join " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.join(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.join(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -138,13 +165,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete_member", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String deleteMember(ApiRequest apiRequest) {
+	public ReturnpBaseResponse deleteMember(ApiRequest apiRequest) {
 		System.out.println("## deleteMember " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.deleteMember(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.deleteMember(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -153,13 +184,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/modify_member", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String modifyMember(ApiRequest apiRequest) {
+	public ReturnpBaseResponse modifyMember(ApiRequest apiRequest) {
 		System.out.println("## modifyMember " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.modifyMember(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.modifyMember(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -168,40 +203,42 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/handle_accumulate", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String executeAccumualte(ApiRequest apiRequest) {
+	public ReturnpBaseResponse executeAccumualte(ApiRequest apiRequest) {
 		System.out.println("## executeAccumualte " );
-		ReturnpBaseResponse res= null;
+		
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		DataMap dataMap = new DataMap();
-		
-		if (apiRequest.getQrOrg() != null) {
-			dataMap.put("qr_org", apiRequest.getQrOrg().trim());
+
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			if (apiRequest.getQrOrg() != null) {
+				dataMap.put("qr_org", apiRequest.getQrOrg().trim());
+			}
+			dataMap.put("pam", apiRequest.getPaymentApprovalAmount());
+			dataMap.put("pas", apiRequest.getPaymentApprovalStatus().trim());
+			
+			dataMap.put("pat", (apiRequest.getPaymentApprovalDateTime() == null ? new Date(): apiRequest.getPaymentApprovalDateTime()));
+			dataMap.put("pan", apiRequest.getPaymentApprovalNumber().trim());
+			dataMap.put("af_id", apiRequest.getAfId().trim());
+			dataMap.put("phoneNumber", apiRequest.getMemberPhone().trim());
+			dataMap.put("phoneNumberCountry", apiRequest.getMemberPhone().trim());
+			dataMap.put("memberEmail", apiRequest.getMemberEmail());
+			dataMap.put("key", apiRequest.getApiKey());
+			dataMap.put("acc_from", AppConstants.PaymentTransactionType.SHOPPING_MAL);
+			
+			/*적립*/
+			if (apiRequest.getPaymentApprovalStatus().equals("0")) {
+				res = this.basePointAccumulateService.accumulate(dataMap);
+			}
+			/*적립 취소*/
+			else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
+				res = this.basePointAccumulateService.cancelAccumulate(dataMap);
+			}
 		}
-		dataMap.put("pam", apiRequest.getPaymentApprovalAmount());
-		dataMap.put("pas", apiRequest.getPaymentApprovalStatus().trim());
-		
-		dataMap.put("pat", (apiRequest.getPaymentApprovalDateTime() == null ? new Date(): apiRequest.getPaymentApprovalDateTime()));
-		dataMap.put("pan", apiRequest.getPaymentApprovalNumber().trim());
-		dataMap.put("af_id", apiRequest.getAfId().trim());
-		dataMap.put("phoneNumber", apiRequest.getMemberPhone().trim());
-		dataMap.put("phoneNumberCountry", apiRequest.getMemberPhone().trim());
-		dataMap.put("memberEmail", apiRequest.getMemberEmail());
-		dataMap.put("key", apiRequest.getApiKey());
-		dataMap.put("acc_from", AppConstants.PaymentTransactionType.SHOPPING_MAL);
-		
-		/*적립*/
-		if (apiRequest.getPaymentApprovalStatus().equals("0")) {
-			res = this.basePointAccumulateService.accumulate(dataMap);
-		}
-		/*적립 취소*/
-		else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
-			res = this.basePointAccumulateService.cancelAccumulate(dataMap);
-		}
-		
-		String key = "11121212";
-		String result = this.encryptService.encode(key, res);
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		return res;
 	}
 	
 	/**
@@ -211,16 +248,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/accumulage_by_pan", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String accumulateByPan(ApiRequest apiRequest) {
+	public ReturnpBaseResponse accumulateByPan(ApiRequest apiRequest) {
 		System.out.println("## accumulateByPan " );
-		String key = "11121212";
-		String result = 
-			this.encryptService.encode(
-				key, this.basePointAccumulateService.accumuatePoint(apiRequest.getPaymentApprovalNumber()));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
-		
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.basePointAccumulateService.accumuatePoint(apiRequest.getPaymentApprovalNumber());
+		}
+		return res;
 	}
 	
 	/**
@@ -231,15 +269,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/cancel_accumulate_by_pan", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String cancelAccumulatgeByPan(ApiRequest apiRequest) {
+	public ReturnpBaseResponse cancelAccumulatgeByPan(ApiRequest apiRequest) {
 		System.out.println("## cancelAccumulatgeByPan " );
-		String key = "11121212";
-		String result = 
-			this.encryptService.encode(
-				key, this.basePointAccumulateService.cancelAccumuate(apiRequest.getPaymentApprovalNumber()));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.basePointAccumulateService.cancelAccumuate(apiRequest.getPaymentApprovalNumber());
+		}
+		return res;
 	}
 	
 	/**
@@ -248,13 +288,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/langs", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String getLangs(ApiRequest apiRequest) {
+	public ReturnpBaseResponse getLangs(ApiRequest apiRequest) {
 		System.out.println("## getLangs " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.getLanguages(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.getLanguages(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -263,13 +307,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/get_bank_accounts", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
-	public String getMemberBankAccounts(ApiRequest apiRequest) {
+	public ReturnpBaseResponse getMemberBankAccounts(ApiRequest apiRequest) {
 		System.out.println("## getMemberBankAccounts " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.getBankAccounts(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.getBankAccounts(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -278,13 +326,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/register_bank_account", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String registerBankAccount(ApiRequest apiRequest) {
+	public ReturnpBaseResponse registerBankAccount(ApiRequest apiRequest) {
 		System.out.println("## registerBankAccount " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.registerBankAccount(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.registerBankAccount(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -293,13 +345,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/update_bank_account", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String updateBankAccount(ApiRequest apiRequest) {
+	public ReturnpBaseResponse updateBankAccount(ApiRequest apiRequest) {
 		System.out.println("## updateBankAccount " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.updateBankAccount(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.updateBankAccount(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -308,13 +364,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete_bank_account", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
-	public String deleteBankAccount(ApiRequest apiRequest) {
+	public ReturnpBaseResponse deleteBankAccount(ApiRequest apiRequest) {
 		System.out.println("## deleteBankAccount " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.deleteBankAccount(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.deleteBankAccount(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -324,13 +384,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/get_policy", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String getPolicy(ApiRequest apiRequest) {
+	public ReturnpBaseResponse getPolicy(ApiRequest apiRequest) {
 		System.out.println("## getPolicy " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.getPolicy(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.getPolicy(apiRequest);
+		}
+		return res;
 	}
 	
 	
@@ -340,7 +404,7 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/gpoint_accumulate_history", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String getRpointAccumuateHistory(ApiRequest apiRequest) {
+	public ReturnpBaseResponse getRpointAccumuateHistory(ApiRequest apiRequest) {
 		return null;
 	}
 	
@@ -350,7 +414,7 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/rpoint_conversion_history", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String getRpointConversionHistory(ApiRequest apiRequest) {
+	public ReturnpBaseResponse getRpointConversionHistory(ApiRequest apiRequest) {
 		return null;
 	}
 	
@@ -360,13 +424,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/withdrawal_rpay", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public String withdrawalRpay(ApiRequest apiRequest) {
+	public ReturnpBaseResponse withdrawalRpay(ApiRequest apiRequest) {
 		System.out.println("## withdrawalRpay " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.withdrawaPoint(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.withdrawaPoint(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -375,13 +443,17 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/withdrawal_rpay_history", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
-	public String getPointWithdrawals(ApiRequest apiRequest) {
+	public ReturnpBaseResponse getPointWithdrawals(ApiRequest apiRequest) {
 		System.out.println("## getPointWithdrawals " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.getPointwithdrawals(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.getPointwithdrawals(apiRequest);
+		}
+		return res;
 	}
 	
 	/**
@@ -390,13 +462,16 @@ public class ApiController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/get_my_members", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
-	public String getMyMembers(ApiRequest apiRequest) {
-		System.out.println("## ApiRequest " );
-		String key = "11121212";
-		String result = this.encryptService.encode(key, this.apiService.getMyMembers(apiRequest));
-		System.out.println("- 암호화 응답 " );
-		System.out.println(result );
-		return result;
+	public ReturnpBaseResponse getMyMembers(ApiRequest apiRequest) {
+		System.out.println("## getMyMembers " );
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+		}else {
+			res = this.apiServiceProvider.getMyMembers(apiRequest);
+		}
+		return res;
 	}
-	
 }

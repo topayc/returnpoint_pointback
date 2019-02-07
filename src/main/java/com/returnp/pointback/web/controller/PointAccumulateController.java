@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.returnp.pointback.common.AppConstants.AccumulateRequestFrom;
 import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.DataMap;
+import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.service.interfaces.PointAccumulateService;
@@ -98,14 +99,14 @@ public class PointAccumulateController extends ApplicationController{
 		@RequestParam(value = "key", required = true ) String key
 		){
 		
-		System.out.println("excuteByEncrptQr");
+		/*System.out.println("excuteByEncrptQr");
 		System.out.println(qrOrg);
 		System.out.println(pam);
 		System.out.println(pas);
 		System.out.println(pan);
 		System.out.println(afId);
 		System.out.println(phoneNumber);
-		System.out.println(phoneNumberCountry);
+		System.out.println(phoneNumberCountry);*/
 		
 		ReturnpBaseResponse res = null;
 		if (this.keys.contains(key)) {
@@ -122,7 +123,7 @@ public class PointAccumulateController extends ApplicationController{
 			);
 		}else {
 			res = new ReturnpBaseResponse();
-			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 		}
 		return res;
 	}
@@ -144,7 +145,7 @@ public class PointAccumulateController extends ApplicationController{
 		System.out.println("PointAccumulateController - accumulateByAdmin");
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		if (!this.keys.contains(key)) {
-			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}
 		res = this.pointBackService.processByAdmin(paymentTransactionNo);
@@ -208,13 +209,13 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "key", required = true ) String key
 			){
 		
-		System.out.println("####### handleAccumulateAdminRequest");
+		System.out.println("####### manualAccumulatePoint");
 		ReturnpBaseResponse res= null;
 		
 		DataMap dataMap = new DataMap();
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			if (qr_org != null) {
@@ -276,8 +277,42 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "memberEmail", required = true ) String memberEmail,
 			@RequestParam(value = "key", required = true ) String key
 			){
-		System.out.println("accumulatePoint");
+		//System.out.println("####### qrAccumulatePoint");
 		ReturnpBaseResponse res= null;
+		
+		DataMap dataMap = new DataMap();
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			if (qr_org != null) {
+				dataMap.put("qr_org", qr_org.trim());
+			}
+			dataMap.put("pam", pam);
+			dataMap.put("pas", pas.trim());
+			
+			dataMap.put("pat", (pat == null ? new Date(): pat));
+			dataMap.put("pan", pan.trim());
+			dataMap.put("af_id", afId.trim());
+			dataMap.put("phoneNumber", phoneNumber.trim());
+
+			if (phoneNumberCountry != null) {
+				dataMap.put("phoneNumberCountry", phoneNumberCountry.trim());
+			}
+			dataMap.put("memberEmail", memberEmail);
+			dataMap.put("key", key.trim());
+			dataMap.put("acc_from", AppConstants.PaymentTransactionType.QR);
+			
+			/*적립*/
+			if (pas.equals("0")) {
+				res = this.basePointAccumulateService.accumulate(dataMap);
+			}
+			/*적립 취소*/
+			else if (pas.equals("1")) {
+				res = this.basePointAccumulateService.cancelAccumulate(dataMap);
+			}
+		}
 		return res;
 	}
 	
@@ -293,8 +328,16 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "paymentTrasactionNo", required = true ) int paymentTrasactionNo,  
 			@RequestParam(value = "key", required = true ) String key
 			){
+		
 		System.out.println("####### accumuateByPaymentTransactionNo");
 		ReturnpBaseResponse res= null;
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			res = this.basePointAccumulateService.accumuatePoint(paymentTrasactionNo);
+		}
 		
 		return res;
 	}
@@ -314,6 +357,14 @@ public class PointAccumulateController extends ApplicationController{
 		
 		System.out.println("####### accumuateByPan");
 		ReturnpBaseResponse res= null;
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			res = this.basePointAccumulateService.accumuatePoint(pan);
+		}
+		
 		return res;
 	}
 	
@@ -335,7 +386,7 @@ public class PointAccumulateController extends ApplicationController{
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(paymentTrasactionNo);
@@ -361,7 +412,7 @@ public class PointAccumulateController extends ApplicationController{
 		
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			this.setErrorRespone(res,this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(pan);

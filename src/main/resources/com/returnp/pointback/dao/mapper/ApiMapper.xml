@@ -403,4 +403,10 @@
 		SELECT * FROM member  where recommenderNo = #{memberNo}
 	</select> 
 	
+		<!-- sfId 에 대한 헤당 api service 데이타 반환 --> 
+	<select id="selectApiService" parameterType="ApiRequest" resultType="HashMap">
+		SELECT * FROM api_service  where tId = #{sfId}
+	</select> 
+	
+	
 </mapper>

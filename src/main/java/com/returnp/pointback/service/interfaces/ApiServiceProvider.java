@@ -1,5 +1,7 @@
 package com.returnp.pointback.service.interfaces;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +10,7 @@ import com.returnp.pointback.dto.command.api.ApiRequest;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 
 @Transactional
-public interface ApiService {
+public interface ApiServiceProvider {
 	public ReturnpBaseResponse getDataCache(ApiRequest apiRequest,HttpSession session);
 	
 	public ReturnpBaseResponse saveDataCache(ApiRequest apiRequest, HttpSession session);
@@ -53,5 +55,7 @@ public interface ApiService {
 	public ReturnpBaseResponse updatePointWithdrawal(ApiRequest apiRequest);
 
 	public ReturnpBaseResponse getMyMembers(ApiRequest apiRequest);
+	
+	public HashMap<String, Object> selectApiService(ApiRequest apiRequest);
 	
 }

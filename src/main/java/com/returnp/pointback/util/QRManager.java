@@ -49,12 +49,12 @@ public class QRManager {
 		String[] encArr =  encData.split(sep);
 		if (encArr.length != 5) return null;
 		
-		System.out.println(encArr[0]);
+/*		System.out.println(encArr[0]);
 		System.out.println(encArr[1]);
 		System.out.println(encArr[2]);
 		System.out.println(encArr[3]);
-		System.out.println(encArr[4]);
-		System.out.println();
+		System.out.println(encArr[4]);*/
+		//System.out.println();
 		String field1 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[0]));
 		String field2 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[1]));
 		String field3 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[2]));
@@ -67,7 +67,7 @@ public class QRManager {
 		
 		String qrPText = field1 + field2 + field3 + field4 + field5;
 		qrPText = qrPText.substring(0, 27) + String.format("%013d", Long.valueOf(qrPText.substring(27)));
-		System.out.println(qrPText);
+		//System.out.println(qrPText);
 		
 		/*VAN 시간을 내부 포맷으로 변경*/
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -169,7 +169,7 @@ public class QRManager {
 	
 	/*전처리 검증*/
 	public static Boolean beforeValidateQR(HashMap<String, String> queryMap){
-		System.out.println("beforeValidateQR" );
+		//System.out.println("beforeValidateQR" );
 		if (!queryMap.containsKey(QRManager.QR_MAP_KEY_F) || !queryMap.containsKey(QRManager.QR_MAP_KEY_D) ||
 				queryMap.get(QRManager.QR_MAP_KEY_F) == null || queryMap.get(QRManager.QR_MAP_KEY_D) == null) {
 			return false;
