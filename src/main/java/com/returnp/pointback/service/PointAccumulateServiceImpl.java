@@ -754,7 +754,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 						throw new ReturnpException(res);
 					}
 				}else {
-					ResponseUtil.setResponse(res, "605", this.messageUtils.getMessage("pointback.message.not_cancelable_paymment_b"));
+					ResponseUtil.setResponse(res, "605", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
 					throw new ReturnpException(res);
 				}
 			}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -324,7 +323,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		ArrayResponse<HashMap<String, Object>>  res = new ArrayResponse<HashMap<String, Object>>();
 		try {
 			ArrayList<HashMap<String, Object>> langs = this.apiMapper.selectLanguages();
-			res.setData(langs);
+			res.setRows(langs);
 			res.setTotal(langs.size());
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
@@ -380,7 +379,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			ArrayList<HashMap<String, Object>> bankAccounts = this.apiMapper.selectBankAccounts(apiRequest);
-			res.setData(bankAccounts);
+			res.setRows(bankAccounts);
 			res.setTotal(bankAccounts.size());
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
@@ -532,7 +531,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	 * (완료) 
 	 */
 	@Override
-	public ReturnpBaseResponse getPointwithdrawals(ApiRequest apiRequest) {
+	public ReturnpBaseResponse getWithdrawalHistory(ApiRequest apiRequest) {
 		ArrayResponse<HashMap<String, Object>>  res = new ArrayResponse<HashMap<String, Object>>();
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
@@ -542,8 +541,8 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			}
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
-			ArrayList<HashMap<String, Object>> withdrawals = this.apiMapper.selectPointwithdrawals(apiRequest);
-			res.setData(withdrawals);
+			ArrayList<HashMap<String, Object>> withdrawals = this.apiMapper.selectWithdrawals(apiRequest);
+			res.setRows(withdrawals);
 			res.setTotal(withdrawals.size());
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
@@ -567,7 +566,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	 * (완료) 
 	 */
 	@Override
-	public ReturnpBaseResponse withdrawaPoint(ApiRequest apiRequest) {
+	public ReturnpBaseResponse registerWithdrawal(ApiRequest apiRequest) {
 		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
@@ -584,7 +583,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			} 
 			
 			/*포인트 출금 정보 등록*/
-			int count = this.apiMapper.creatPointWithdrawal(apiRequest);
+			int count = this.apiMapper.createWithdrawal(apiRequest);
 			if (count < 1) {
 				ResponseUtil.setResponse(res, "507", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
 				throw new ReturnpException(res);
@@ -601,7 +600,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			}
 			
 			/* 등록한 출금 정보 반환*/
-			res.setData(this.apiMapper.selectPointwithdrawal(apiRequest));
+			res.setData(this.apiMapper.selectWithdrawal(apiRequest));
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.create_withdrawal_info_success"));
 			return res;
 			
@@ -624,7 +623,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	 * (완료) 
 	 */
 	@Override
-	public ReturnpBaseResponse deletePointWithdrawal(ApiRequest apiRequest) {
+	public ReturnpBaseResponse deleteWithdrawal(ApiRequest apiRequest) {
 		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
@@ -634,7 +633,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			}
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
-			int count = this.apiMapper.deletePointWithdrawal(apiRequest);
+			int count = this.apiMapper.deleteWithdrawal(apiRequest);
 			if (count < 1) {
 				ResponseUtil.setResponse(res, "509", this.messageUtils.getMessage( "api.create_withdrawal_info_delete_fail"));
 				throw new ReturnpException(res);
@@ -664,7 +663,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	 * (완료) 
 	 */
 	@Override
-	public ReturnpBaseResponse updatePointWithdrawal(ApiRequest apiRequest) {
+	public ReturnpBaseResponse updateWithdrawal(ApiRequest apiRequest) {
 		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
@@ -674,13 +673,13 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			}
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
-			int count = this.apiMapper.updatePointWithdrawal(apiRequest);
+			int count = this.apiMapper.updateWithdrawal(apiRequest);
 			if (count < 1) {
 				ResponseUtil.setResponse(res, "510", this.messageUtils.getMessage( "api.create_withdrawal_info_udpate_fail"));
 				throw new ReturnpException(res);
 			}
 			
-			res.setData(this.apiMapper.selectPointwithdrawal(apiRequest));
+			res.setData(this.apiMapper.selectWithdrawal(apiRequest));
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.create_withdrawal_info_udpate_success"));
 			return res;
 			
@@ -699,9 +698,6 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	/*
 	 * 나의 회원 리스트 
 	 *  memberEmail
-	 * pointWithdrawalNo
-	 * memberBankAccountNo
-	 * withdrawalAmount
 	 * (완료) 
 	 */
 	@Override
@@ -716,7 +712,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			ArrayList<HashMap<String, Object>> myMembers = this.apiMapper.selectMyMembers(apiRequest);
-			res.setData(myMembers);
+			res.setRows(myMembers);
 			res.setTotal(myMembers.size());
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;

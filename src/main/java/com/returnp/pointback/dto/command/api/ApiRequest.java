@@ -60,6 +60,7 @@ public class ApiRequest {
     
     
     
+    
 	public float getPointAmount() {
 		return pointAmount;
 	}

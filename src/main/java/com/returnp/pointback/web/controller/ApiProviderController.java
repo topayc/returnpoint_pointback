@@ -55,6 +55,10 @@ public class ApiProviderController extends ApplicationController{
 	/**
 	 * 요청된 데이터에 대한 임시 저장 
 	 * 분산 서버에서 사용하는 일종의 캐시 컨트롤러
+	 * 
+	 * cacheKey
+	 * cacheData
+	 * 
 	 * @return
 	 */
 	@ResponseBody
@@ -69,11 +73,14 @@ public class ApiProviderController extends ApplicationController{
 		}else {
 			res = this.apiServiceProvider.saveDataCache(apiRequest, session);
 		}
-		return res;
+		
+		StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+		return stringRes;
 	}
 	
 	/**
 	 * 캐시된 데이타 가져오기
+	 * cacheKey
 	 * @return
 	 */
 	@ResponseBody
@@ -82,19 +89,22 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## getDataCache " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.getDataCache(apiRequest, session);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
-	/*
+	/**
 	 * 회원 정보 가져오기
+	 * memberEmail
 	 * @return
-	 * @throws JsonProcessingException 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/get_member_info", method = RequestMethod.GET ,produces="application/json" )
@@ -102,26 +112,26 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## getMemberInfo " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
-		/*if (apiServiceMap == null) {
+		
+		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
 			return res;
-		}else {*/
+		}else {
 			res = this.apiServiceProvider.getMemberInfo(apiRequest);
-			StringResponse res2 = this.apiResponseService.generateResponse(res, "ZFYzH5HOffrXc6MV2H4+HRD0Z6g1qmRw");
-			//return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
-			String data = apiResponseService.decode(res2.getData(),  "ZFYzH5HOffrXc6MV2H4+HRD0Z6g1qmRw");
-			res2.setData(data);
-			return res2;
-			//return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
-	//	}
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			//String data = apiResponseService.decode(stringRes.getData(),  (String)apiServiceMap.get("apiKey"));
+			//stringRes.setData(data);
+			return stringRes;
+		}
 	}
 	
 	/**
 	 * 중복 검사 처리 
-	 * 전화번호, 이메일, 이름 등  
-	 * 1 : 이메일 중복 여부
-	 * 2 : 전화번호 중복 여부 
+	 * checkExistType ( 1 : 이메일 중복 여부 , 2 : 전화번호 중복 여부 ) 
+	 * memberEmail
+	 * 혹은  memberPhone
+	 * 
 	 * @return
 	 */
 	@ResponseBody
@@ -130,18 +140,27 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## checkDuplicated " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.checkDuplicated(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
-	
 	
 	/**
 	 * 회원 가입
+	 * memberEmail
+	 * memberName
+	 * memberPassword
+	 * memberPassword2
+	 * memberPhone
+	 * country
+	 * recommenderEmail
 	 * @return
 	 */
 	@ResponseBody
@@ -150,17 +169,22 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## join " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.join(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
+		
 	}
 	
 	/**
 	 * 회원 삭제
+	 * memberEmail
 	 * @return
 	 */
 	@ResponseBody
@@ -169,17 +193,30 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## deleteMember " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.deleteMember(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
+		
 	}
 	
 	/**
 	 * 회원 정보 수정 및 업데이트 
+	 * 
+	 * 아래의 필드중 선택적으로 존재 할 수 있으며, 존재하는 값만 업데이트 함 
+	 * memberEmail
+	 * memberName
+	 * memberPassword
+	 * memberPassword2
+	 * memberPhone
+	 * country
+	 * recommenderEmail
 	 * @return
 	 */
 	@ResponseBody
@@ -188,13 +225,16 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## modifyMember " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.modifyMember(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
 	/**
@@ -213,6 +253,7 @@ public class ApiProviderController extends ApplicationController{
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			if (apiRequest.getQrOrg() != null) {
 				dataMap.put("qr_org", apiRequest.getQrOrg().trim());
@@ -237,13 +278,18 @@ public class ApiProviderController extends ApplicationController{
 			else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
 				res = this.basePointAccumulateService.cancelAccumulate(dataMap);
 			}
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
+		
 	}
 	
 	/**
 	 * 결제 번호에 의한 적립
 	 * 이 경우는 이미 거래 내역을 생성했으나, 적립에 문제가 있을 경우 재 적립 처리를 함 
+	 * 
+	 * paymentApprovalNumber
+	 * 
 	 * @return
 	 */
 	@ResponseBody
@@ -252,19 +298,26 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## accumulateByPan " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.basePointAccumulateService.accumuatePoint(apiRequest.getPaymentApprovalNumber());
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
+		
 	}
 	
 	/**
 	 * 결제 번호의 의한 적립 취소
 	 * 기존 포인트 적립된 것을 모두 되돌리고, 같은 결제 번호로 결제 취소 내역과  
 	 * 포인트 취소 내역을 생성  
+	 * 
+	 * paymentApprovalNumber
+	 * 
 	 * @return
 	 */
 	@ResponseBody
@@ -273,17 +326,21 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## cancelAccumulatgeByPan " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(apiRequest.getPaymentApprovalNumber());
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
 	/**
 	 * 지원 언어 조회
+	 * 파라메터 인자 없음
 	 * @return
 	 */
 	@ResponseBody
@@ -292,17 +349,23 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## getLangs " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.getLanguages(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
+		
 	}
 	
 	/**
 	 * 은행 계좌 리스트 
+	 * 
+ 	 * memberEmail
 	 * @return
 	 */
 	@ResponseBody
@@ -311,17 +374,24 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## getMemberBankAccounts " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.getBankAccounts(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
 	/**
 	 * 은행 계좌 등록
+	 * memberEmail
+	 * bankName
+	 * bankAccount
+	 * accountOwner
 	 * @return
 	 */
 	@ResponseBody
@@ -330,17 +400,30 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## registerBankAccount " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.registerBankAccount(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
+		
 	}
 	
 	/**
 	 * 은행 계좌 수정
+	 * 
+	 * 	memberBankAccountNo
+	 * memberEmail
+	 * 
+	 * 아래의 필드는 선택적
+	 * bankName
+	 * bankAccount
+	 * accountOwner
+
 	 * @return
 	 */
 	@ResponseBody
@@ -349,17 +432,22 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## updateBankAccount " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.updateBankAccount(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
 	/**
 	 * 은행 계좌 삭제
+	 * memberBankAccountNo
+	 * memberEmail
 	 * @return
 	 */
 	@ResponseBody
@@ -368,13 +456,16 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## deleteBankAccount " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.deleteBankAccount(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
 	/**
@@ -388,13 +479,16 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## getPolicy " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.getPolicy(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
 	
@@ -420,44 +514,106 @@ public class ApiProviderController extends ApplicationController{
 	
 	/**
 	 * R PAY 출금 신청 하기 
+	 * memberEmail
+	 * memberBankAccountNo
+	 * withdrawalAmount
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/withdrawal_rpay", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
-	public ReturnpBaseResponse withdrawalRpay(ApiRequest apiRequest) {
+	@RequestMapping(value = "/register_withdrawal", method = RequestMethod.POST,produces="text/html;charset=UTF-8" )
+	public ReturnpBaseResponse registerWithdrawal(ApiRequest apiRequest) {
 		System.out.println("## withdrawalRpay " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
-			res = this.apiServiceProvider.withdrawaPoint(apiRequest);
+			res = this.apiServiceProvider.registerWithdrawal(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 	
 	/**
 	 * 출금 신청 목록 가져오기
+	 * memberEmail
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/withdrawal_rpay_history", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
-	public ReturnpBaseResponse getPointWithdrawals(ApiRequest apiRequest) {
+	@RequestMapping(value = "/get_withdrawal_history", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
+	public ReturnpBaseResponse getWithdrawalHistory(ApiRequest apiRequest) {
 		System.out.println("## getPointWithdrawals " );
 		ReturnpBaseResponse  res = null;
+		
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
-			res = this.apiServiceProvider.getPointwithdrawals(apiRequest);
+			res = this.apiServiceProvider.getWithdrawalHistory(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
+	}
+
+	/**
+	 * 출금 정보 삭제
+	 * memberEmail
+	 * pointWithdrawalNo
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/delete_withdrawal", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
+	public ReturnpBaseResponse deleteWithdrawal(ApiRequest apiRequest) {
+		System.out.println("## deleteWithdrawal " );
+		ReturnpBaseResponse  res = null;
+		
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
+		}else {
+			res = this.apiServiceProvider.deleteWithdrawal(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
+		}
+	}
+	
+	/**
+	 * 출금 신청 수정하기
+	 * memberEmail
+	 * pointWithdrawalNo
+	 * memberBankAccountNo
+	 * withdrawalAmount
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/update_withdrawal", method = RequestMethod.GET,produces="text/html;charset=UTF-8" )
+	public ReturnpBaseResponse updatePointWithdrawal(ApiRequest apiRequest) {
+		System.out.println("## updatePointWithdrawal " );
+		ReturnpBaseResponse  res = null;
+		
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
+		}else {
+			res = this.apiServiceProvider.updateWithdrawal(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
+		}
 	}
 	
 	/**
 	 * 나의 회원 목록 가져오기
+	 * 
+	 *  memberEmail
 	 * @return
 	 */
 	@ResponseBody
@@ -466,12 +622,15 @@ public class ApiProviderController extends ApplicationController{
 		System.out.println("## getMyMembers " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_sfid_wrong_key"));
+			return res;
 		}else {
 			res = this.apiServiceProvider.getMyMembers(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
 		}
-		return res;
 	}
 }

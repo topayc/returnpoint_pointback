@@ -129,7 +129,7 @@
       nodeTypeName = #{nodeTypeName,jdbcType=VARCHAR},
       pointAmount = #{pointAmount,jdbcType=REAL},
       greenPointCreateTime = #{greenPointCreateTime,jdbcType=TIMESTAMP},
-      greenPointUpdateTime = #{greenPointUpdateTime,jdbcType=TIMESTAMP}
+      greenPointUpdateTime = NOW()
     where greenPointNo = #{greenPointNo,jdbcType=INTEGER}
   </update>
 </mapper>

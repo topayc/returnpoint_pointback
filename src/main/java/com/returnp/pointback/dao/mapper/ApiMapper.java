@@ -28,11 +28,11 @@ public interface ApiMapper {
 	int  deleteMemberBankAccount(ApiRequest apiRequest);
 	int updateMemberBankAccount(ApiRequest apiRequest);
 	
-	ArrayList<HashMap<String,Object>> selectPointwithdrawals(ApiRequest apiRequest);
-	HashMap<String,Object> selectPointwithdrawal(ApiRequest apiRequest);
-	int  creatPointWithdrawal(ApiRequest apiRequest);
-	int  deletePointWithdrawal(ApiRequest apiRequest);
-	int  updatePointWithdrawal(ApiRequest apiRequest);
+	ArrayList<HashMap<String,Object>> selectWithdrawals(ApiRequest apiRequest);
+	HashMap<String,Object> selectWithdrawal(ApiRequest apiRequest);
+	int  createWithdrawal(ApiRequest apiRequest);
+	int  deleteWithdrawal(ApiRequest apiRequest);
+	int  updateWithdrawal(ApiRequest apiRequest);
 	
 	ArrayList<HashMap<String,Object>> selectMyMembers(ApiRequest apiRequest);
 	HashMap<String,Object> selectRedPoint(ApiRequest apiRequest);

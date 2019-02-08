@@ -46,13 +46,13 @@ public interface ApiServiceProvider {
 	public ReturnpBaseResponse deleteBankAccount(ApiRequest apiRequest);
 	
 	/*출금 관련 */
-	public ReturnpBaseResponse getPointwithdrawals(ApiRequest apiRequest);
+	public ReturnpBaseResponse getWithdrawalHistory(ApiRequest apiRequest);
 	
-	public ReturnpBaseResponse withdrawaPoint(ApiRequest apiRequest);
+	public ReturnpBaseResponse registerWithdrawal(ApiRequest apiRequest);
 	
-	public ReturnpBaseResponse deletePointWithdrawal(ApiRequest apiRequest);
+	public ReturnpBaseResponse deleteWithdrawal(ApiRequest apiRequest);
 	
-	public ReturnpBaseResponse updatePointWithdrawal(ApiRequest apiRequest);
+	public ReturnpBaseResponse updateWithdrawal(ApiRequest apiRequest);
 
 	public ReturnpBaseResponse getMyMembers(ApiRequest apiRequest);
 	

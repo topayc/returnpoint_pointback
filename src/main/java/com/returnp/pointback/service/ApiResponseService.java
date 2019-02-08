@@ -13,8 +13,5 @@ import com.returnp.pointback.dto.response.StringResponse;
 public interface ApiResponseService {
 	public String encode(String encyptKey, ReturnpBaseResponse res);
 	public String decode(String data , String encyptKey);
-	public String generateResponse(HashMap<String, Object> base, String key);
 	public StringResponse generateResponse(ReturnpBaseResponse base, String key);
-	public String generateResponse(String base, String key);
-	public String generateResponse(ArrayList<HashMap<String, Object>> base, String key);
 }

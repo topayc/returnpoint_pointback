@@ -40,12 +40,8 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 	@Override
 	public String encode(String encyptKey, ReturnpBaseResponse res) {
 		try {
-			System.out.println("encrypt");
 			ObjectMapper mapper = new ObjectMapper();
-			
-			System.out.println("응답 원래 문자열");
 			System.out.println(mapper.writeValueAsString(res));
-			
 			return BASE64Util.encodeString(Aes256Crypto.encode(mapper.writeValueAsString(res), encyptKey));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,8 +59,6 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 	public String decode(String data, String encyptKey) {
 		try {
 			String str = Aes256Crypto.decode(BASE64Util.decodeString(data), encyptKey);
-			System.out.println("복호화 문자열");
-			System.out.println(str);
 			return str;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,70 +66,12 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 		return null;
 	}
 
-	@Override
-	public String generateResponse(HashMap<String, Object> base, String key) {
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			String response = mapper.writeValueAsString(base);
-			
-			System.out.println("## 원문 문자열");
-			System.out.println(response);
-			
-			if (this.responseEncrypting) {
-				System.out.println("## 암호화된 문자열");
-				response = BASE64Util.encodeString(Aes256Crypto.encode(response, key));
-				System.out.println(response);
-			}
-			return response;
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public String generateResponse(String base, String key) {
-		try {
-			System.out.println("## 원문 문자열");
-			System.out.println(base);
-			
-			if (this.responseEncrypting) {
-				System.out.println("## 암호화된 문자열");
-				base = BASE64Util.encodeString(Aes256Crypto.encode(base, key));
-				System.out.println(base);
-			}
-			return base;
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public String generateResponse(ArrayList<HashMap<String, Object>> base, String key) {
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			String response = mapper.writeValueAsString(base);
-			
-			System.out.println("## 원문 문자열");
-			System.out.println(response);
-			
-			if (this.responseEncrypting) {
-				System.out.println("## 암호화된 문자열");
-				response = BASE64Util.encodeString(Aes256Crypto.encode(response, key));
-				System.out.println(response);
-			}
-			return response;
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	@Override
 	public StringResponse generateResponse(ReturnpBaseResponse base, String key) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
+			
 			StringResponse stringReponse = new StringResponse();
 			stringReponse.setMessage(base.getMessage());
 			stringReponse.setResult(base.getResult());
@@ -149,7 +85,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 			}
 
 			if (base instanceof ArrayResponse<?>) {
-				plain = mapper.writeValueAsString(((ArrayResponse<?>)base).getData());
+				plain = mapper.writeValueAsString(((ArrayResponse<?>)base).getRows());
 				stringReponse.setData(BASE64Util.encodeString(Aes256Crypto.encode(plain, key)));
 			}
 			

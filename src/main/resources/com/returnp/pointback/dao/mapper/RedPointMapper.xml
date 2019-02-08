@@ -25,9 +25,13 @@
     insert into red_point (redPointNo, memberNo, pointAmount, 
       redPointCreateTime, redPointUpdateTime
       )
-    values (#{redPointNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, #{pointAmount,jdbcType=REAL}, 
-      #{redPointCreateTime,jdbcType=TIMESTAMP}, #{redPointUpdateTime,jdbcType=TIMESTAMP}
+    values (#{redPointNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, NOW(), 
+      NOW()
       )
+      
+          <selectKey keyProperty="redPointNo" resultType="java.lang.Integer" order ="AFTER">
+            SELECT LAST_INSERT_ID()
+     </selectKey>  
   </insert>
   <insert id="insertSelective" parameterType="com.returnp.pointback.model.RedPoint">
     insert into red_point
@@ -89,7 +93,7 @@
     set memberNo = #{memberNo,jdbcType=INTEGER},
       pointAmount = #{pointAmount,jdbcType=REAL},
       redPointCreateTime = #{redPointCreateTime,jdbcType=TIMESTAMP},
-      redPointUpdateTime = #{redPointUpdateTime,jdbcType=TIMESTAMP}
+      redPointUpdateTime = NOW()
     where redPointNo = #{redPointNo,jdbcType=INTEGER}
   </update>
 </mapper>

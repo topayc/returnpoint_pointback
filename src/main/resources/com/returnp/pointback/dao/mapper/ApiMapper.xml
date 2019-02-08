@@ -275,7 +275,7 @@
 	
 	
 	<!-- 회원 포인트 출금 요청 리스트 가져오기-->
-	<select id="selectPointwithdrawals" parameterType="ApiRequest" resultType="HashMap">
+	<select id="selectWithdrawals" parameterType="ApiRequest" resultType="HashMap">
 		SELECT 
 		    PW.pointWithdrawalNo, 
 		    PW.memberNo, 
@@ -309,7 +309,7 @@
 	</select>
 	
 	<!-- 회원 포인트 출금 요청 단일 항목 가져오기-->
-	<select id="selectPointwithdrawal" parameterType="ApiRequest" resultType="HashMap">
+	<select id="selectWithdrawal" parameterType="ApiRequest" resultType="HashMap">
 		SELECT 
 		    PW.pointWithdrawalNo, 
 		    PW.memberNo, 
@@ -344,7 +344,7 @@
 	
 	
 	<!-- 출금 정보 생성-->
-	<insert id="creatPointWithdrawal" parameterType="ApiRequest">
+	<insert id="createWithdrawal" parameterType="ApiRequest">
 		INSERT INTO point_withdrawal(
 				memberNo
 				,memberBankAccountNo
@@ -374,7 +374,7 @@
 	</insert>	
 	
 	<!-- 출금 정보 삭제-->
-	<delete id="deletePointWithdrawal" parameterType="ApiRequest">
+	<delete id="deleteWithdrawal" parameterType="ApiRequest">
    		 delete from 
    		 	point_withdrawal
   		 where 
@@ -382,7 +382,7 @@
   </delete>
   
 <!-- 출금 정보 수정-->
-  <update id="updatePointwithdrawal" parameterType="ApiRequest" >
+  <update id="updateWithdrawal" parameterType="ApiRequest" >
 		UPDATE point_withdrawal
 		<set>
 			<if test="memberNo !=null and memberNo !='' "> memberNo=#{memberNo}, </if>
