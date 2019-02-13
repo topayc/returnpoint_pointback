@@ -23,7 +23,7 @@ public interface ApiServiceProvider {
 	
 	public ReturnpBaseResponse getMemberInfo(ApiRequest apiRequest);
 	
-	public ReturnpBaseResponse checkDuplicated(ApiRequest apiRequest);
+	public ReturnpBaseResponse isRegistered(ApiRequest apiRequest);
 	
 	public ReturnpBaseResponse executeAccumuate(ApiRequest apiRequest);
 	
@@ -52,10 +52,15 @@ public interface ApiServiceProvider {
 	
 	public ReturnpBaseResponse deleteWithdrawal(ApiRequest apiRequest);
 	
+	public ReturnpBaseResponse cancelWithdrawal(ApiRequest apiRequest);
+
 	public ReturnpBaseResponse updateWithdrawal(ApiRequest apiRequest);
 
 	public ReturnpBaseResponse getMyMembers(ApiRequest apiRequest);
 	
 	public HashMap<String, Object> selectApiService(ApiRequest apiRequest);
+
+	
+	
 	
 }

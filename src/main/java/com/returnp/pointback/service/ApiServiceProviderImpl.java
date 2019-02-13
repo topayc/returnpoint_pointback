@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.security.auth.login.AppConfigurationEntry;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.google.zxing.common.StringUtils;
+import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
 import com.returnp.pointback.dao.mapper.ApiMapper;
@@ -122,7 +125,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	 * (완료)
 	 */
 	@Override
-	public ReturnpBaseResponse checkDuplicated(ApiRequest apiRequest) {
+	public ReturnpBaseResponse isRegistered(ApiRequest apiRequest) {
 		ReturnpBaseResponse  res = new ReturnpBaseResponse  ();
 		try {
 			int count = this.apiMapper.selectMemberCount(apiRequest);
@@ -130,14 +133,14 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 				ResponseUtil.setResponse(res, "501", 
 					this.messageUtils.getMessage(
 						"api.duplicated", 
-						new Object[] { apiRequest.getCheckExistType().equals("1") ? apiRequest.getMemberEmail() : apiRequest.getMemberPhone()}));
-				throw new ReturnpException(res);
+						new Object[] { "email".equals(apiRequest.getCheckValueType()) ? "Email " + apiRequest.getMemberEmail() : "Phone " + apiRequest.getMemberPhone()}));
+				return res;
 			}
 			
-			ResponseUtil.setResponse(res, "502", 
+			ResponseUtil.setResponse(res, "500", 
 				this.messageUtils.getMessage(
 					"api.not_duplicated",
-					new Object[] { apiRequest.getCheckExistType().equals("1") ? apiRequest.getMemberEmail() : apiRequest.getMemberPhone()}));
+					new Object[] { "email".equals(apiRequest.getCheckValueType()) ? "Email " + apiRequest.getMemberEmail() : "Phone " + apiRequest.getMemberPhone()}));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -167,39 +170,49 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	public ReturnpBaseResponse join(ApiRequest apiRequest) {
 		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
 		try {
-		
+			HashMap<String, Object> affilaiteMap = this.apiMapper.selectAffiliate(apiRequest);
+			System.out.println(apiRequest.getAfId());
+			if (affilaiteMap == null) {
+				ResponseUtil.setResponse(res, "606", this.messageUtils.getMessage( "api.message.wrong_affiliate"));
+					throw new ReturnpException(res);
+			}else {
+				apiRequest.setJoinRoute((String)affilaiteMap.get("affiliateName"));
+			}
+			
 			/*이메일 중복 확인*/
-			ApiRequest api = new ApiRequest();
-			api.setMemberEmail(apiRequest.getMemberEmail());
-			int count = this.apiMapper.selectMemberCount(apiRequest);
+			ApiRequest apiQuery = new ApiRequest(); 
+			apiQuery.setMemberEmail(apiRequest.getMemberEmail());
+			int count = this.apiMapper.selectMemberCount(apiQuery);
 			
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, "501", 
-					this.messageUtils.getMessage(
-						"api.duplicated", 
-						new Object[] { apiRequest.getMemberEmail() }));
+				ResponseUtil.setResponse(res, "501", this.messageUtils.getMessage( "api.duplicated", new Object[] { "이메일 " + apiRequest.getMemberEmail() }));
 				throw new ReturnpException(res);
 			}
 			
 			/*전화 번호 중복 확인*/
-			api = new ApiRequest();
-			api.setMemberPhone(apiRequest.getMemberPhone());
-			count = this.apiMapper.selectMemberCount(apiRequest);
-			
+			apiQuery = new ApiRequest();
+			apiQuery.setMemberPhone(apiRequest.getMemberPhone());
+			count = this.apiMapper.selectMemberCount(apiQuery);
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, "501", 
-					this.messageUtils.getMessage(
-						"api.duplicated", 
-						new Object[] { apiRequest.getMemberPhone()}));
+				ResponseUtil.setResponse(res, "502", this.messageUtils.getMessage( "api.duplicated", new Object[] { "핸드폰 번호  " + apiRequest.getMemberPhone()}));
 				throw new ReturnpException(res);
 			}
 			
 			apiRequest.setMemberPassword(Util.sha(apiRequest.getMemberPassword()));
+			if (org.apache.commons.lang3.StringUtils.isEmpty(apiRequest.getMemberPassword2())) {
+				apiRequest.setMemberPassword2(apiRequest.getMemberPassword());
+			}
 			apiRequest.setMemberPassword2(Util.sha(apiRequest.getMemberPassword2()));
-			Map<String, Object> recommenderMap = this.apiMapper.selectRecommenderInfo(apiRequest);
 			
+			/* 추천인 번호 설정*/
+			Map<String, Object> recommenderMap = this.apiMapper.selectRecommenderInfo(apiRequest);
 			if (recommenderMap != null) {
 				apiRequest.setRecommenderNo((Integer)recommenderMap.get("memberNo"));
+			}
+			
+			/* 국가 코드 설정*/
+			if (org.apache.commons.lang3.StringUtils.isEmpty(apiRequest.getCountry())) {
+				apiRequest.setCountry("KR");
 			}
 			
 			/* 회원 정보 생성*/
@@ -253,7 +266,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			ApiRequest updateRequest = new ApiRequest();
 			updateRequest.setMemberNo((int)memberMap.get("memberNo"));
-			updateRequest.setMemberStatus("6");
+			updateRequest.setMemberStatus("7");
 			this.apiMapper.updateMember(updateRequest);
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.withdrawal_membership_ok"));
 			return res;
@@ -414,6 +427,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 				throw new ReturnpException(res);
 			}
 			
+			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			apiRequest.setAccountStatus("Y");
 			apiRequest.setRegAdminNo(0);
 			apiRequest.setRegType("U");
@@ -577,12 +591,29 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			HashMap<String, Object> redPointMap = this.apiMapper.selectRedPoint(apiRequest);
+			HashMap<String, Object> policyMap = this.apiMapper.selectPolicy();
+			
+			int rPayWithdrawalMinLimit  = (int)policyMap.get("rPayWithdrawalMinLimit");
+			int rPayWithdrawalMaxLimit  = (int)policyMap.get("rPayWithdrawalMaxLimit");
+			if ((float)apiRequest.getWithdrawalAmount() < (float)rPayWithdrawalMinLimit || 
+					(float)apiRequest.getWithdrawalAmount() > (float)rPayWithdrawalMaxLimit ){
+				ResponseUtil.setResponse( res, "521",
+					this.messageUtils.getMessage("api.message.wrong_withdrawal_arrange", new Object[]{ rPayWithdrawalMinLimit, rPayWithdrawalMaxLimit}));
+				throw new ReturnpException(res);
+			}
+			
 			if ((float)apiRequest.getWithdrawalAmount() > (float)redPointMap.get("pointAmount")) {
 				ResponseUtil.setResponse(res, "505", this.messageUtils.getMessage( "api.withdrawal_than_balance"));
 				throw new ReturnpException(res);
 			} 
 			
 			/*포인트 출금 정보 등록*/
+			apiRequest.setWithdrawalMessage(null);
+			apiRequest.setWithdrawalStatus("1");
+			apiRequest.setWithdrawalPointType("R-POINT");
+			apiRequest.setRegAdminNo(0);
+			apiRequest.setRegType("U");
+			
 			int count = this.apiMapper.createWithdrawal(apiRequest);
 			if (count < 1) {
 				ResponseUtil.setResponse(res, "507", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
@@ -616,6 +647,71 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}
 	}
 	
+	/*
+	 * 출금 취소하기
+	 * memberEmail
+	 * pointWithdrawalNo
+	 * (완료) 
+	 */
+	@Override
+	public ReturnpBaseResponse cancelWithdrawal(ApiRequest apiRequest) {
+		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
+		try {
+			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
+			if (memberMap == null) {
+				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				throw new ReturnpException(res);
+			}
+			/*등록된 출금 정보 */
+			HashMap<String, Object> withdrawalMap = this.apiMapper.selectWithdrawal(apiRequest);
+			/*등록된 출금 정보가 없을 경우 에러  */
+			if (withdrawalMap == null) {
+				ResponseUtil.setResponse(res, "532", this.messageUtils.getMessage( "api.wrong_withdrawal_info"));
+				throw new ReturnpException(res);
+			}
+			
+			/*등록된 출금 정보가 '출금 처리중' 상태가 아닐 경우 취소 불가 */
+			if (!((String)withdrawalMap.get("withdrawalStatus")).equals("1")) {
+				ResponseUtil.setResponse(res, "532", this.messageUtils.getMessage( "api.cant_cancel_withdrawal"));
+				throw new ReturnpException(res);
+			}
+			
+			/*회원의 R-POINT 정보  */
+			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
+			HashMap<String, Object> redPointMap = this.apiMapper.selectRedPoint(apiRequest);
+			
+			/*출금 신청 정보를 출금 취소로 변경후 업데이트*/
+			apiRequest.setWithdrawalStatus("4");
+			int count = this.apiMapper.updateWithdrawal(apiRequest);
+			if (count < 1) {
+				ResponseUtil.setResponse(res, "507", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
+				throw new ReturnpException(res);
+			}
+			
+			/* 출금 취소한  금액만큼 레드포인트 증가 후 업데이트 */
+			ApiRequest ar = new ApiRequest();
+			ar.setRedPointNo((int)redPointMap.get("redPointNo"));
+			ar.setPointAmount((float)redPointMap.get("pointAmount") +  Float.parseFloat(String.valueOf(withdrawalMap.get("withdrawalAmount"))));
+			count = this.apiMapper.updateRedPoint(ar);
+			if (count < 1) {
+				ResponseUtil.setResponse(res, "508", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
+				throw new ReturnpException(res);
+			}
+			
+			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			return res;
+			
+		}catch(ReturnpException e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return e.getBaseResponse();
+		}catch(Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			return res;
+		}
+	}
 	/*
 	 * 출금 정보 삭제
 	 * memberEmail
@@ -666,23 +762,57 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	public ReturnpBaseResponse updateWithdrawal(ApiRequest apiRequest) {
 		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
 		try {
-			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
+			Map<String, Object> memberMap = null;
+			HashMap<String, Object> withdrawalMap = null;
+			HashMap<String, Object> redPointMap = null;
+			
+			memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
-				throw new ReturnpException(res);
-			}
+                ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+                throw new ReturnpException(res);
+            }
 			
-			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
-			int count = this.apiMapper.updateWithdrawal(apiRequest);
-			if (count < 1) {
-				ResponseUtil.setResponse(res, "510", this.messageUtils.getMessage( "api.create_withdrawal_info_udpate_fail"));
-				throw new ReturnpException(res);
-			}
-			
-			res.setData(this.apiMapper.selectWithdrawal(apiRequest));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.create_withdrawal_info_udpate_success"));
-			return res;
-			
+			/*등록된 출금 정보 */
+            withdrawalMap = this.apiMapper.selectWithdrawal(apiRequest);
+            /*등록된 출금 정보가 없을 경우 에러  */
+            if (withdrawalMap == null) {
+                ResponseUtil.setResponse(res, "545", this.messageUtils.getMessage( "api.wrong_withdrawal_info"));
+                throw new ReturnpException(res);
+            }
+            
+            /*등록된 출금 정보가 '출금 처리중' 상태가 아닐 경우 수정  불가 */
+            if (!((String)withdrawalMap.get("withdrawalStatus")).equals("1")) {
+                ResponseUtil.setResponse(res, "5490", this.messageUtils.getMessage( "api.cant_modify_withdrawal"));
+                throw new ReturnpException(res);
+            }
+            
+            /*회원의 R-POINT 정보  */
+            apiRequest.setMemberNo((int)memberMap.get("memberNo"));
+            redPointMap = this.apiMapper.selectRedPoint(apiRequest);
+            
+            /* 출금 신청 정보 수정 업데이트  */
+            if (this.apiMapper.updateWithdrawal(apiRequest) < 1) {
+                ResponseUtil.setResponse(res, "508", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
+                throw new ReturnpException(res);
+            }
+          
+            /* 출금액 수정 변경정보에 따른 G-POINT 업데이트  */
+            ApiRequest ar = new ApiRequest();
+            float updateRp = 0.0f;
+            float finalRp = 0;
+           
+            updateRp = (int)withdrawalMap.get("withdrawalAmount")  - apiRequest.getWithdrawalAmount() ;
+            finalRp  = (float)redPointMap.get("pointAmount") + updateRp;
+
+            ar.setRedPointNo((int)redPointMap.get("redPointNo"));
+            ar.setPointAmount(finalRp);
+            if (this.apiMapper.updateRedPoint(ar) < 1) {
+                ResponseUtil.setResponse(res, "535", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
+                throw new ReturnpException(res);
+            }
+            
+            ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+            return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

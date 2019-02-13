@@ -9,6 +9,7 @@ public interface ApiMapper {
 	HashMap<String,Object> selectMemberInfo(ApiRequest apiRequest);
 	HashMap<String,Object> selectMember(ApiRequest apiRequest);
 	HashMap<String,Object> selectApiService(ApiRequest apiRequest);
+	HashMap<String,Object> selectAffiliate(ApiRequest apiRequest);
 	
 	int  createMember(ApiRequest apiRequest);
 	int  updateMember(ApiRequest apiRequest);

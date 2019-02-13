@@ -82,11 +82,16 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 			if (base instanceof ObjectResponse<?>) {
 				plain = mapper.writeValueAsString(((ObjectResponse<?>)base).getData());
 				stringReponse.setData(BASE64Util.encodeString(Aes256Crypto.encode(plain, key)));
+				stringReponse.setTotal(-1);
 			}
 
-			if (base instanceof ArrayResponse<?>) {
+			else if (base instanceof ArrayResponse<?>) {
 				plain = mapper.writeValueAsString(((ArrayResponse<?>)base).getRows());
 				stringReponse.setData(BASE64Util.encodeString(Aes256Crypto.encode(plain, key)));
+				stringReponse.setTotal(((ArrayResponse<?>)base).getTotal());
+			} 
+			else  {
+				stringReponse.setTotal(-1);
 			}
 			
 			return stringReponse;

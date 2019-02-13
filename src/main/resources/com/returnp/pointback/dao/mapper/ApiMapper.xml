@@ -58,6 +58,7 @@
 			memberStatus,    
 			memberPhone,
 			recommenderNo,
+			joinRoute,
 			<!-- isTerms,
 			isPrivacy,
 			isSpam, -->		
@@ -71,8 +72,9 @@
 			#{memberEmail},
 			#{memberPassword},
 			'1',
-			#{phone},
+			#{memberPhone},
 			#{recommenderNo},
+			#{joinRoute},
 			<!-- #{terms},
 			#{privacy},
 			#{spam}, -->		
@@ -80,7 +82,7 @@
 			#{country},		
 			#{language},		
 			NOW(),
-			NOW(),
+			NOW()
 		)
 		
 	   <selectKey keyProperty="memberNo" resultType="java.lang.Integer" order ="AFTER">
@@ -92,18 +94,20 @@
 	<update id="updateMember" parameterType="ApiRequest" >
     update member
     <set>
-      <if test="memberName != null"> memberName = #{memberName,jdbcType=VARCHAR}, </if>
-      <if test="memberEmail != null"> memberEmail = #{memberEmail,jdbcType=VARCHAR}, </if>
+    <!--   <if test="memberName != null"> memberName = #{memberName,jdbcType=VARCHAR}, </if>
+      <if test="memberEmail != null"> memberEmail = #{memberEmail,jdbcType=VARCHAR}, </if> -->
       <if test="memberPassword != null"> memberPassword = #{memberPassword,jdbcType=VARCHAR}, </if>
       <if test="memberPassword2 != null"> memberPassword2 = #{memberPassword2,jdbcType=VARCHAR}, </if>
       <if test="memberType != null"> memberType = #{memberType,jdbcType=VARCHAR}, </if>
       <if test="memberStatus != null"> memberStatus = #{memberStatus,jdbcType=VARCHAR}, </if>
       <if test="memberAuthType != null"> memberAuthType = #{memberAuthType,jdbcType=VARCHAR}, </if>
-      <if test="memberPhone != null"> memberPhone = #{memberPhone,jdbcType=VARCHAR}, </if>
+      <!-- <if test="memberPhone != null"> memberPhone = #{memberPhone,jdbcType=VARCHAR}, </if> -->
       <if test="recommenderNo != null"> recommenderNo = #{recommenderNo,jdbcType=INTEGER}, </if>
       <if test="joinRoute != null"> joinRoute = #{joinRoute,jdbcType=VARCHAR}, </if>
       <if test="statusReason != null"> statusReason = #{statusReason,jdbcType=VARCHAR}, </if>
       <if test="isSoleDist != null"> isSoleDist = #{isSoleDist,jdbcType=CHAR}, </if>
+      <if test="country != null"> country = #{country,jdbcType=CHAR}, </if>
+      <if test="language != null"> language = #{language,jdbcType=CHAR}, </if>
       <if test="isRecommender != null"> isRecommender = #{isRecommender,jdbcType=CHAR}, </if>
       <if test="isSaleManager != null"> isSaleManager = #{isSaleManager,jdbcType=CHAR}, </if>
       <if test="isBranch != null"> isBranch = #{isBranch,jdbcType=CHAR}, </if>
@@ -147,7 +151,7 @@
 			0,
 			#{nodeNo},
 			NOW(),
-			NOW(),
+			NOW()
 		)
 		
 	 <selectKey keyProperty="greenPointNo" resultType="java.lang.Integer" order ="AFTER">
@@ -188,7 +192,7 @@
 
 	<!-- 언어 목록 가져요기 -->
 	<select id="selectLanguages"  resultType="HashMap">
-		SELECT * FROM language 
+		SELECT * FROM language where useStatus = 'Y'
 	</select>
 
 	<!-- 정책 가져요기 -->
@@ -224,7 +228,6 @@
 				,accountOwner
 				,bankAccount
 				,accountStatus
-				,statusMessage
 				,regAdminNo
 				,regType
 				,createTime
@@ -235,9 +238,8 @@
 				,#{accountOwner}
 				,#{bankAccount}
 				,#{accountStatus}
-				,#{statusMessage}
-				,#{regAdminNo}
-				,#{regType}
+				,0
+				,"U"
 				,NOW()
 				,NOW()	
 		)
@@ -251,7 +253,7 @@
    		 delete from 
    		 	member_bank_account
   		 where 
-  		 	memberBankAccountNo = #{memberBankAccountNo,jdbcType=Integer} and memberNo= #{memberNo,jdbcType=INTEGER}
+  		 	memberBankAccountNo = #{memberBankAccountNo,jdbcType=INTEGER} and memberNo= #{memberNo,jdbcType=INTEGER}
   </delete>
   
   <update id="updateMemberBankAccount" parameterType="ApiRequest" >
@@ -265,6 +267,9 @@
 			</if>
 			<if test="bankAccount !=null and bankAccount !='' ">
 				bankAccount=#{bankAccount},
+			</if>
+			<if test="accountStatus !=null and accountStatus !='' ">
+				accountStatus=#{accountStatus},
 			</if>
 				updateTime=NOW()
 		</set>
@@ -361,8 +366,8 @@
 				,#{memberBankAccountNo}
 				,#{withdrawalAmount}
 				,'1'
-				,'R'
-				,#{statusMessage}
+				,'R-POINT'
+				,#{withdrawalMessage}
 				,'U'
 				,0
 				,NOW()
@@ -394,7 +399,7 @@
 				updateTime=NOW()
 		</set>
 		<where>
-			AND pointWithdrawalNo= #{pointWithdrawalNo} and memeberNo = #{memberNo,jdbcType=INTEGER}
+			AND pointWithdrawalNo= #{pointWithdrawalNo}
 		</where>		 
 	</update>
 	
@@ -405,7 +410,12 @@
 	
 		<!-- sfId 에 대한 헤당 api service 데이타 반환 --> 
 	<select id="selectApiService" parameterType="ApiRequest" resultType="HashMap">
-		SELECT * FROM api_service  where tId = #{sfId}
+		SELECT * FROM api_service  where tId = #{afId}
+	</select> 
+
+		<!-- 가맹점 정보 찾기--> 
+	<select id="selectAffiliate" parameterType="ApiRequest" resultType="HashMap">
+		SELECT * FROM affiliate  where affiliateSerial  = #{afId}
 	</select> 
 	
 	

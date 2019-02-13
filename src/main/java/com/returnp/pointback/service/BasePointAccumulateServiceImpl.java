@@ -76,6 +76,12 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	@Override
 	public ReturnpBaseResponse accumulate(DataMap dataMap) {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		/*
+		 * 기본 결제 번호만으로는 중복이 될 수 있기 때문에 
+		 * 결제 번호에 TID 를 연결하여 TID 별 결제 번호를 생성
+		 *  */
+		dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getDateStr("pan")); 
+		
 		try {
 			switch(dataMap.getStr("acc_from").trim()){
 				case AppConstants.PaymentTransactionType.QR:
@@ -94,6 +100,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 				case AppConstants.PaymentTransactionType.SHOPPING_MAL:
 					break;
 			}
+		
 			
 			this.validateMemberAuth(dataMap.getStr("memberEmail"),dataMap.getStr("phoneNumber"),dataMap.getStr("phoneNumberCountry"));
 			this.validateAffiliateAuth(dataMap.getStr("af_id"));
@@ -289,7 +296,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 					}
 				 }else {
 					 /* 존재하지 않는 내역에 대한 취소 요청  */	
-					 ResponseUtil.setResponse(res, "616", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
+					 ResponseUtil.setResponse(res, "616", this.messageUtils.getMessage("pointback.message.already_cancel_accumulate_or_error"));
 						throw new ReturnpException(res);
 				 }
 			}
@@ -817,6 +824,12 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	@Override
 	public ReturnpBaseResponse cancelAccumulate(DataMap dataMap) {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		/*
+		 * 기본 결제 번호만으로는 중복이 될 수 있기 때문에 
+		 * 결제 번호에 TID 를 연결하여 TID 별 결제 번호를 생성
+		 *  */
+		dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getDateStr("pan")); 
+		
 		try {
 			switch(dataMap.getStr("acc_from").trim()){
 				case AppConstants.PaymentTransactionType.QR:

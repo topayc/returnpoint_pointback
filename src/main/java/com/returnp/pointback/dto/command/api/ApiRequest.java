@@ -3,7 +3,7 @@ package com.returnp.pointback.dto.command.api;
 import java.util.Date;
 
 public class ApiRequest {
-	private String sfId;  /* 외부 연동 클라이언트에 부여한 고유 아이디 */
+	private String afId;  /* 외부 연동 클라이언트에 부여한 고유 아이디 */
 	private String apiKey; /* 외부 연동 클라이언트에 부여한 서비스 권한 키  */
 	
 	private Integer greenPointNo;
@@ -21,12 +21,28 @@ public class ApiRequest {
 	private String recommendNo;
 	private String memberPhone;
 	private String language;
+	private String memberType;
+	private String memberAuthType;
 	private String recommenderEmail;
+	private String statusReason;
+	private String joinRoute;
 	private String memberStatus;
+	private String isSoleDist;
+	private String isRecommender;
+	private String isSaleManager;
+	private String isBranch;
+	private String isAffiliate;
+	private String isAgency;
+	private String greenPointAccStatus;
+	private String redPointAccStatus;
+	private String greenPointUseStatus;
+	private String redPointUseStatus;
+	private Date createTime;
+	private Date updateTime;
 	private Integer recommenderNo;
 	
-	private String checkExistValue; /* 중복 체크할 값*/
-	private String checkExistType;  /* 1 : 이메일 중복 , 2 : 전화번호 중복*/
+	private String checkValue; /* 중복 체크할 값*/
+	private String checkValueType;  /* 1 : 이메일 중복 , 2 : 전화번호 중복*/
 	
     private String affiliateSerial;  /* 결제한 가맹점 T- ID*/
     private String paymentSource; /*1 : 신용카드, 2 : 현금결제, 3 : R Point 결제*/
@@ -53,91 +69,45 @@ public class ApiRequest {
     private String  nodeType;
     private String  nodeTypeName;
     
-    private String qrOrg;
-    private String afId;
+    private String statusMessage;
+    private String withdrawalStatus;
+    private String withdrawalMessage;
+    private String withdrawalPointType;
+    
+    
+    
+    public String getWithdrawalPointType() {
+		return withdrawalPointType;
+	}
+	public void setWithdrawalPointType(String withdrawalPointType) {
+		this.withdrawalPointType = withdrawalPointType;
+	}
+	public String getWithdrawalMessage() {
+		return withdrawalMessage;
+	}
+	public void setWithdrawalMessage(String withdrawalMessage) {
+		this.withdrawalMessage = withdrawalMessage;
+	}
+	public String getWithdrawalStatus() {
+		return withdrawalStatus;
+	}
+	public void setWithdrawalStatus(String withdrawalStatus) {
+		this.withdrawalStatus = withdrawalStatus;
+	}
+	public String getStatusMessage() {
+		return statusMessage;
+	}
+	public void setStatusMessage(String statusMessage) {
+		this.statusMessage = statusMessage;
+	}
+	private String qrOrg;
     
     private float pointAmount;
-    
-    
-    
-    
-	public float getPointAmount() {
-		return pointAmount;
-	}
-	public void setPointAmount(float pointAmount) {
-		this.pointAmount = pointAmount;
-	}
 	public String getAfId() {
 		return afId;
 	}
 	public void setAfId(String afId) {
 		this.afId = afId;
-	}
-	public String getQrOrg() {
-		return qrOrg;
-	}
-	public void setQrOrg(String qrOrg) {
-		this.qrOrg = qrOrg;
-	}
-	public Integer getPointWithdrawalNo() {
-		return pointWithdrawalNo;
-	}
-	public void setPointWithdrawalNo(Integer pointWithdrawalNo) {
-		this.pointWithdrawalNo = pointWithdrawalNo;
-	}
-	public String getRegType() {
-		return regType;
-	}
-	public void setRegType(String regType) {
-		this.regType = regType;
-	}
-	public Integer getRegAdminNo() {
-		return regAdminNo;
-	}
-	public void setRegAdminNo(Integer regAdminNo) {
-		this.regAdminNo = regAdminNo;
-	}
-	public String getAccountStatus() {
-		return accountStatus;
-	}
-	public void setAccountStatus(String accountStatus) {
-		this.accountStatus = accountStatus;
-	}
-	public Integer getMemberBankAccountNo() {
-		return memberBankAccountNo;
-	}
-	public void setMemberBankAccountNo(Integer memberBankAccountNo) {
-		this.memberBankAccountNo = memberBankAccountNo;
-	}
-	public String getMemberStatus() {
-		return memberStatus;
-	}
-	public void setMemberStatus(String memberStatus) {
-		this.memberStatus = memberStatus;
-	}
-	public Integer getNodeNo() {
-		return nodeNo;
-	}
-	public void setNodeNo(Integer nodeNo) {
-		this.nodeNo = nodeNo;
-	}
-	public String getNodeType() {
-		return nodeType;
-	}
-	public void setNodeType(String nodeType) {
-		this.nodeType = nodeType;
-	}
-	public String getNodeTypeName() {
-		return nodeTypeName;
-	}
-	public void setNodeTypeName(String nodeTypeName) {
-		this.nodeTypeName = nodeTypeName;
-	}
-	public String getSfId() {
-		return sfId;
-	}
-	public void setSfId(String sfId) {
-		this.sfId = sfId;
 	}
 	public String getApiKey() {
 		return apiKey;
@@ -205,7 +175,6 @@ public class ApiRequest {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
 	public String getRecommendNo() {
 		return recommendNo;
 	}
@@ -224,11 +193,113 @@ public class ApiRequest {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+	public String getMemberType() {
+		return memberType;
+	}
+	public void setMemberType(String memberType) {
+		this.memberType = memberType;
+	}
+	public String getMemberAuthType() {
+		return memberAuthType;
+	}
+	public void setMemberAuthType(String memberAuthType) {
+		this.memberAuthType = memberAuthType;
+	}
 	public String getRecommenderEmail() {
 		return recommenderEmail;
 	}
 	public void setRecommenderEmail(String recommenderEmail) {
 		this.recommenderEmail = recommenderEmail;
+	}
+	public String getStatusReason() {
+		return statusReason;
+	}
+	public void setStatusReason(String statusReason) {
+		this.statusReason = statusReason;
+	}
+	public String getJoinRoute() {
+		return joinRoute;
+	}
+	public void setJoinRoute(String joinRoute) {
+		this.joinRoute = joinRoute;
+	}
+	public String getMemberStatus() {
+		return memberStatus;
+	}
+	public void setMemberStatus(String memberStatus) {
+		this.memberStatus = memberStatus;
+	}
+	public String getIsSoleDist() {
+		return isSoleDist;
+	}
+	public void setIsSoleDist(String isSoleDist) {
+		this.isSoleDist = isSoleDist;
+	}
+	public String getIsRecommender() {
+		return isRecommender;
+	}
+	public void setIsRecommender(String isRecommender) {
+		this.isRecommender = isRecommender;
+	}
+	public String getIsSaleManager() {
+		return isSaleManager;
+	}
+	public void setIsSaleManager(String isSaleManager) {
+		this.isSaleManager = isSaleManager;
+	}
+	public String getIsBranch() {
+		return isBranch;
+	}
+	public void setIsBranch(String isBranch) {
+		this.isBranch = isBranch;
+	}
+	public String getIsAffiliate() {
+		return isAffiliate;
+	}
+	public void setIsAffiliate(String isAffiliate) {
+		this.isAffiliate = isAffiliate;
+	}
+	public String getIsAgency() {
+		return isAgency;
+	}
+	public void setIsAgency(String isAgency) {
+		this.isAgency = isAgency;
+	}
+	public String getGreenPointAccStatus() {
+		return greenPointAccStatus;
+	}
+	public void setGreenPointAccStatus(String greenPointAccStatus) {
+		this.greenPointAccStatus = greenPointAccStatus;
+	}
+	public String getRedPointAccStatus() {
+		return redPointAccStatus;
+	}
+	public void setRedPointAccStatus(String redPointAccStatus) {
+		this.redPointAccStatus = redPointAccStatus;
+	}
+	public String getGreenPointUseStatus() {
+		return greenPointUseStatus;
+	}
+	public void setGreenPointUseStatus(String greenPointUseStatus) {
+		this.greenPointUseStatus = greenPointUseStatus;
+	}
+	public String getRedPointUseStatus() {
+		return redPointUseStatus;
+	}
+	public void setRedPointUseStatus(String redPointUseStatus) {
+		this.redPointUseStatus = redPointUseStatus;
+	}
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 	public Integer getRecommenderNo() {
 		return recommenderNo;
@@ -236,17 +307,17 @@ public class ApiRequest {
 	public void setRecommenderNo(Integer recommenderNo) {
 		this.recommenderNo = recommenderNo;
 	}
-	public String getCheckExistValue() {
-		return checkExistValue;
+	public String getCheckValue() {
+		return checkValue;
 	}
-	public void setCheckExistValue(String checkExistValue) {
-		this.checkExistValue = checkExistValue;
+	public void setCheckValue(String checkValue) {
+		this.checkValue = checkValue;
 	}
-	public String getCheckExistType() {
-		return checkExistType;
+	public String getCheckValueType() {
+		return checkValueType;
 	}
-	public void setCheckExistType(String checkExistType) {
-		this.checkExistType = checkExistType;
+	public void setCheckValueType(String checkValueType) {
+		this.checkValueType = checkValueType;
 	}
 	public String getAffiliateSerial() {
 		return affiliateSerial;
@@ -296,6 +367,18 @@ public class ApiRequest {
 	public void setWithdrawalAmount(Integer withdrawalAmount) {
 		this.withdrawalAmount = withdrawalAmount;
 	}
+	public Integer getPointWithdrawalNo() {
+		return pointWithdrawalNo;
+	}
+	public void setPointWithdrawalNo(Integer pointWithdrawalNo) {
+		this.pointWithdrawalNo = pointWithdrawalNo;
+	}
+	public Integer getMemberBankAccountNo() {
+		return memberBankAccountNo;
+	}
+	public void setMemberBankAccountNo(Integer memberBankAccountNo) {
+		this.memberBankAccountNo = memberBankAccountNo;
+	}
 	public String getBankName() {
 		return bankName;
 	}
@@ -320,7 +403,52 @@ public class ApiRequest {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
-    
-    
-    
+	public String getAccountStatus() {
+		return accountStatus;
+	}
+	public void setAccountStatus(String accountStatus) {
+		this.accountStatus = accountStatus;
+	}
+	public String getRegType() {
+		return regType;
+	}
+	public void setRegType(String regType) {
+		this.regType = regType;
+	}
+	public Integer getRegAdminNo() {
+		return regAdminNo;
+	}
+	public void setRegAdminNo(Integer regAdminNo) {
+		this.regAdminNo = regAdminNo;
+	}
+	public Integer getNodeNo() {
+		return nodeNo;
+	}
+	public void setNodeNo(Integer nodeNo) {
+		this.nodeNo = nodeNo;
+	}
+	public String getNodeType() {
+		return nodeType;
+	}
+	public void setNodeType(String nodeType) {
+		this.nodeType = nodeType;
+	}
+	public String getNodeTypeName() {
+		return nodeTypeName;
+	}
+	public void setNodeTypeName(String nodeTypeName) {
+		this.nodeTypeName = nodeTypeName;
+	}
+	public String getQrOrg() {
+		return qrOrg;
+	}
+	public void setQrOrg(String qrOrg) {
+		this.qrOrg = qrOrg;
+	}
+	public float getPointAmount() {
+		return pointAmount;
+	}
+	public void setPointAmount(float pointAmount) {
+		this.pointAmount = pointAmount;
+	}
 }
