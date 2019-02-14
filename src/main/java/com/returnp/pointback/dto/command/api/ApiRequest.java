@@ -66,6 +66,7 @@ public class ApiRequest {
     
     
     private Integer nodeNo;
+    private Integer paymentTransactionNo;
     private String  nodeType;
     private String  nodeTypeName;
     
@@ -74,9 +75,40 @@ public class ApiRequest {
     private String withdrawalMessage;
     private String withdrawalPointType;
     
+    private Integer offset;
+    private Integer pageSize;
+    private String searchDateMonth;
     
     
-    public String getWithdrawalPointType() {
+    public Integer getPaymentTransactionNo() {
+		return paymentTransactionNo;
+	}
+	public void setPaymentTransactionNo(Integer paymentTransactionNo) {
+		this.paymentTransactionNo = paymentTransactionNo;
+	}
+	public String getSearchDateMonth() {
+		return searchDateMonth;
+	}
+	public void setSearchDateMonth(String searchDateMonth) {
+		this.searchDateMonth = searchDateMonth;
+	}
+	public ApiRequest() {
+    	this.offset = 0;
+    	this.pageSize = 50;
+    }
+    public Integer getOffset() {
+		return offset;
+	}
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+	public Integer getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
+	}
+	public String getWithdrawalPointType() {
 		return withdrawalPointType;
 	}
 	public void setWithdrawalPointType(String withdrawalPointType) {

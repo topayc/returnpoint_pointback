@@ -503,9 +503,21 @@ public class ApiProviderController extends ApplicationController{
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/gpoint_accumulate_history", method = RequestMethod.GET,produces="application/json" )
+	@RequestMapping(value = "/get_gpoint_accumulate_history", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse getGpointAccumuateHistory(ApiRequest apiRequest) {
-		return null;
+		System.out.println("## getPolicy " );
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			return res;
+		}else {
+			res = this.apiServiceProvider.getGpointAccumuateHistory(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
+		}
 	}
 	
 	/**
@@ -660,6 +672,30 @@ public class ApiProviderController extends ApplicationController{
 			return res;
 		}else {
 			res = this.apiServiceProvider.getMyMembers(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
+		}
+	}
+	
+	/**
+	 * 나의 포인트 정보 가져오기
+	 * 회원포인트, 가맹점 포인트, 총판 포인드등 노드별 G-POINT 와 R-POINT 정보 
+	 *  memberEmail
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/get_my_point_infos", method = RequestMethod.GET,produces="application/json" )
+	public ReturnpBaseResponse getMyPointInfo(ApiRequest apiRequest) {
+		System.out.println("## getMyPointINfo " );
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			return res;
+		}else {
+			res = this.apiServiceProvider.getMyTotalPointInfo(apiRequest);
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}

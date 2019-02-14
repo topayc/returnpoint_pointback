@@ -38,4 +38,6 @@ public interface ApiMapper {
 	ArrayList<HashMap<String,Object>> selectMyMembers(ApiRequest apiRequest);
 	HashMap<String,Object> selectRedPoint(ApiRequest apiRequest);
 	int  updateRedPoint(ApiRequest apiRequest);
+	ArrayList<HashMap<String, Object>> selectMyTotalPointInfo(ApiRequest apiRequest);
+	ArrayList<HashMap<String, Object>> selectMyGPointAccumuateHistory(ApiRequest apiRequest);
 }

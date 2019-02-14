@@ -417,6 +417,58 @@
 	<select id="selectAffiliate" parameterType="ApiRequest" resultType="HashMap">
 		SELECT * FROM affiliate  where affiliateSerial  = #{afId}
 	</select> 
+
+	<select id="selectMyTotalPointInfo" parameterType="ApiRequest" resultType="HashMap">
+	select M.memberName, M.memberEmail,  A.* from 
+		(
+			SELECT memberNo , "G-POINT" as pointType , "soledist" as pointTarget, "총판 G-POINT"  as pointTypeKr, "SoldDist G-POINT"  as  pointTypeEn, pointAmount  as pointAmount 
+			FROM green_point where memberNo = #{memberNo} and nodeType = "7"
+			union 
+			SELECT memberNo ,"G-POINT" as pointType , "branch" as pointTarget, "지사 G-POINT"  as pointTypeKr, "Branch G-POINT"  as  pointTypeEn, pointAmount  as pointAmount 
+			FROM green_point where memberNo = #{memberNo} and nodeType = "3"
+			union 
+			SELECT memberNo ,"G-POINT" as pointType , "agency" as pointTarget, "대리점 G-POINT"  as pointTypeKr, "Agency G-POINT"  as  pointTypeEn, pointAmount  as pointAmount 
+			FROM green_point where memberNo = #{memberNo} and nodeType = "4"
+			union
+			SELECT memberNo ,"G-POINT" as pointType , "affiliate" as pointTarget, "협력업체 G-POINT"  as pointTypeKr, "affiliate G-POINT"  as  pointTypeEn, pointAmount  as pointAmount 
+			FROM green_point where memberNo = #{memberNo} and nodeType = "5"
+			union
+			SELECT memberNo ,"G-POINT" as pointType , "member" as pointTarget, "회원 G-POINT"  as pointTypeKr, "member G-POINT"  as  pointTypeEn, pointAmount  as pointAmount 
+			FROM green_point where memberNo = #{memberNo} and nodeType = "1"
+		)	as A
+		inner join member as M on A.memberNo = M.memberNo
+		
+	</select> 
 	
+	<select id="selectMyGPointAccumuateHistory" parameterType="ApiRequest" resultType="HashMap">
+	select 
+	    PPR.memberNo, 
+	    PPR.paymentTransactionNo, 
+	    PPR.nodeNo, 
+	    PPR.nodeType, 
+	    PPR.accRate, 
+	    PPR.pointbackAmount, 
+	    PPR.createTime, 
+	    PPR.updateTime,
+	    M.memberName,
+	    M.memberPhone,
+	    M.memberEmail,
+	    VPT.memberName as paymentMemberName,
+	    VPT.paymentApprovalAmount,
+	    VPT.affiliateSerial,
+	    VPT.paymentApprovalDateTime
+  	 from payment_pointback_record as PPR
+  	inner join member as M on (PPR.memberNo = M.memberNo)  
+    inner join payment_transaction as  VPT on (PPR.paymentTransactionNo = VPT.paymentTransactionNo)
+	where 1 = 1 
+	<if test="memberNo != null  and  memberNo  != 0"> AND PPR.memberNo = #{memberNo} </if>
+	<if test="memberEmail != null "> AND M.memberEmail = #{memberEmail} </if>
+	<if test="paymentTransactionNo != null "> AND PPR.paymentTransactionNo = #{paymentTransactionNo} </if>
+	<if test="searchDateMonth != null "> AND
+		 DATE_FORMAT(VPT.paymentApprovalDateTime, "%Y-%m") =  DATE_FORMAT(#{searchDateMonth}, "%Y-%m")
+	</if>
+	order by paymentApprovalDateTime desc
+	limit ${pageSize} offset ${offset}
+	</select> 
 	
 </mapper>

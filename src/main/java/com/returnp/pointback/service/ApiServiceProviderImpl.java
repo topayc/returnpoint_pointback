@@ -858,31 +858,68 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}
 	}
 
-	/*
-	 * 결제에 해당 하는 포인트 적립
-	 * memberEmail
-	 */
 	@Override
-	public ReturnpBaseResponse executeAccumuate(ApiRequest apiRequest) {
-		return null;
+	public ReturnpBaseResponse getMyTotalPointInfo(ApiRequest apiRequest) {
+		ArrayResponse<HashMap<String, Object>> res = new ArrayResponse<HashMap<String, Object>>();
+		try {
+			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
+			if (memberMap == null) {
+				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				throw new ReturnpException(res);
+			}
+			
+			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
+			ArrayList<HashMap<String, Object>> myPointInfos = this.apiMapper.selectMyTotalPointInfo(apiRequest);
+			res.setRows(myPointInfos);
+			res.setTotal(myPointInfos.size());
+			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			return res;
+		}catch(ReturnpException e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return e.getBaseResponse();
+		}catch(Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("api.message.inner_server_error"));
+			return res;
+		}
 	}
 	
-	/*
-	 * 결제에 해당 하는 포인트 적립 취소 
-	 * memberEmail
-	 */
 	@Override
-	public ReturnpBaseResponse cancelAccumuate(ApiRequest apiRequest) {
-		return null;
+	public HashMap<String, Object> selectApiService(ApiRequest apiRequest) {
+		return this.apiMapper.selectApiService(apiRequest);
 	}
-
+	
 	/*
 	 * G 포인트 적립 내역 
 	 * memberEmail
 	 */
 	@Override
 	public ReturnpBaseResponse getGpointAccumuateHistory(ApiRequest apiRequest) {
-		return null;
+		ArrayResponse<HashMap<String, Object>> res = new ArrayResponse<HashMap<String, Object>>();
+		try {
+			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
+			if (memberMap == null) {
+				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				throw new ReturnpException(res);
+			}
+			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
+			ArrayList<HashMap<String, Object>> myPointInfos = this.apiMapper.selectMyGPointAccumuateHistory(apiRequest);
+			res.setRows(myPointInfos);
+			res.setTotal(myPointInfos.size());
+			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			return res;
+		}catch(ReturnpException e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return e.getBaseResponse();
+		}catch(Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("api.message.inner_server_error"));
+			return res;
+		}
 	}
 
 	/*
@@ -893,9 +930,26 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	public ReturnpBaseResponse getRpointConversionHistory(ApiRequest apiRequest) {
 		return null;
 	}
-
+	
+	
+	/*
+	 * 결제에 해당 하는 포인트 적립
+	 * 해당 작업은 BasePointAccumulateService 에서 처리 하기 때문에 여기서는 빈 구현만 제공
+	 * memberEmail
+	 */
 	@Override
-	public HashMap<String, Object> selectApiService(ApiRequest apiRequest) {
-		return this.apiMapper.selectApiService(apiRequest);
+	public ReturnpBaseResponse executeAccumuate(ApiRequest apiRequest) {
+		return null;
 	}
+	
+	/*
+	 * 결제에 해당 하는 포인트 적립 취소 
+	 * 해당 작업은 BasePointAccumulateService 에서 처리 하기 때문에 여기서는 빈 구현만 제공
+	 * memberEmail
+	 */
+	@Override
+	public ReturnpBaseResponse cancelAccumuate(ApiRequest apiRequest) {
+		return null;
+	}
+	
 }

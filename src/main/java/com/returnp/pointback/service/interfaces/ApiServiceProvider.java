@@ -60,6 +60,8 @@ public interface ApiServiceProvider {
 	
 	public HashMap<String, Object> selectApiService(ApiRequest apiRequest);
 
+	public ReturnpBaseResponse getMyTotalPointInfo(ApiRequest apiRequest);
+
 	
 	
 	
