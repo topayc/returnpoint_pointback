@@ -193,7 +193,8 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			PaymentTransaction paymentTransaction = new PaymentTransaction();
 			paymentTransaction.setPaymentApprovalNumber(pan);
 			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(paymentTransaction);
-			
+			System.out.println("결제 번호");
+			System.out.println(pan);
 			/* 해당 결제 승인 번호로 2개의 내역이 존재하는 경우 
 			 * 적립 후 취소가 된 내역으로 처리 중지 
 			 * */
@@ -825,11 +826,8 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	public ReturnpBaseResponse cancelAccumulate(DataMap dataMap) {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		/*
-		 * 기본 결제 번호만으로는 중복이 될 수 있기 때문에 
-		 * 결제 번호에 TID 를 연결하여 TID 별 결제 번호를 생성
-		 *  */
-		dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getDateStr("pan")); 
-		
+		 * 결제 취소의 경우 디비에서 가져온 결제 번호를 조작하지 않고 그래도 사용
+		*/
 		try {
 			switch(dataMap.getStr("acc_from").trim()){
 				case AppConstants.PaymentTransactionType.QR:
