@@ -100,8 +100,8 @@
       <if test="memberPassword2 != null"> memberPassword2 = #{memberPassword2,jdbcType=VARCHAR}, </if>
       <if test="memberType != null"> memberType = #{memberType,jdbcType=VARCHAR}, </if>
       <if test="memberStatus != null"> memberStatus = #{memberStatus,jdbcType=VARCHAR}, </if>
+      <if test="memberPhone != null"> memberPhone = #{memberPhone,jdbcType=VARCHAR}, </if>
       <if test="memberAuthType != null"> memberAuthType = #{memberAuthType,jdbcType=VARCHAR}, </if>
-      <!-- <if test="memberPhone != null"> memberPhone = #{memberPhone,jdbcType=VARCHAR}, </if> -->
       <if test="recommenderNo != null"> recommenderNo = #{recommenderNo,jdbcType=INTEGER}, </if>
       <if test="joinRoute != null"> joinRoute = #{joinRoute,jdbcType=VARCHAR}, </if>
       <if test="statusReason != null"> statusReason = #{statusReason,jdbcType=VARCHAR}, </if>
@@ -383,7 +383,7 @@
    		 delete from 
    		 	point_withdrawal
   		 where 
-  		 	pointWithdrawalNo = #{pointWithdrawalNo,jdbcType=Integer} and memeberNo = #{memberNo,jdbcType=INTEGER}
+  		 	pointWithdrawalNo = #{pointWithdrawalNo,jdbcType=INTEGER} and memberNo = #{memberNo,jdbcType=INTEGER}
   </delete>
   
 <!-- 출금 정보 수정-->

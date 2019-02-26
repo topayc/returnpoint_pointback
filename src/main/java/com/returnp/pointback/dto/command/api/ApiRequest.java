@@ -42,7 +42,7 @@ public class ApiRequest {
 	private Integer recommenderNo;
 	
 	private String checkValue; /* 중복 체크할 값*/
-	private String checkValueType;  /* 1 : 이메일 중복 , 2 : 전화번호 중복*/
+	private String checkValueType;  
 	
     private String affiliateSerial;  /* 결제한 가맹점 T- ID*/
     private String paymentSource; /*1 : 신용카드, 2 : 현금결제, 3 : R Point 결제*/

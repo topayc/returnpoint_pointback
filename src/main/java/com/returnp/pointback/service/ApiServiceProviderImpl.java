@@ -127,20 +127,27 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	@Override
 	public ReturnpBaseResponse isRegistered(ApiRequest apiRequest) {
 		ReturnpBaseResponse  res = new ReturnpBaseResponse  ();
+		
 		try {
+			if (apiRequest.getCheckValueType().trim().toLowerCase().equals("email")) {
+				apiRequest.setMemberEmail(apiRequest.getCheckValue());
+			}else if (apiRequest.getCheckValueType().trim().toLowerCase().equals("phone")){
+				apiRequest.setMemberPhone(apiRequest.getCheckValue());
+			}
+			
 			int count = this.apiMapper.selectMemberCount(apiRequest);
 			if (count >  0) {
 				ResponseUtil.setResponse(res, "501", 
 					this.messageUtils.getMessage(
 						"api.duplicated", 
-						new Object[] { "email".equals(apiRequest.getCheckValueType()) ? "Email " + apiRequest.getMemberEmail() : "Phone " + apiRequest.getMemberPhone()}));
+						new Object[] { apiRequest.getCheckValueType().trim().toLowerCase().equals("email") ? "E-MAIL " + apiRequest.getMemberEmail() : "PHONE " + apiRequest.getMemberPhone()}));
 				return res;
 			}
 			
 			ResponseUtil.setResponse(res, "500", 
 				this.messageUtils.getMessage(
 					"api.not_duplicated",
-					new Object[] { "email".equals(apiRequest.getCheckValueType()) ? "Email " + apiRequest.getMemberEmail() : "Phone " + apiRequest.getMemberPhone()}));
+					new Object[] { apiRequest.getCheckValueType().trim().toLowerCase().equals("email") ? "E-MAIL " + apiRequest.getMemberEmail() : "PHONE " + apiRequest.getMemberPhone()}));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -168,6 +175,8 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	 */
 	@Override
 	public ReturnpBaseResponse join(ApiRequest apiRequest) {
+		System.out.println("추천인 이메일");
+		System.out.println(apiRequest.getRecommenderEmail());
 		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
 		try {
 			HashMap<String, Object> affilaiteMap = this.apiMapper.selectAffiliate(apiRequest);
@@ -185,7 +194,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			int count = this.apiMapper.selectMemberCount(apiQuery);
 			
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, "501", this.messageUtils.getMessage( "api.duplicated", new Object[] { "이메일 " + apiRequest.getMemberEmail() }));
+				ResponseUtil.setResponse(res, "501", this.messageUtils.getMessage( "api.duplicated", new Object[] { "E-MAIL " + apiRequest.getMemberEmail() }));
 				throw new ReturnpException(res);
 			}
 			
@@ -194,7 +203,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			apiQuery.setMemberPhone(apiRequest.getMemberPhone());
 			count = this.apiMapper.selectMemberCount(apiQuery);
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, "502", this.messageUtils.getMessage( "api.duplicated", new Object[] { "핸드폰 번호  " + apiRequest.getMemberPhone()}));
+				ResponseUtil.setResponse(res, "502", this.messageUtils.getMessage( "api.duplicated", new Object[] { "PHONE  " + apiRequest.getMemberPhone()}));
 				throw new ReturnpException(res);
 			}
 			
@@ -237,10 +246,10 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("api.transaction_completed"));
 			return res;
 			
-		}catch(ReturnpException e) {
-			e.printStackTrace();
+		}catch(ReturnpException e1) {
+			e1.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			return e.getBaseResponse();
+			return e1.getBaseResponse();
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -308,6 +317,12 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			}
 			
 			apiRequest.setMemberNo(((int)memberMap.get("memberNo")));
+			
+			/* 추천인 번호 설정*/
+			Map<String, Object> recommenderMap = this.apiMapper.selectRecommenderInfo(apiRequest);
+			if (recommenderMap != null) {
+				apiRequest.setRecommenderNo((Integer)recommenderMap.get("memberNo"));
+			}
 			this.apiMapper.updateMember(apiRequest);
 			
 			/*수정한 회원 정보 반환*/
