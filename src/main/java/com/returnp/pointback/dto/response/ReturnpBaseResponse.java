@@ -1,11 +1,19 @@
 package com.returnp.pointback.dto.response;
 
 public class ReturnpBaseResponse {
+	public String responseCode;
 	public String result;
 	public String summary;
 	public String message;
 	public String resultCode;
 	public String url;
+	
+	public String getResponseCode() {
+		return responseCode;
+	}
+	public void setResponseCode(String responseCode) {
+		this.responseCode = responseCode;
+	}
 	
 	public String getUrl() {
 		return url;

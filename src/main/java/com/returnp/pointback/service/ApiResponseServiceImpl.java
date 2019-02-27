@@ -77,6 +77,7 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 			stringReponse.setResult(base.getResult());
 			stringReponse.setResultCode(base.getResultCode());
 			stringReponse.setSummary(base.getSummary());
+			stringReponse.setResponseCode(base.getResponseCode());
 			
 			String plain = null;
 			if (base instanceof ObjectResponse<?>) {

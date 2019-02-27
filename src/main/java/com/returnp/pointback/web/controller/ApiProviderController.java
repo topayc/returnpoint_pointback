@@ -64,12 +64,11 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/save_cache_data", method = RequestMethod.POST , produces="application/json")
 	public ReturnpBaseResponse  saveDataCache(ApiRequest apiRequest, HttpSession session) {
-		System.out.println("## saveDataCache " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 		}else {
 			res = this.apiServiceProvider.saveDataCache(apiRequest, session);
 		}
@@ -86,13 +85,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_cache_data", method = RequestMethod.GET, produces="application/json")
 	public ReturnpBaseResponse getDataCache(ApiRequest apiRequest,HttpSession session) {
-		System.out.println("## getDataCache " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getDataCache(apiRequest, session);
@@ -109,13 +107,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_member_info", method = RequestMethod.GET ,produces="application/json" )
 	public  ReturnpBaseResponse getMemberInfo(ApiRequest apiRequest) {
-		//System.out.println("## getMemberInfo " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			//System.out.println(apiServiceMap.get("apiKey"));
@@ -138,13 +135,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/is_registered", method = RequestMethod.GET , produces="application/json")
 	public ReturnpBaseResponse isRegistered(ApiRequest apiRequest) {
-		//System.out.println("## ApiProviderController.isRegistered " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.isRegistered(apiRequest);
@@ -167,13 +163,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/join_up", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse join(ApiRequest apiRequest) {
-		System.out.println("## join " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.join(apiRequest);
@@ -191,13 +186,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/delete_member", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse deleteMember(ApiRequest apiRequest) {
-		System.out.println("## deleteMember " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.deleteMember(apiRequest);
@@ -223,13 +217,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/modify_member", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse modifyMember(ApiRequest apiRequest) {
-		System.out.println("## modifyMember " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.modifyMember(apiRequest);
@@ -245,15 +238,13 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/handle_accumulate", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse executeAccumualte(ApiRequest apiRequest) {
-		System.out.println("## executeAccumualte >>" );
-		
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		DataMap dataMap = new DataMap();
 		StringResponse stringRes = null;
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			if (apiRequest.getQrOrg() != null) {
@@ -280,7 +271,7 @@ public class ApiProviderController extends ApplicationController{
 				res = this.basePointAccumulateService.cancelAccumulate(dataMap);
 			}
 			else {
-				ResponseUtil.setResponse(res, "610", this.messageUtils.getMessage("api.message.wrong_payment_status"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("api.message.wrong_payment_status"));
 				return stringRes;
 			}
 			stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
@@ -300,13 +291,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/accumulage_by_pan", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse accumulateByPan(ApiRequest apiRequest) {
-		System.out.println("## accumulateByPan " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.accumuatePoint(apiRequest.getPaymentApprovalNumber());
@@ -328,13 +318,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/cancel_accumulate_by_pan", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse cancelAccumulatgeByPan(ApiRequest apiRequest) {
-		System.out.println("## cancelAccumulatgeByPan " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(apiRequest.getPaymentApprovalNumber());
@@ -351,13 +340,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/langs", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse getLangs(ApiRequest apiRequest) {
-		System.out.println("## getLangs " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getLanguages(apiRequest);
@@ -376,13 +364,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_bank_accounts", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse getMemberBankAccounts(ApiRequest apiRequest) {
-		System.out.println("## getMemberBankAccounts " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getBankAccounts(apiRequest);
@@ -403,13 +390,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/register_bank_account", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse registerBankAccount(ApiRequest apiRequest) {
-		System.out.println("## registerBankAccount " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.registerBankAccount(apiRequest);
@@ -435,13 +421,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/update_bank_account", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse updateBankAccount(ApiRequest apiRequest) {
-		System.out.println("## updateBankAccount " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.updateBankAccount(apiRequest);
@@ -459,13 +444,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/delete_bank_account", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse deleteBankAccount(ApiRequest apiRequest) {
-		System.out.println("## deleteBankAccount " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.deleteBankAccount(apiRequest);
@@ -482,13 +466,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_policy", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse getPolicy(ApiRequest apiRequest) {
-		System.out.println("## getPolicy " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getPolicy(apiRequest);
@@ -505,13 +488,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_gpoint_accumulate_history", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse getGpointAccumuateHistory(ApiRequest apiRequest) {
-		System.out.println("## getPolicy " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getGpointAccumuateHistory(apiRequest);
@@ -540,13 +522,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/register_withdrawal", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse registerWithdrawal(ApiRequest apiRequest) {
-		System.out.println("## withdrawalRpay " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.registerWithdrawal(apiRequest);
@@ -563,13 +544,11 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_withdrawal_history", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse getWithdrawalHistory(ApiRequest apiRequest) {
-		System.out.println("## getPointWithdrawals " );
 		ReturnpBaseResponse  res = null;
-		
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getWithdrawalHistory(apiRequest);
@@ -587,13 +566,11 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/delete_withdrawal", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse deleteWithdrawal(ApiRequest apiRequest) {
-		System.out.println("## deleteWithdrawal " );
 		ReturnpBaseResponse  res = null;
-		
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.deleteWithdrawal(apiRequest);
@@ -611,13 +588,11 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/cancel_withdrawal", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse cancelWithdrawal(ApiRequest apiRequest) {
-		System.out.println("## cancelWithdrawal " );
 		ReturnpBaseResponse  res = null;
-		
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.cancelWithdrawal(apiRequest);
@@ -638,13 +613,11 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/update_withdrawal", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse updatePointWithdrawal(ApiRequest apiRequest) {
-		System.out.println("## updatePointWithdrawal " );
 		ReturnpBaseResponse  res = null;
-		
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.updateWithdrawal(apiRequest);
@@ -662,13 +635,11 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_my_members", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse getMyMembers(ApiRequest apiRequest) {
-		System.out.println("## getMyMembers " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
-		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getMyMembers(apiRequest);
@@ -686,13 +657,12 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/get_my_point_infos", method = RequestMethod.GET,produces="application/json" )
 	public ReturnpBaseResponse getMyPointInfo(ApiRequest apiRequest) {
-		System.out.println("## getMyPointINfo " );
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getMyTotalPointInfo(apiRequest);

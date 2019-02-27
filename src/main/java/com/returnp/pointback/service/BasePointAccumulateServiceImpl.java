@@ -91,7 +91,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 					
 					HashMap<String, String> qrParsemap = QRManager.parseQRToMap(queryParmStr);
 					if (qrParsemap == null) {
-						 ResponseUtil.setResponse(res, "600", this.messageUtils.getMessage("pointback.message.invalid_qr"));
+						 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK,"600", this.messageUtils.getMessage("pointback.message.invalid_qr"));
 							throw new ReturnpException(res);
 					}
 					break;
@@ -109,7 +109,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			//this.validate(dataMap);
 			PaymentTransaction paymentTransaction = this.createPaymentTransaction(dataMap);
 			this.accumuatePoint(paymentTransaction);
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("pointback.message.success_acc_ok"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.success_acc_ok"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -120,7 +120,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -135,7 +135,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			ArrayList<Member> members = this.pointBackMapper.findMembers(member);
 			
 			if (members.size() !=1 || members == null) {
-				ResponseUtil.setResponse(res, "601", 
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "601", 
 						this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {memberEmail}));
 				throw new ReturnpException(res);
 			}
@@ -147,7 +147,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			 */
 			if (!members.get(0).getMemberPhone().equals(phoneNumber) && 
 					!members.get(0).getMemberPhone().equals(phoneNumberCountry)) {
-				ResponseUtil.setResponse(res, "602", this.messageUtils.getMessage("pointback.message.invalid_argu_phonenumber",
+				ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "602", this.messageUtils.getMessage("pointback.message.invalid_argu_phonenumber",
 					new Object[] { phoneNumber, phoneNumberCountry, members.get(0).getMemberPhone()}));
 				throw new ReturnpException(res);
 			}
@@ -171,7 +171,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
 			
 			if (affiliates == null || affiliates.size() != 1) {
-				ResponseUtil.setResponse(res, "603", 
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "603", 
 						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
 				throw new ReturnpException(res);
 			}
@@ -199,7 +199,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			 * 적립 후 취소가 된 내역으로 처리 중지 
 			 * */
 			if (paymentTransactions.size() == 2  ) {
-				 ResponseUtil.setResponse(res, "604", this.messageUtils.getMessage("pointback.message.invalid_req"));
+				 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "604", this.messageUtils.getMessage("pointback.message.invalid_req"));
 					throw new ReturnpException(res);
 			}
 			
@@ -208,7 +208,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			 * 이 경우는 시스템 오류임 
 			 *  */
 			if (paymentTransactions.size() > 2  ) {
-				 ResponseUtil.setResponse(res, "605", this.messageUtils.getMessage("pointback.message.error_many_payment_record"));
+				 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "605", this.messageUtils.getMessage("pointback.message.error_many_payment_record"));
 					throw new ReturnpException(res);
 			}
 			
@@ -216,7 +216,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			if (paymentTransactions.size() == 1) {
 				paymentTransaction = paymentTransactions.get(0);
 				if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_ERROR)){
-					ResponseUtil.setResponse(res, "606", this.messageUtils.getMessage("pointback.message.error_paymenttransaction"));
+					ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "606", this.messageUtils.getMessage("pointback.message.error_paymenttransaction"));
 					throw new ReturnpException(res);
 				}
 			}
@@ -234,24 +234,24 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 					 if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
 						 if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
 								 paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_PROGRESS)) {
-							 ResponseUtil.setResponse(res, "607", this.messageUtils.getMessage("pointback.message.already_accumulating_req"));
+							 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "607", this.messageUtils.getMessage("pointback.message.already_accumulating_req"));
 							 throw new ReturnpException(res);
 						 }
 						
 						 /* 부적절한 요청 - 적립 처리가 완료된 내역에 대한 중복 적립 요청*/
 						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_COMPLETE) ) {
-							ResponseUtil.setResponse(res, "608", this.messageUtils.getMessage("pointback.message.already_complete_req"));
+							ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "608", this.messageUtils.getMessage("pointback.message.already_complete_req"));
 							throw new ReturnpException(res);
 						}
 						
 						/* 부적절한 요청 - 적립 처리 에러 내역에 대한 중복 적립 요청*/
 						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_STOP) ) {
-							ResponseUtil.setResponse(res, "609", this.messageUtils.getMessage("pointback.message.error_accumulate"));
+							ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "609", this.messageUtils.getMessage("pointback.message.error_accumulate"));
 							throw new ReturnpException(res);
 						}
 					}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL)){
 						/* 이미 결제 취소된 중이거나 결제 취소가 완료, 혹은 결제 취소 에러가 발생한 내역에 대한 적립 요청인 경우 - 부적절한 적립 요청  */
-						ResponseUtil.setResponse(res, "610", this.messageUtils.getMessage("pointback.message.error_acc_req_to_already_canceled_payement"));
+						ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("pointback.message.error_acc_req_to_already_canceled_payement"));
 						throw new ReturnpException(res);
 					}
 				 }
@@ -268,36 +268,36 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 						 /* 부적절한 취소 요청 - 현재 적립 취소중인 내역  */
 						 if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_START) || 
 								 paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_PROGRESS)) {
-							ResponseUtil.setResponse(res, "611", this.messageUtils.getMessage("pointback.message.already_canceling_req"));
+							ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "611", this.messageUtils.getMessage("pointback.message.already_canceling_req"));
 							throw new ReturnpException(res);
 						}
 						
 						 /* 부적절한 취소 요청 - 현재 적립 취소가 완료된 내역 */
 						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_COMPLETE) ) {
-							ResponseUtil.setResponse(res, "612", this.messageUtils.getMessage("pointback.message.already_canceled_req"));
+							ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "612", this.messageUtils.getMessage("pointback.message.already_canceled_req"));
 							throw new ReturnpException(res);
 						}
 						
 						 /* 부적절한 취소 요청 - 현재 적립 취소 에러가 발생한 내역 */
 						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_CANCEL_STOP) ) {
-							ResponseUtil.setResponse(res, "613", this.messageUtils.getMessage("pointback.message.error_acc_canceling"));
+							ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "613", this.messageUtils.getMessage("pointback.message.error_acc_canceling"));
 							throw new ReturnpException(res);
 						}
 					}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)){
 						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
 								paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_PROGRESS)) {
-							ResponseUtil.setResponse(res, "614", this.messageUtils.getMessage("pointback.message.now_accumulating_wait"));
+							ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "614", this.messageUtils.getMessage("pointback.message.now_accumulating_wait"));
 							throw new ReturnpException(res);
 						}
 						
 						if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_STOP)) {
-							ResponseUtil.setResponse(res, "615", this.messageUtils.getMessage("pointback.message.cancle_for_error_acc"));
+							ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "615", this.messageUtils.getMessage("pointback.message.cancle_for_error_acc"));
 							throw new ReturnpException(res);
 						}
 					}
 				 }else {
 					 /* 존재하지 않는 내역에 대한 취소 요청  */	
-					 ResponseUtil.setResponse(res, "616", this.messageUtils.getMessage("pointback.message.already_cancel_accumulate_or_error"));
+					 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "616", this.messageUtils.getMessage("pointback.message.already_cancel_accumulate_or_error"));
 						throw new ReturnpException(res);
 				 }
 			}
@@ -318,11 +318,11 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			PaymentTransaction paymentTransaction = this.paymentTransactionMapper.selectByPrimaryKey(paymentTransactioinNo);
 			if (paymentTransaction == null) {
 				/* 존재하지 않는 내역에 대한 취소 요청  */	
-				 ResponseUtil.setResponse(res, "617", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
+				 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "617", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
 					throw new ReturnpException(res);
 			}
 			this.accumuatePoint(paymentTransaction);
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("pointback.message.success_acc_ok"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.success_acc_ok"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -332,7 +332,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -346,11 +346,11 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(pt);
 			if (paymentTransactions.size() != 1) {
 				 /* 존재하지 않는 내역에 대한 취소 요청  */	
-				 ResponseUtil.setResponse(res, "618", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
+				 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "618", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
 					throw new ReturnpException(res);
 			}		
 			this.accumuatePoint(paymentTransactions.get(0));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("pointback.message.success_acc_ok"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.success_acc_ok"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -361,7 +361,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -393,7 +393,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			outerTarget = this.findOuterPointBackTarget(outerTarget);
 			
 			if (outerTarget == null) {
-				ResponseUtil.setResponse(res, "619", this.messageUtils.getMessage("pointback.message.cant_searching_outer_node"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "619", this.messageUtils.getMessage("pointback.message.cant_searching_outer_node"));
 				throw new ReturnpException(res);
 			}
 			
@@ -712,7 +712,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			throw e;
 		}catch(Exception e2) {
 			e2.printStackTrace();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			throw new ReturnpException(res);
 		}
 	}
@@ -752,7 +752,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		} catch (Exception e) {
 			e.printStackTrace();
 			ReturnpBaseResponse res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			throw new ReturnpException(res);
 		}
 	}
@@ -817,7 +817,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			
 		}catch(Exception e) {
 			e.printStackTrace();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			throw new ReturnpException(res);
 		}
 	}
@@ -837,7 +837,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 					
 					HashMap<String, String> qrParsemap = QRManager.parseQRToMap(queryParmStr);
 					if (qrParsemap == null) {
-						ResponseUtil.setResponse(res, "620", this.messageUtils.getMessage("pointback.message.invalid_qr"));
+						ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "620", this.messageUtils.getMessage("pointback.message.invalid_qr"));
 						throw new ReturnpException(res);
 					}
 					break;
@@ -851,7 +851,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			this.validateAffiliateAuth(dataMap.getStr("af_id"));
 			this.validate(dataMap.getStr("pan"),dataMap.getStr("pas"));
 			this.restorePoint(dataMap);
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("pointback.cancel_accumulate_ok"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.cancel_accumulate_ok"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -861,7 +861,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -880,7 +880,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			pt = new PaymentTransaction();
 			pts = this.pointBackMapper.findPaymentTransactions(pt);
 			if (pts == null || pts.size() !=1) {
-				 ResponseUtil.setResponse(res, "621", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+				 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "621", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
 					throw new ReturnpException(res);
 			}
 			
@@ -898,7 +898,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			}
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -914,7 +914,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		try {
 			pt = paymentTransactionMapper.selectByPrimaryKey(paymentTrasactionNo);
 			if (pt == null) {
-				 ResponseUtil.setResponse(res, "622", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+				 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "622", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
 					throw new ReturnpException(res);
 			}
 			
@@ -932,7 +932,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			}
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -946,7 +946,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		ArrayList<PaymentTransaction>  ptList = this.pointBackMapper.findPaymentTransactions(pt);
 		
 		if (ptList == null || ptList.size() != 1) {
-			ResponseUtil.setResponse(res, "623", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "623", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
 			throw new ReturnpException(res);
 		}
 		

@@ -123,7 +123,7 @@ public class PointAccumulateController extends ApplicationController{
 			);
 		}else {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 		}
 		return res;
 	}
@@ -145,7 +145,7 @@ public class PointAccumulateController extends ApplicationController{
 		System.out.println("PointAccumulateController - accumulateByAdmin");
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		if (!this.keys.contains(key)) {
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}
 		res = this.pointBackService.processByAdmin(paymentTransactionNo);
@@ -215,7 +215,7 @@ public class PointAccumulateController extends ApplicationController{
 		DataMap dataMap = new DataMap();
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			if (qr_org != null) {
@@ -283,7 +283,7 @@ public class PointAccumulateController extends ApplicationController{
 		DataMap dataMap = new DataMap();
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			if (qr_org != null) {
@@ -333,7 +333,7 @@ public class PointAccumulateController extends ApplicationController{
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.accumuatePoint(paymentTrasactionNo);
@@ -359,7 +359,7 @@ public class PointAccumulateController extends ApplicationController{
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.accumuatePoint(pan);
@@ -386,7 +386,7 @@ public class PointAccumulateController extends ApplicationController{
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(paymentTrasactionNo);
@@ -412,7 +412,7 @@ public class PointAccumulateController extends ApplicationController{
 		
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(pan);

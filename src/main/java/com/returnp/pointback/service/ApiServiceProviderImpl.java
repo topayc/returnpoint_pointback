@@ -48,7 +48,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			String cacheData = (String)session.getAttribute(apiRequest.getCacheKey());
 			res.setData(cacheData);
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("api.transaction_completed"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "100", this.messageUtils.getMessage("api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -73,7 +73,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		try {
 			session.setAttribute(apiRequest.getCacheKey(), apiRequest.getCacheData());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -82,7 +82,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -98,12 +98,12 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			res.setData(this.apiMapper.selectMemberInfo(apiRequest));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -112,7 +112,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -137,14 +137,18 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			int count = this.apiMapper.selectMemberCount(apiRequest);
 			if (count >  0) {
-				ResponseUtil.setResponse(res, "501", 
+				ResponseUtil.setResponse(res, 
+					ResponseUtil.RESPONSE_OK, 
+					"501", 
 					this.messageUtils.getMessage(
 						"api.duplicated", 
 						new Object[] { apiRequest.getCheckValueType().trim().toLowerCase().equals("email") ? "E-MAIL " + apiRequest.getMemberEmail() : "PHONE " + apiRequest.getMemberPhone()}));
 				return res;
 			}
 			
-			ResponseUtil.setResponse(res, "500", 
+			ResponseUtil.setResponse(res, 
+				ResponseUtil.RESPONSE_OK, 
+				"500", 
 				this.messageUtils.getMessage(
 					"api.not_duplicated",
 					new Object[] { apiRequest.getCheckValueType().trim().toLowerCase().equals("email") ? "E-MAIL " + apiRequest.getMemberEmail() : "PHONE " + apiRequest.getMemberPhone()}));
@@ -157,7 +161,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -182,7 +186,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			HashMap<String, Object> affilaiteMap = this.apiMapper.selectAffiliate(apiRequest);
 			System.out.println(apiRequest.getAfId());
 			if (affilaiteMap == null) {
-				ResponseUtil.setResponse(res, "606", this.messageUtils.getMessage( "api.message.wrong_affiliate"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "606", this.messageUtils.getMessage( "api.message.wrong_affiliate"));
 					throw new ReturnpException(res);
 			}else {
 				apiRequest.setJoinRoute((String)affilaiteMap.get("affiliateName"));
@@ -194,7 +198,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			int count = this.apiMapper.selectMemberCount(apiQuery);
 			
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, "501", this.messageUtils.getMessage( "api.duplicated", new Object[] { "E-MAIL " + apiRequest.getMemberEmail() }));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "501", this.messageUtils.getMessage( "api.duplicated", new Object[] { "E-MAIL " + apiRequest.getMemberEmail() }));
 				throw new ReturnpException(res);
 			}
 			
@@ -203,7 +207,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			apiQuery.setMemberPhone(apiRequest.getMemberPhone());
 			count = this.apiMapper.selectMemberCount(apiQuery);
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, "502", this.messageUtils.getMessage( "api.duplicated", new Object[] { "PHONE  " + apiRequest.getMemberPhone()}));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "502", this.messageUtils.getMessage( "api.duplicated", new Object[] { "PHONE  " + apiRequest.getMemberPhone()}));
 				throw new ReturnpException(res);
 			}
 			
@@ -243,7 +247,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			/*생성한 회원 정보 반환*/
 			res.setData(this.apiMapper.selectMemberInfo(apiRequest));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("api.transaction_completed"));
 			return res;
 			
 		}catch(ReturnpException e1) {
@@ -253,7 +257,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -269,7 +273,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -277,7 +281,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			updateRequest.setMemberNo((int)memberMap.get("memberNo"));
 			updateRequest.setMemberStatus("7");
 			this.apiMapper.updateMember(updateRequest);
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.withdrawal_membership_ok"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.withdrawal_membership_ok"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -287,7 +291,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -312,7 +316,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -327,7 +331,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			/*수정한 회원 정보 반환*/
 			res.setData(this.apiMapper.selectMemberInfo(apiRequest));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage("api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -336,7 +340,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -353,7 +357,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ArrayList<HashMap<String, Object>> langs = this.apiMapper.selectLanguages();
 			res.setRows(langs);
 			res.setTotal(langs.size());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -362,7 +366,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -376,7 +380,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		ObjectResponse<HashMap<String, Object>>  res = new ObjectResponse<HashMap<String, Object>>();
 		try {
 			res.setData(this.apiMapper.selectPolicy());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -385,7 +389,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -401,7 +405,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -409,7 +413,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ArrayList<HashMap<String, Object>> bankAccounts = this.apiMapper.selectBankAccounts(apiRequest);
 			res.setRows(bankAccounts);
 			res.setTotal(bankAccounts.size());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -419,7 +423,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -438,7 +442,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -449,14 +453,14 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			int count = this.apiMapper.createMemberBankAccount(apiRequest);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "502", this.messageUtils.getMessage( "api.register_member_bank_account_failed"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "502", this.messageUtils.getMessage( "api.register_member_bank_account_failed"));
 				throw new ReturnpException(res);
 			}
 			
 			ApiRequest apiCond = new ApiRequest();
 			apiCond.setMemberBankAccountNo(apiRequest.getMemberBankAccountNo());
 			res.setData(this.apiMapper.selectBankAccount(apiCond));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -466,7 +470,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -483,17 +487,17 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			int count = this.apiMapper.deleteMemberBankAccount(apiRequest);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "503", this.messageUtils.getMessage( "api.delete_member_bank_account_failed"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "503", this.messageUtils.getMessage( "api.delete_member_bank_account_failed"));
 				throw new ReturnpException(res);
 			}
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.delete_member_bank_account_success"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.delete_member_bank_account_success"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -502,7 +506,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -525,21 +529,21 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			int count = this.apiMapper.updateMemberBankAccount(apiRequest);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "504", this.messageUtils.getMessage( "api.update_member_bank_account_failed"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "504", this.messageUtils.getMessage( "api.update_member_bank_account_failed"));
 				throw new ReturnpException(res);
 			}
 			
 			ApiRequest apiCond = new ApiRequest();
 			apiCond.setMemberBankAccountNo(apiRequest.getMemberBankAccountNo());
 			res.setData(this.apiMapper.selectBankAccount(apiCond));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.update_member_bank_account_success"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.update_member_bank_account_success"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -549,7 +553,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -565,7 +569,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -573,7 +577,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ArrayList<HashMap<String, Object>> withdrawals = this.apiMapper.selectWithdrawals(apiRequest);
 			res.setRows(withdrawals);
 			res.setTotal(withdrawals.size());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -582,7 +586,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -600,7 +604,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -612,13 +616,13 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			int rPayWithdrawalMaxLimit  = (int)policyMap.get("rPayWithdrawalMaxLimit");
 			if ((float)apiRequest.getWithdrawalAmount() < (float)rPayWithdrawalMinLimit || 
 					(float)apiRequest.getWithdrawalAmount() > (float)rPayWithdrawalMaxLimit ){
-				ResponseUtil.setResponse( res, "521",
+				ResponseUtil.setResponse( res, ResponseUtil.RESPONSE_OK, "521",
 					this.messageUtils.getMessage("api.message.wrong_withdrawal_arrange", new Object[]{ rPayWithdrawalMinLimit, rPayWithdrawalMaxLimit}));
 				throw new ReturnpException(res);
 			}
 			
 			if ((float)apiRequest.getWithdrawalAmount() > (float)redPointMap.get("pointAmount")) {
-				ResponseUtil.setResponse(res, "505", this.messageUtils.getMessage( "api.withdrawal_than_balance"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "505", this.messageUtils.getMessage( "api.withdrawal_than_balance"));
 				throw new ReturnpException(res);
 			} 
 			
@@ -631,7 +635,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			int count = this.apiMapper.createWithdrawal(apiRequest);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "507", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "507", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
 				throw new ReturnpException(res);
 			}
 			
@@ -641,13 +645,13 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ar.setPointAmount((float)redPointMap.get("pointAmount") - (float)apiRequest.getWithdrawalAmount());
 			count = this.apiMapper.updateRedPoint(ar);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "508", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "508", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
 				throw new ReturnpException(res);
 			}
 			
 			/* 등록한 출금 정보 반환*/
 			res.setData(this.apiMapper.selectWithdrawal(apiRequest));
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.create_withdrawal_info_success"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.create_withdrawal_info_success"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -657,7 +661,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -674,20 +678,20 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			/*등록된 출금 정보 */
 			HashMap<String, Object> withdrawalMap = this.apiMapper.selectWithdrawal(apiRequest);
 			/*등록된 출금 정보가 없을 경우 에러  */
 			if (withdrawalMap == null) {
-				ResponseUtil.setResponse(res, "532", this.messageUtils.getMessage( "api.wrong_withdrawal_info"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "532", this.messageUtils.getMessage( "api.wrong_withdrawal_info"));
 				throw new ReturnpException(res);
 			}
 			
 			/*등록된 출금 정보가 '출금 처리중' 상태가 아닐 경우 취소 불가 */
 			if (!((String)withdrawalMap.get("withdrawalStatus")).equals("1")) {
-				ResponseUtil.setResponse(res, "532", this.messageUtils.getMessage( "api.cant_cancel_withdrawal"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "532", this.messageUtils.getMessage( "api.cant_cancel_withdrawal"));
 				throw new ReturnpException(res);
 			}
 			
@@ -699,7 +703,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			apiRequest.setWithdrawalStatus("4");
 			int count = this.apiMapper.updateWithdrawal(apiRequest);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "507", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
+				ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "507", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
 				throw new ReturnpException(res);
 			}
 			
@@ -709,11 +713,11 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ar.setPointAmount((float)redPointMap.get("pointAmount") +  Float.parseFloat(String.valueOf(withdrawalMap.get("withdrawalAmount"))));
 			count = this.apiMapper.updateRedPoint(ar);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "508", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "508", this.messageUtils.getMessage( "api.create_withdrawal_info_failed"));
 				throw new ReturnpException(res);
 			}
 			
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -723,7 +727,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -739,18 +743,18 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			int count = this.apiMapper.deleteWithdrawal(apiRequest);
 			if (count < 1) {
-				ResponseUtil.setResponse(res, "509", this.messageUtils.getMessage( "api.create_withdrawal_info_delete_fail"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "509", this.messageUtils.getMessage( "api.create_withdrawal_info_delete_fail"));
 				throw new ReturnpException(res);
 			}
 			
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.create_withdrawal_info_delete_success"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.create_withdrawal_info_delete_success"));
 			return res;
 			
 		}catch(ReturnpException e) {
@@ -760,7 +764,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -783,7 +787,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-                ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+                ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "500", this.messageUtils.getMessage( "api.message.not_member"));
                 throw new ReturnpException(res);
             }
 			
@@ -791,13 +795,13 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
             withdrawalMap = this.apiMapper.selectWithdrawal(apiRequest);
             /*등록된 출금 정보가 없을 경우 에러  */
             if (withdrawalMap == null) {
-                ResponseUtil.setResponse(res, "545", this.messageUtils.getMessage( "api.wrong_withdrawal_info"));
+                ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "545", this.messageUtils.getMessage( "api.wrong_withdrawal_info"));
                 throw new ReturnpException(res);
             }
             
             /*등록된 출금 정보가 '출금 처리중' 상태가 아닐 경우 수정  불가 */
             if (!((String)withdrawalMap.get("withdrawalStatus")).equals("1")) {
-                ResponseUtil.setResponse(res, "5490", this.messageUtils.getMessage( "api.cant_modify_withdrawal"));
+                ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "5490", this.messageUtils.getMessage( "api.cant_modify_withdrawal"));
                 throw new ReturnpException(res);
             }
             
@@ -807,7 +811,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
             
             /* 출금 신청 정보 수정 업데이트  */
             if (this.apiMapper.updateWithdrawal(apiRequest) < 1) {
-                ResponseUtil.setResponse(res, "508", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
+                ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "508", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
                 throw new ReturnpException(res);
             }
           
@@ -822,11 +826,11 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
             ar.setRedPointNo((int)redPointMap.get("redPointNo"));
             ar.setPointAmount(finalRp);
             if (this.apiMapper.updateRedPoint(ar) < 1) {
-                ResponseUtil.setResponse(res, "535", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
+                ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "535", this.messageUtils.getMessage( "api.message.update_withdrawal_info_failed"));
                 throw new ReturnpException(res);
             }
             
-            ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+            ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.transaction_completed"));
             return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -835,7 +839,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1000", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -851,7 +855,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -859,7 +863,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ArrayList<HashMap<String, Object>> myMembers = this.apiMapper.selectMyMembers(apiRequest);
 			res.setRows(myMembers);
 			res.setTotal(myMembers.size());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -868,7 +872,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -879,7 +883,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			
@@ -887,7 +891,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			ArrayList<HashMap<String, Object>> myPointInfos = this.apiMapper.selectMyTotalPointInfo(apiRequest);
 			res.setRows(myPointInfos);
 			res.setTotal(myPointInfos.size());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -896,7 +900,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}
@@ -916,14 +920,14 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		try {
 			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
 			if (memberMap == null) {
-				ResponseUtil.setResponse(res, "500", this.messageUtils.getMessage( "api.message.not_member"));
+				ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "500", this.messageUtils.getMessage( "api.message.not_member"));
 				throw new ReturnpException(res);
 			}
 			apiRequest.setMemberNo((int)memberMap.get("memberNo"));
 			ArrayList<HashMap<String, Object>> myPointInfos = this.apiMapper.selectMyGPointAccumuateHistory(apiRequest);
 			res.setRows(myPointInfos);
 			res.setTotal(myPointInfos.size());
-			ResponseUtil.setResponse(res, "100", this.messageUtils.getMessage( "api.transaction_completed"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "100", this.messageUtils.getMessage( "api.transaction_completed"));
 			return res;
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -932,7 +936,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, "1001", this.messageUtils.getMessage("api.message.inner_server_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("api.message.inner_server_error"));
 			return res;
 		}
 	}

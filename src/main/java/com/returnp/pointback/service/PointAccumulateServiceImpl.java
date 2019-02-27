@@ -57,6 +57,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 		PaymentTransaction paymentTransaction = this.paymentTransactionMapper.selectByPrimaryKey(paymentTransactionNo);
 		/*"유효하지 않는 Green Point 적립 처리 요청";*/
 		if (paymentTransaction == null) {
+			res.setResponseCode(ResponseUtil.RESPONSE_OK);
 			res.setResultCode("700");
 			res.setMessage(this.messageUtils.getMessage("pointback.message.invalid_acc_ok_request"));
 			return res;
@@ -65,6 +66,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 		
 		/* 결제 상태가 결제 승인이 아니라면 중지 */
 		if (!paymentTransaction.getPaymentApprovalStatus().trim().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
+			res.setResponseCode(ResponseUtil.RESPONSE_OK);
 			res.setResultCode("701");
 			res.setMessage(this.messageUtils.getMessage("pointback.message.invalid_request"));
 			return res;
@@ -73,6 +75,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 		/* 이미 적립이 완료된 거래내역인 경우 적립 처리 금지, 중복 적립 금지*/
 		if (paymentTransaction.getPointBackStatus().trim().equals(AppConstants.GreenPointAccStatus.POINTBACK_COMPLETE)  || 
 				paymentTransaction.getPointBackStatus().trim().equals(AppConstants.GreenPointAccStatus.POINTBACK_STOP) ) {
+			res.setResponseCode(ResponseUtil.RESPONSE_OK);
 			res.setResultCode("703");
 			res.setMessage(this.messageUtils.getMessage("pointback.message.completed_request_acc_ok"));
 			return res; /*"이미 Green Point 적립 처리가 완료된 요청";
@@ -88,6 +91,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			acctype = -1;
 			break;   
 		case "3":   /* 결제 에러 */
+			res.setResponseCode(ResponseUtil.RESPONSE_OK);
 			res.setResultCode("809");
 			res.setMessage(this.messageUtils.getMessage("pointback.message.processing_acc_error"));
 			return res;
@@ -122,8 +126,8 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 	 */
 	@Override
 	public ReturnpBaseResponse accumulateByAdmin(int paymentTransactionNo, int accType) {
-		try {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		try {
 		
 		/*
 		 * 유일한 1개의 SoleDist 검색
@@ -451,10 +455,13 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 		res.setMessage(this.messageUtils.getMessage("pointback.message.success_pointback"));
 		res.setResultCode(AppConstants.ResponsResultCode.SUCCESS);;
 		return res;
+		}catch(ReturnpException e1) {
+			e1.printStackTrace();
+			return e1.getBaseResponse();
 		}catch(Exception e) {
-			e.printStackTrace();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("pointback.message.error"));
+			return res;
 		}
-		return null;
 	}
 
 	/* 
@@ -703,7 +710,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			
 			HashMap<String, String> qrParsemap = QRManager.parseQRToMap(queryParmStr);
 			if (qrParsemap == null) {
-				ResponseUtil.setResponse(res, "600", this.messageUtils.getMessage("pointback.message.invalid_qr"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "600", this.messageUtils.getMessage("pointback.message.invalid_qr"));
 				throw new ReturnpException(res);
 			}
 			
@@ -714,7 +721,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			members = this.pointBackMapper.findMembers(member);
 			
 			if (members.size() !=1 || members == null) {
-				ResponseUtil.setResponse(res, "601", this.messageUtils.getMessage("pointback.message.not_member"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK,  "601", this.messageUtils.getMessage("pointback.message.not_member"));
 				return res;
 			}
 			
@@ -729,7 +736,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			 */
 			if (!member.getMemberPhone().equals(phoneNumber) && 
 					!member.getMemberPhone().equals(phoneNumberCountry)) {
-				ResponseUtil.setResponse(res, "602", this.messageUtils.getMessage("pointback.message.invalid_phonenumber"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK,  "602", this.messageUtils.getMessage("pointback.message.invalid_phonenumber"));
 				throw new ReturnpException(res);
 			}
 			
@@ -742,7 +749,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			/*사용자의 요청이 결제 승인에 의한 적립요청일 경우 */
 			if (pas.equals("0")) {
 				if (paymentTransactions.size()> 0) {
-					ResponseUtil.setResponse(res, "603", this.messageUtils.getMessage("pointback.message.already_register_payment_acc"));
+					ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "603", this.messageUtils.getMessage("pointback.message.already_register_payment_acc"));
 					throw new ReturnpException(res);
 				}
 			}
@@ -750,11 +757,11 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			else if (pas.equals("1")){
 				if (paymentTransactions.size() == 1)  {
 					if (!paymentTransactions.get(0).getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
-						ResponseUtil.setResponse(res, "604", this.messageUtils.getMessage("pointback.message.not_cancelable_paymment_a"));
+						ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "604", this.messageUtils.getMessage("pointback.message.not_cancelable_paymment_a"));
 						throw new ReturnpException(res);
 					}
 				}else {
-					ResponseUtil.setResponse(res, "605", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
+					ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "605", this.messageUtils.getMessage("pointback.message.not_payment_invalid_req"));
 					throw new ReturnpException(res);
 				}
 			}
@@ -765,13 +772,13 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			affiliateCond.setAffiliateSerial(afId);
 			ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliateCond);
 			if (affiliates.size() != 1 || affiliates  == null) {
-				ResponseUtil.setResponse(res, "606", this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "606", this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
 				throw new ReturnpException(res);
 			} 
 			
 			/* 가맹점 시리얼 고유 번호 비교  */
 			if (!affiliates.get(0).getAffiliateSerial().equals(afId)) {
-				ResponseUtil.setResponse(res, "607", this.messageUtils.getMessage("pointback.message.wrong_serial_number"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "607", this.messageUtils.getMessage("pointback.message.wrong_serial_number"));
 				throw new ReturnpException(res);
 			}
 		
@@ -816,14 +823,14 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			if (pas.equals("0")) {
 				/* 결제 상태가 결제 승인이 아니라면 중지 */
 				if (!paymentTransaction.getPaymentApprovalStatus().trim().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
-					ResponseUtil.setResponse(res, "608", this.messageUtils.getMessage("pointback.message.invalid_qr"));
+					ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "608", this.messageUtils.getMessage("pointback.message.invalid_qr"));
 					throw new ReturnpException(res);
 				}
 				
 				/* 이미 적립이 완료된 거래내역인 경우 적립 처리 금지, 중복 적립 금지*/
 				if (paymentTransaction.getPointBackStatus().trim().equals(AppConstants.GreenPointAccStatus.POINTBACK_COMPLETE)  || 
 						paymentTransaction.getPointBackStatus().trim().equals(AppConstants.GreenPointAccStatus.POINTBACK_STOP) ) {
-					ResponseUtil.setResponse(res, "609", this.messageUtils.getMessage("pointback.message.completed_request_acc"));
+					ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "609", this.messageUtils.getMessage("pointback.message.completed_request_acc"));
 					throw new ReturnpException(res);
 				}
 				return this.accumulatePoint(paymentTransaction, 1);
@@ -831,14 +838,14 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 			} else if (pas.equals("1")){
 				/* 결제 상태가 결제 승인 취소가  아니라면 중지*/
 				if (!paymentTransaction.getPaymentApprovalStatus().trim().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL)) {
-					ResponseUtil.setResponse(res, "610", this.messageUtils.getMessage("pointback.message.invalid_qr"));
+					ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "610", this.messageUtils.getMessage("pointback.message.invalid_qr"));
 					throw new ReturnpException(res);
 				}
 				
 				/*"이미 Green Point 취소 처리가 완료된 요청, 중복 취소 요 방지  */
 				if (paymentTransaction.getPointBackStatus().trim().equals(AppConstants.GreenPointAccStatus.POINTBACK_CANCEL_COMPLETE)  || 
 						paymentTransaction.getPointBackStatus().trim().equals(AppConstants.GreenPointAccStatus.POINTBACK_STOP)) {
-					ResponseUtil.setResponse(res, "611", this.messageUtils.getMessage("pointback.message.completed_request_acc_cancel"));
+					ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "611", this.messageUtils.getMessage("pointback.message.completed_request_acc_cancel"));
 					throw new ReturnpException(res);
 				}
 				return this.accumulatePoint(paymentTransaction, -1);
@@ -856,9 +863,7 @@ public class PointAccumulateServiceImpl implements PointAccumulateService {
 		} catch (Exception e) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			e.printStackTrace();
-			res.setMessage(this.messageUtils.getMessage("pointback.message.success_acc_error"));
-			res.setResultCode("800");
-			res.setResult("error");
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("pointback.message.error"));
 			return res;
 		}
 	}
