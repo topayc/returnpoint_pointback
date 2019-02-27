@@ -68,7 +68,7 @@ public class ApiProviderController extends ApplicationController{
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 		}else {
 			res = this.apiServiceProvider.saveDataCache(apiRequest, session);
 		}
@@ -90,7 +90,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getDataCache(apiRequest, session);
@@ -112,7 +112,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			//System.out.println(apiServiceMap.get("apiKey"));
@@ -140,7 +140,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.isRegistered(apiRequest);
@@ -168,7 +168,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.join(apiRequest);
@@ -191,7 +191,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.deleteMember(apiRequest);
@@ -222,7 +222,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.modifyMember(apiRequest);
@@ -244,7 +244,7 @@ public class ApiProviderController extends ApplicationController{
 		StringResponse stringRes = null;
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			if (apiRequest.getQrOrg() != null) {
@@ -296,7 +296,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.accumuatePoint(apiRequest.getPaymentApprovalNumber());
@@ -323,7 +323,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(apiRequest.getPaymentApprovalNumber());
@@ -345,7 +345,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getLanguages(apiRequest);
@@ -369,7 +369,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getBankAccounts(apiRequest);
@@ -395,7 +395,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.registerBankAccount(apiRequest);
@@ -426,7 +426,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.updateBankAccount(apiRequest);
@@ -449,7 +449,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.deleteBankAccount(apiRequest);
@@ -471,7 +471,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getPolicy(apiRequest);
@@ -493,7 +493,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getGpointAccumuateHistory(apiRequest);
@@ -527,7 +527,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.registerWithdrawal(apiRequest);
@@ -548,7 +548,7 @@ public class ApiProviderController extends ApplicationController{
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getWithdrawalHistory(apiRequest);
@@ -570,7 +570,7 @@ public class ApiProviderController extends ApplicationController{
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.deleteWithdrawal(apiRequest);
@@ -592,7 +592,7 @@ public class ApiProviderController extends ApplicationController{
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.cancelWithdrawal(apiRequest);
@@ -617,7 +617,7 @@ public class ApiProviderController extends ApplicationController{
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.updateWithdrawal(apiRequest);
@@ -639,7 +639,7 @@ public class ApiProviderController extends ApplicationController{
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getMyMembers(apiRequest);
@@ -662,7 +662,7 @@ public class ApiProviderController extends ApplicationController{
 		
 		if (apiServiceMap == null) {
 			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "550", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
 			res = this.apiServiceProvider.getMyTotalPointInfo(apiRequest);
