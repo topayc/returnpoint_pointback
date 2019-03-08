@@ -49,7 +49,13 @@ public interface BasePointAccumulateService {
 
 	public PaymentTransaction  validate(String pan, String pas) throws ReturnpException;
 	
+	public void  validateAccumulateRequest(String pan, String pas) throws ReturnpException;
+
+	public PaymentTransaction  validateCancelRequest(String pan, String pas) throws ReturnpException;
+	
 	public DataMap convertPaymentTransactionToDataMap(PaymentTransaction pt);
+
+	public ReturnpBaseResponse forcedCancelAccumuate(int paymentTrasactionNo);
 
 	
 }

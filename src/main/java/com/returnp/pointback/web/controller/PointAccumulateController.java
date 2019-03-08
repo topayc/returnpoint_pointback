@@ -393,6 +393,31 @@ public class PointAccumulateController extends ApplicationController{
 		}
 		return res;
 	}
+
+	/**
+	 * PaymentTransactionNo 에 의한 적립 강제 취소 처리 - 유효성 검사를 하지 않는 무조건 적인 취소 처리 
+	 * @param paymentTrasactionNo
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/forcedCancelAccByPaymentTransactionNo", method = RequestMethod.GET)
+	public ReturnpBaseResponse forcedCancelAccByPaymentTransactionNo( 
+			@RequestParam(value = "paymentTransactionNo", required = true ) int paymentTrasactionNo,  
+			@RequestParam(value = "key", required = true ) String key
+			){
+		
+		System.out.println("####### forcedCancelAccByPaymentTransactionNo");
+		ReturnpBaseResponse res= null;
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			res = this.basePointAccumulateService.forcedCancelAccumuate(paymentTrasactionNo);
+		}
+		return res;
+	}
 	
 	/**
 	 * 결제 승인 번호(pan) 에 의한 적립 취소 처리
