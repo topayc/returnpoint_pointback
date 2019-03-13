@@ -57,5 +57,7 @@ public interface BasePointAccumulateService {
 
 	public ReturnpBaseResponse forcedCancelAccumuate(int paymentTrasactionNo);
 
+	public ReturnpBaseResponse forcedAccumuate(int paymentTrasactionNo);
+
 	
 }

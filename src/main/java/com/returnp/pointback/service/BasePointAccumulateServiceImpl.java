@@ -104,8 +104,14 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			
 			this.validateMemberAuth(dataMap.getStr("memberEmail"),dataMap.getStr("phoneNumber"),dataMap.getStr("phoneNumberCountry"));
 			this.validateAffiliateAuth(dataMap.getStr("af_id"));
-			this.validateAccumulateRequest(dataMap.getStr("pan"),dataMap.getStr("pas"));
 			
+			/* 
+			 * 강제 적립 인지 여부 확인
+			 * 강제 적립인 경우에는 유효성 검사 없이 바로 적립 진행
+			 * */
+			if (!dataMap.containsKey("forceAcc") || !((String)dataMap.get("forceAcc")).equals("Y")) {
+				this.validateAccumulateRequest(dataMap.getStr("pan"),dataMap.getStr("pas"));
+			}
 			//this.validate(dataMap);
 			PaymentTransaction paymentTransaction = this.createPaymentTransaction(dataMap);
 			this.accumuatePoint(paymentTransaction);
@@ -1104,6 +1110,46 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			/*유효성 검사를 하지 않는 강제 처리 플래그 설정*/
 			dataMap.put("forceCancel", "Y");
 			return this.cancelAccumulate(dataMap);
+		}catch(ReturnpException e) {
+			e.printStackTrace();
+			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			}
+			res = e.getBaseResponse();
+			return res;
+		}catch(Exception e) {
+			e.printStackTrace();
+			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			}
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			return res;
+		}
+	}
+	
+	/* 
+	 * 결제내역 번호에 의한 강제 적립 처리  
+	 * 유효성 검사를 하지 않는 무조건 적인 강제 취소 처리 
+	 */
+	@Override
+	public ReturnpBaseResponse forcedAccumuate(int paymentTrasactionNo) {
+		DataMap dataMap = null;
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		PaymentTransaction pt = null;
+		try {
+			pt = paymentTransactionMapper.selectByPrimaryKey(paymentTrasactionNo);
+			if (pt == null) {
+				 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "628", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+					throw new ReturnpException(res);
+			}
+			
+			dataMap = this.convertPaymentTransactionToDataMap(pt);
+			/*요청처리를 결제 승인으로 파라메터를 변경*/
+			dataMap.put("pas", "0");  
+			
+			/*유효성 검사를 하지 않는 강제 처리 플래그 설정*/
+			dataMap.put("forceAcc", "Y");
+			return this.accumulate(dataMap);
 		}catch(ReturnpException e) {
 			e.printStackTrace();
 			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
