@@ -1657,4 +1657,160 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
    )a
  
  </select>  
+ 
+ <select id="selectGiftCardIssues" parameterType="com.returnp.pointback.model.GiftCardIssue"  resultType="com.returnp.pointback.model.GiftCardIssue" >
+	select * from gift_card_issue where pinNumber = #{pinNumber}
+	</select>
+
+  <!-- GiftCardPaymentMapper   -->
+ 
+   <resultMap id="GiftCardPaymentCommandResultMap" type="com.returnp.pointback.dto.command.GiftCardPaymentCommand">
+ <id column="giftCardIssueNo" jdbcType="INTEGER" property="giftCardIssueNo" />
+     <id column="giftCardPaymentNo" jdbcType="INTEGER" property="giftCardPaymentNo" />
+    <result column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="giftCardIssueNo" jdbcType="INTEGER" property="giftCardIssueNo" />
+    <result column="giftCardPaymentAmount" jdbcType="INTEGER" property="giftCardPaymentAmount" />
+    <result column="refundRate" jdbcType="REAL" property="refundRate" />
+    <result column="refundAmount" jdbcType="REAL" property="refundAmount" />
+    <result column="refundStatus" jdbcType="VARCHAR" property="refundStatus" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+    <result column="backAccount" jdbcType="VARCHAR" property="backAccount" />
+    <result column="bankAccountOwner" jdbcType="VARCHAR" property="bankAccountOwner" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+    <sql id="GiftCardPaymentCommand_Column_List">
+    giftCardPaymentNo, affiliateNo, giftCardIssueNo, giftCardPaymentAmount, refundRate, 
+    refundAmount, refundStatus, bankName, backAccount, bankAccountOwner, createTime, 
+    updateTime
+  </sql>
+  
+   <sql id ="GiftCardPaymentCommandWhereStatement">
+      <if test="giftCardPaymentNo != null"> AND giftCardPaymentNo = #{giftCardPaymentNo,jdbcType=INTEGER}</if>
+      <if test="affiliateNo != null"> AND affiliateNo = #{affiliateNo,jdbcType=INTEGER}</if>
+      <if test="giftCardIssueNo != null"> AND giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER}</if>
+ 	  <if test="refundStatus != null"> AND refundStatus = #{refundStatus,jdbcType=VARCHAR}</if>
+  </sql>
+  
+      <select id="selectGiftCardPaymentCommands" parameterType="com.returnp.pointback.dto.command.GiftCardPaymentCommand" resultMap="GiftCardPaymentCommandResultMap">
+    select 
+      sql_calc_found_rows 
+    <include refid="GiftCardPaymentCommand_Column_List" />
+    from gift_card_payment
+    where 
+     	 1 = 1 
+    	<include refid = "GiftCardPaymentCommandWhereStatement"/>
+    	<include refid = "commonStatement"/>
+  </select>
+  
+  <!-- ===============================================================================================================    -->
+     <!--MemberBankAccount -->
+	<resultMap id="Member_Bank_Account_ResultMap" type="com.returnp.pointback.model.MemberBankAccount">
+	    <id column="memberBankAccountNo" jdbcType="INTEGER" property="memberBankAccountNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+    <result column="accountOwner" jdbcType="VARCHAR" property="accountOwner" />
+    <result column="bankAccount" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="accountStatus" jdbcType="VARCHAR" property="accountStatus" />
+    <result column="isDefault" jdbcType="VARCHAR" property="isDefault" />
+    <result column="bankPurpose" jdbcType="VARCHAR" property="bankPurpose" />
+    <result column="statusMessage" jdbcType="VARCHAR" property="statusMessage" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+	  </resultMap>
+	  
+	 <resultMap id="Member_Bank_Account_Command_ResultMap" type="com.returnp.pointback.dto.command.MemberBankAccountCommand">
+	    <id column="memberBankAccountNo" jdbcType="INTEGER" property="memberBankAccountNo" />
+	    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+	    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+	    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+	    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+	    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+	    <result column="accountOwner" jdbcType="VARCHAR" property="accountOwner" />
+	    <result column="bankAccount" jdbcType="VARCHAR" property="bankAccount" />
+	     <result column="isDefault" jdbcType="VARCHAR" property="isDefault" />
+    	<result column="bankPurpose" jdbcType="VARCHAR" property="bankPurpose" />
+	    <result column="accountStatus" jdbcType="VARCHAR" property="accountStatus" />
+	    <result column="statusMessage" jdbcType="VARCHAR" property="statusMessage" />
+	    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+	    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+	    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+	     <result column="regType" jdbcType="CHAR" property="regType" />
+   </resultMap>
+ 
+  <sql id="Member_Bank_Account_Columns">
+    memberBankAccountNo, memberNo, bankName, accountOwner, bankAccount, accountStatus, 
+    isDefault, bankPurpose, statusMessage, regAdminNo, regType, createTime, updateTime
+  </sql>
+  
+   <sql id="Member_Bank_Account_Command_Columns">
+    MA.memberBankAccountNo, 
+    MA.memberNo, 
+    M.memberName, 
+    M.memberEmail, 
+    M.memberPhone, 
+    MA.bankName, 
+    MA.bankPurpose,
+    MA.isDefault,
+    MA.accountOwner, 
+    MA.bankAccount, 
+    MA.accountStatus, 
+    MA.statusMessage, 
+    MA.createTime, 
+    MA.updateTime, 
+    MA.regAdminNo,
+    MA.regType
+  </sql>
+
+   <sql id ="Member_Bank_Account_WhereStatement">
+   	  <if test="memberBankAccountNo!= null"> AND  MA.memberBankAccountNo = #{memberBankAccountNo,jdbcType=INTEGER}</if>
+   	  <if test="memberNo != null"> AND  MA.memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="accountOwner != null"> AND MA.accountOwner = #{accountOwner,jdbcType=VARCHAR}</if>
+      <if test="accountStatus != null"> AND MA.accountStatus = #{accountStatus,jdbcType=VARCHAR}</if>
+   </sql>
+   
+    <sql id ="Member_Bank_Account_Command_WhereStatement">
+   	  <if test="memberBankAccountNo!= null"> AND  MA.memberBankAccountNo = #{memberBankAccountNo,jdbcType=INTEGER}</if>
+   	  <if test="memberNo != null"> AND  MA.memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="accountOwner != null"> AND MA.accountOwner = #{accountOwner,jdbcType=VARCHAR}</if>
+      <if test="accountStatus != null"> AND MA.accountStatus = #{accountStatus,jdbcType=VARCHAR}</if>
+      
+    	<if test="memberName != null or memberEmail != null or memberPhone != null">
+        AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">OR M.memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null">OR M.memberEmail  LIKE CONCAT('%',#{memberEmail},'%' ) </if>
+      <if test="memberPhone != null">OR M.memberPhone  LIKE CONCAT('%',#{memberPhone},'%') </if>
+      <if test="memberName != null or memberEmail != null or memberPhone != null">
+        )
+      </if>
+   </sql>
+   
+  
+   <select id="findMemberBankAccounts" parameterType="com.returnp.pointback.model.MemberBankAccount"  resultMap="Member_Bank_Account_ResultMap" >
+    	select 
+    		<include refid="Member_Bank_Account_Columns" />
+    	from member_bank_account
+   		where 
+    		1 = 1
+    		<include refid = "Member_Bank_Account_WhereStatement"/> 
+    	ORDER by createTime DESC
+  </select>
+  
+  <select id="findMemberBankAccountCommands" parameterType="com.returnp.pointback.model.MemberBankAccount"  resultMap="Member_Bank_Account_Command_ResultMap" >
+    	select 
+    		sql_calc_found_rows 
+    		<include refid="Member_Bank_Account_Command_Columns" />
+    	from member_bank_account as MA
+    	inner join member as M  on (MA.memberNo = M.memberNo)
+   		where 
+    		1 = 1
+    		<include refid = "Member_Bank_Account_Command_WhereStatement"/> 
+    		<include refid = "commonStatement"/>
+  </select>
+  
+    <!-- ===============================================================================================================    -->
 </mapper>

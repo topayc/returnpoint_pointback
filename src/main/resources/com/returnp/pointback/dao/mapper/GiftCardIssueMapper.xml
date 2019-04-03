@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.GiftCardIssueMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.GiftCardIssue">
+    <id column="giftCardIssueNo" jdbcType="INTEGER" property="giftCardIssueNo" />
+    <id column="pinNumber" jdbcType="VARCHAR" property="pinNumber" />
+    <result column="giftCardOrderNo" jdbcType="INTEGER" property="giftCardOrderNo" />
+    <result column="giftCardNo" jdbcType="INTEGER" property="giftCardNo" />
+    <result column="accableStatus" jdbcType="VARCHAR" property="accableStatus" />
+    <result column="payableStatus" jdbcType="VARCHAR" property="payableStatus" />
+    <result column="giftCardStatus" jdbcType="VARCHAR" property="giftCardStatus" />
+    <result column="giftCardType" jdbcType="VARCHAR" property="giftCardType" />
+    <result column="giftCardAmount" jdbcType="INTEGER" property="giftCardAmount" />
+    <result column="giftCardSalePrice" jdbcType="INTEGER" property="giftCardSalePrice" />
+    <result column="accQrData" jdbcType="VARCHAR" property="accQrData" />
+    <result column="payQrData" jdbcType="VARCHAR" property="payQrData" />
+    <result column="accQrScanner" jdbcType="VARCHAR" property="accQrScanner" />
+    <result column="payQrScanner" jdbcType="VARCHAR" property="payQrScanner" />
+    <result column="accQrScanTime" jdbcType="TIMESTAMP" property="accQrScanTime" />
+    <result column="payQrScanTime" jdbcType="TIMESTAMP" property="payQrScanTime" />
+    <result column="issueTime" jdbcType="TIMESTAMP" property="issueTime" />
+    <result column="expirationTime" jdbcType="TIMESTAMP" property="expirationTime" />
+    <result column="accQrCodeWebPath" jdbcType="VARCHAR" property="accQrCodeWebPath" />
+    <result column="payQrCodeWebPath" jdbcType="VARCHAR" property="payQrCodeWebPath" />
+    <result column="accQrCodeFilePath" jdbcType="VARCHAR" property="accQrCodeFilePath" />
+    <result column="payQrCodeFilePath" jdbcType="VARCHAR" property="payQrCodeFilePath" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    giftCardIssueNo, pinNumber, giftCardOrderNo, giftCardNo, accableStatus, payableStatus, 
+    giftCardStatus, giftCardType, giftCardAmount, giftCardSalePrice, accQrData, payQrData, 
+    accQrScanner, payQrScanner, accQrScanTime, payQrScanTime, issueTime, expirationTime, 
+    accQrCodeWebPath, payQrCodeWebPath, accQrCodeFilePath, payQrCodeFilePath, createTime, 
+    updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.returnp.pointback.model.GiftCardIssueKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gift_card_issue
+    where giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER}
+      and pinNumber = #{pinNumber,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.returnp.pointback.model.GiftCardIssueKey">
+    delete from gift_card_issue
+    where giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER}
+      and pinNumber = #{pinNumber,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.GiftCardIssue">
+    insert into gift_card_issue (giftCardIssueNo, pinNumber, giftCardOrderNo, 
+      giftCardNo, accableStatus, payableStatus, 
+      giftCardStatus, giftCardType, giftCardAmount, 
+      giftCardSalePrice, accQrData, payQrData, 
+      accQrScanner, payQrScanner, accQrScanTime, 
+      payQrScanTime, issueTime, expirationTime, 
+      accQrCodeWebPath, payQrCodeWebPath, accQrCodeFilePath, 
+      payQrCodeFilePath, createTime, updateTime
+      )
+    values (#{giftCardIssueNo,jdbcType=INTEGER}, #{pinNumber,jdbcType=VARCHAR}, #{giftCardOrderNo,jdbcType=INTEGER}, 
+      #{giftCardNo,jdbcType=INTEGER}, #{accableStatus,jdbcType=VARCHAR}, #{payableStatus,jdbcType=VARCHAR}, 
+      #{giftCardStatus,jdbcType=VARCHAR}, #{giftCardType,jdbcType=VARCHAR}, #{giftCardAmount,jdbcType=INTEGER}, 
+      #{giftCardSalePrice,jdbcType=INTEGER}, #{accQrData,jdbcType=VARCHAR}, #{payQrData,jdbcType=VARCHAR}, 
+      #{accQrScanner,jdbcType=VARCHAR}, #{payQrScanner,jdbcType=VARCHAR}, #{accQrScanTime,jdbcType=TIMESTAMP}, 
+      #{payQrScanTime,jdbcType=TIMESTAMP}, #{issueTime,jdbcType=TIMESTAMP}, #{expirationTime,jdbcType=TIMESTAMP}, 
+      #{accQrCodeWebPath,jdbcType=VARCHAR}, #{payQrCodeWebPath,jdbcType=VARCHAR}, #{accQrCodeFilePath,jdbcType=VARCHAR}, 
+      #{payQrCodeFilePath,jdbcType=VARCHAR}, NOW(), NOW()
+      )
+      
+          <selectKey keyProperty="giftCardIssueNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.GiftCardIssue">
+    insert into gift_card_issue
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="giftCardIssueNo != null">
+        giftCardIssueNo,
+      </if>
+      <if test="pinNumber != null">
+        pinNumber,
+      </if>
+      <if test="giftCardOrderNo != null">
+        giftCardOrderNo,
+      </if>
+      <if test="giftCardNo != null">
+        giftCardNo,
+      </if>
+      <if test="accableStatus != null">
+        accableStatus,
+      </if>
+      <if test="payableStatus != null">
+        payableStatus,
+      </if>
+      <if test="giftCardStatus != null">
+        giftCardStatus,
+      </if>
+      <if test="giftCardType != null">
+        giftCardType,
+      </if>
+      <if test="giftCardAmount != null">
+        giftCardAmount,
+      </if>
+      <if test="giftCardSalePrice != null">
+        giftCardSalePrice,
+      </if>
+      <if test="accQrData != null">
+        accQrData,
+      </if>
+      <if test="payQrData != null">
+        payQrData,
+      </if>
+      <if test="accQrScanner != null">
+        accQrScanner,
+      </if>
+      <if test="payQrScanner != null">
+        payQrScanner,
+      </if>
+      <if test="accQrScanTime != null">
+        accQrScanTime,
+      </if>
+      <if test="payQrScanTime != null">
+        payQrScanTime,
+      </if>
+      <if test="issueTime != null">
+        issueTime,
+      </if>
+      <if test="expirationTime != null">
+        expirationTime,
+      </if>
+      <if test="accQrCodeWebPath != null">
+        accQrCodeWebPath,
+      </if>
+      <if test="payQrCodeWebPath != null">
+        payQrCodeWebPath,
+      </if>
+      <if test="accQrCodeFilePath != null">
+        accQrCodeFilePath,
+      </if>
+      <if test="payQrCodeFilePath != null">
+        payQrCodeFilePath,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="giftCardIssueNo != null">
+        #{giftCardIssueNo,jdbcType=INTEGER},
+      </if>
+      <if test="pinNumber != null">
+        #{pinNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="giftCardOrderNo != null">
+        #{giftCardOrderNo,jdbcType=INTEGER},
+      </if>
+      <if test="giftCardNo != null">
+        #{giftCardNo,jdbcType=INTEGER},
+      </if>
+      <if test="accableStatus != null">
+        #{accableStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="payableStatus != null">
+        #{payableStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="giftCardStatus != null">
+        #{giftCardStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="giftCardType != null">
+        #{giftCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="giftCardAmount != null">
+        #{giftCardAmount,jdbcType=INTEGER},
+      </if>
+      <if test="giftCardSalePrice != null">
+        #{giftCardSalePrice,jdbcType=INTEGER},
+      </if>
+      <if test="accQrData != null">
+        #{accQrData,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrData != null">
+        #{payQrData,jdbcType=VARCHAR},
+      </if>
+      <if test="accQrScanner != null">
+        #{accQrScanner,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrScanner != null">
+        #{payQrScanner,jdbcType=VARCHAR},
+      </if>
+      <if test="accQrScanTime != null">
+        #{accQrScanTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payQrScanTime != null">
+        #{payQrScanTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issueTime != null">
+        #{issueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expirationTime != null">
+        #{expirationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accQrCodeWebPath != null">
+        #{accQrCodeWebPath,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrCodeWebPath != null">
+        #{payQrCodeWebPath,jdbcType=VARCHAR},
+      </if>
+      <if test="accQrCodeFilePath != null">
+        #{accQrCodeFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrCodeFilePath != null">
+        #{payQrCodeFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.GiftCardIssue">
+    update gift_card_issue
+    <set>
+      <if test="giftCardOrderNo != null">
+        giftCardOrderNo = #{giftCardOrderNo,jdbcType=INTEGER},
+      </if>
+      <if test="giftCardNo != null">
+        giftCardNo = #{giftCardNo,jdbcType=INTEGER},
+      </if>
+      <if test="accableStatus != null">
+        accableStatus = #{accableStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="payableStatus != null">
+        payableStatus = #{payableStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="giftCardStatus != null">
+        giftCardStatus = #{giftCardStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="giftCardType != null">
+        giftCardType = #{giftCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="giftCardAmount != null">
+        giftCardAmount = #{giftCardAmount,jdbcType=INTEGER},
+      </if>
+      <if test="giftCardSalePrice != null">
+        giftCardSalePrice = #{giftCardSalePrice,jdbcType=INTEGER},
+      </if>
+      <if test="accQrData != null">
+        accQrData = #{accQrData,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrData != null">
+        payQrData = #{payQrData,jdbcType=VARCHAR},
+      </if>
+      <if test="accQrScanner != null">
+        accQrScanner = #{accQrScanner,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrScanner != null">
+        payQrScanner = #{payQrScanner,jdbcType=VARCHAR},
+      </if>
+      <if test="accQrScanTime != null">
+        accQrScanTime = #{accQrScanTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payQrScanTime != null">
+        payQrScanTime = #{payQrScanTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issueTime != null">
+        issueTime = #{issueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expirationTime != null">
+        expirationTime = #{expirationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accQrCodeWebPath != null">
+        accQrCodeWebPath = #{accQrCodeWebPath,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrCodeWebPath != null">
+        payQrCodeWebPath = #{payQrCodeWebPath,jdbcType=VARCHAR},
+      </if>
+      <if test="accQrCodeFilePath != null">
+        accQrCodeFilePath = #{accQrCodeFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="payQrCodeFilePath != null">
+        payQrCodeFilePath = #{payQrCodeFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER}
+      and pinNumber = #{pinNumber,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.GiftCardIssue">
+    update gift_card_issue
+    set giftCardOrderNo = #{giftCardOrderNo,jdbcType=INTEGER},
+      giftCardNo = #{giftCardNo,jdbcType=INTEGER},
+      accableStatus = #{accableStatus,jdbcType=VARCHAR},
+      payableStatus = #{payableStatus,jdbcType=VARCHAR},
+      giftCardStatus = #{giftCardStatus,jdbcType=VARCHAR},
+      giftCardType = #{giftCardType,jdbcType=VARCHAR},
+      giftCardAmount = #{giftCardAmount,jdbcType=INTEGER},
+      giftCardSalePrice = #{giftCardSalePrice,jdbcType=INTEGER},
+      accQrData = #{accQrData,jdbcType=VARCHAR},
+      payQrData = #{payQrData,jdbcType=VARCHAR},
+      accQrScanner = #{accQrScanner,jdbcType=VARCHAR},
+      payQrScanner = #{payQrScanner,jdbcType=VARCHAR},
+      accQrScanTime = #{accQrScanTime,jdbcType=TIMESTAMP},
+      payQrScanTime = #{payQrScanTime,jdbcType=TIMESTAMP},
+      issueTime = #{issueTime,jdbcType=TIMESTAMP},
+      expirationTime = #{expirationTime,jdbcType=TIMESTAMP},
+      accQrCodeWebPath = #{accQrCodeWebPath,jdbcType=VARCHAR},
+      payQrCodeWebPath = #{payQrCodeWebPath,jdbcType=VARCHAR},
+      accQrCodeFilePath = #{accQrCodeFilePath,jdbcType=VARCHAR},
+      payQrCodeFilePath = #{payQrCodeFilePath,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = NOW()
+    where giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER}
+      and pinNumber = #{pinNumber,jdbcType=VARCHAR}
+  </update>
+</mapper>

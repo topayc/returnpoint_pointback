@@ -1,10 +1,18 @@
 package com.returnp.pointback.web.controller;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.returnp.pointback.common.ResponseUtil;
+import com.returnp.pointback.dto.QRRequest;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.service.interfaces.GiftCardApiService;
+import com.returnp.pointback.util.BASE64Util;
 import com.returnp.pointback.util.QRManager;
 import com.returnp.pointback.web.message.MessageUtils;
 
@@ -43,26 +53,30 @@ public class GiftCardApiController extends ApplicationController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/handleGiftCardReq", method = RequestMethod.POST)
-	public ReturnpBaseResponse handleGiftCardReq( HashMap<String, Object> reqMap){
+	public ReturnpBaseResponse handleGiftCardReq(String qrReqStr) throws ParseException, JsonParseException, JsonMappingException, IOException{
 		logger.info("### handleGiftCardReq 호출됨");
+		
 		ReturnpBaseResponse res= null;
-		if (!this.keys.contains((String)reqMap.get("key"))) {
+		ObjectMapper mapper = new ObjectMapper();
+		QRRequest qrReq = mapper.readValue(BASE64Util.decodeString(qrReqStr), QRRequest.class);
+		
+		if (!this.keys.contains(qrReq.getKey())) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
 		}
-		String qrCmd = (String)reqMap.get("qrCmd");
+		
+		String qrCmd = qrReq.getQrCmd();
 		switch(qrCmd) {
 		case QRManager.QRCmd.ACC_BY_GIFTCARD:
-			res = this.giftCardApiService.giftCardAccumulate(reqMap);
+			res = this.giftCardApiService.giftCardAccumulate(qrReq);
 			break;
 		case QRManager.QRCmd.PAY_BY_GIFTCARD:
-			res = this.giftCardApiService.giftCardPayment(reqMap);
+			res = this.giftCardApiService.giftCardPayment(qrReq);
 			break;
 		}
 		return null;
 	}
-	
 	
 	/**
 	 * @param data

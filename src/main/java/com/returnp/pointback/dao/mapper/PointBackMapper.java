@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.returnp.pointback.dto.command.GiftCardPaymentCommand;
 import com.returnp.pointback.dto.command.GreenPointCommand;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
+import com.returnp.pointback.dto.command.MemberBankAccountCommand;
 import com.returnp.pointback.dto.command.MembershipRequestCommand;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PaymentPointbackRecordCommand;
@@ -21,8 +23,10 @@ import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.Agency;
 import com.returnp.pointback.model.Branch;
 import com.returnp.pointback.model.CompanyBankAccount;
+import com.returnp.pointback.model.GiftCardIssue;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
+import com.returnp.pointback.model.MemberBankAccount;
 import com.returnp.pointback.model.MembershipRequest;
 import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PaymentTransaction;
@@ -67,4 +71,9 @@ public interface PointBackMapper {
 	public ArrayList<PointConversionTransactionCommand> findPointConversionTransactionCommands(PointConversionTransactionCommand mrCond);
 	public ArrayList<PointConversionTransaction> findPointConversionTransactions(PointConversionTransaction mrCond);
 	public ArrayList<HashMap<String, Object>> selectDirectNodes(HashMap<String, Object> param);
+	public ArrayList<GiftCardIssue> selectGiftCardIssues(GiftCardIssue issue);
+	public ArrayList<GiftCardPaymentCommand> selectGiftCardPaymentCommands(GiftCardPaymentCommand record);
+	
+	public ArrayList<MemberBankAccount> findMemberBankAccounts(MemberBankAccount memberBankAccount);
+	public ArrayList<MemberBankAccountCommand> findMemberBankAccountCommands(MemberBankAccount memberBankAccount);
 }
