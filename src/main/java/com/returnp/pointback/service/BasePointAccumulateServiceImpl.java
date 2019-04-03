@@ -972,9 +972,6 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	@Override
 	public ReturnpBaseResponse cancelAccumulate(DataMap dataMap) {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
-		/*
-		 * 결제 취소의 경우 디비에서 가져온 결제 번호를 조작하지 않고 그래도 사용
-		*/
 		try {
 			switch(dataMap.getStr("acc_from").trim()){
 				case AppConstants.PaymentTransactionType.QR:
@@ -987,6 +984,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 						ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "623", this.messageUtils.getMessage("pointback.message.invalid_qr"));
 						throw new ReturnpException(res);
 					}
+					dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getDateStr("pan"));
 					break;
 				case AppConstants.PaymentTransactionType.ADMIN:
 					break;

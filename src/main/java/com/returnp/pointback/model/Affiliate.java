@@ -9,6 +9,8 @@ public class Affiliate extends QueryCondition {
     private String affiliateSerial;
 
     private Float affiliateComm;
+    
+    public Float giftCardPayRefundRate;
 
     private String affiliateCode;
 
@@ -47,8 +49,16 @@ public class Affiliate extends QueryCondition {
     private Date createTime;
 
     private Date updateTime;
+    
+    public Float getGiftCardPayRefundRate() {
+		return giftCardPayRefundRate;
+	}
 
-    public Integer getAffiliateNo() {
+	public void setGiftCardPayRefundRate(Float giftCardPayRefundRate) {
+		this.giftCardPayRefundRate = giftCardPayRefundRate;
+	}
+
+	public Integer getAffiliateNo() {
         return affiliateNo;
     }
 

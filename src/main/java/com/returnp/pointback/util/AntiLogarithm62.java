@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public abstract class AntiLogarithm62 {
-
+	public static String CHARSET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
 	private static final long base = 62; // 62진수로 표현위해 나누는 변수 값
 	
 	/**
@@ -112,6 +112,8 @@ public abstract class AntiLogarithm62 {
 				decimalValue = decimalValue.add(new BigDecimal(value * Math.pow(62, (len - 1) - i)));
 			}
 		}
+		System.out.println(decimalValue.toString());
+		
 		return decimalValue.toString();
 	}
 	
@@ -128,6 +130,52 @@ public abstract class AntiLogarithm62 {
           return String.valueOf(arr);
      }
 	
+	public static long get62CharDecode(String key) { 
+		   int iLength = CHARSET.length() -1;
+		   int iKeyLength = key.length();
+
+		   double dTotalNum = 0D;
+		   if( iKeyLength == 1 ) {
+		      dTotalNum = (long) CHARSET.indexOf( key );
+		   } else {
+		      for (int i = 0; i < (iKeyLength -1) ; i++ ) {
+		         String tmpChar = key.substring( i, (i+1) );
+
+		         double orgValue = Double.valueOf( CHARSET.indexOf( tmpChar ) );
+		         double multiValue = Double.valueOf( (iLength + 1 ) );
+		         double powValue = Double.valueOf( iKeyLength - (i + 1) );
+		         dTotalNum = dTotalNum + ( orgValue * Math.pow( multiValue, powValue ) );
+		      }
+		      dTotalNum = dTotalNum + CHARSET.indexOf( key.substring(iKeyLength -1, iKeyLength ) );
+		   }
+
+		   long result = (long) dTotalNum;
+		             
+		   return result;  
+		} 
+	
+	public static String get62CharEncode(Long no) {  
+		   Double dNum = Double.valueOf(no);
+		   int iLength = CHARSET.length() -1;  
+		   String sEncodeKey = new String(); 
+
+		   if( dNum <= iLength ) {
+		      // under 62
+		      sEncodeKey = CHARSET.charAt( dNum.intValue() ) + sEncodeKey;
+		   } else {
+		      // over 62
+		      while( dNum > iLength ) {
+		         sEncodeKey = CHARSET.charAt( (int) ( dNum.longValue() % (iLength +1) ) ) + sEncodeKey;
+		         dNum = Math.floor( new Double(dNum / (iLength +1) ) ) ;  
+		      }  
+		      sEncodeKey = CHARSET.charAt( dNum.intValue() ) + sEncodeKey;
+		   }
+
+		   return sEncodeKey;  
+		}
+
+
+			
 	public static void main(String[] args) {
 	/*	System.out.println(change62_s(182508351520718412L));
 		System.out.println(convertBase62toBase10(String.valueOf("dtTbSiXNbm"))); 

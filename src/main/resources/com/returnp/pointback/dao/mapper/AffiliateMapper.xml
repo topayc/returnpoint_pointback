@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.returnp.pointback.dao.mapper.AffiliateMapper">
-  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.Affiliate">
+<resultMap id="BaseResultMap" type="com.returnp.pointback.model.Affiliate">
     <id column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
     <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
     <result column="affiliateComm" jdbcType="REAL" property="affiliateComm" />
+    <result column="giftCardPayRefundRate" jdbcType="REAL" property="giftCardPayRefundRate" />
     <result column="affiliateCode" jdbcType="VARCHAR" property="affiliateCode" />
+    <result column="affiliateType" jdbcType="VARCHAR" property="affiliateType" />
     <result column="affiliateName" jdbcType="VARCHAR" property="affiliateName" />
     <result column="affiliateAddress" jdbcType="VARCHAR" property="affiliateAddress" />
     <result column="affiliateTel" jdbcType="VARCHAR" property="affiliateTel" />
@@ -14,7 +16,6 @@
     <result column="agencyNo" jdbcType="INTEGER" property="agencyNo" />
     <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
     <result column="affiliateStatus" jdbcType="VARCHAR" property="affiliateStatus" />
-    <result column="affiliateType" jdbcType="VARCHAR" property="affiliateType" />
     <result column="regType" jdbcType="CHAR" property="regType" />
     <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
     <result column="affiliateEmail" jdbcType="VARCHAR" property="affiliateEmail" />
@@ -26,10 +27,10 @@
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    affiliateNo, affiliateSerial, affiliateComm, affiliateCode, affiliateName, affiliateAddress, 
-    affiliateTel, affiliatePhone, memberNo, agencyNo, recommenderNo, affiliateStatus, 
-    affiliateType, regType, regAdminNo, affiliateEmail, greenPointAccStatus, redPointAccStatus, 
-    greenPointUseStatus, redPointUseStatus, createTime, updateTime
+ affiliateNo, affiliateSerial, affiliateComm, giftCardPayRefundRate, affiliateCode, 
+    affiliateType, affiliateName, affiliateAddress, affiliateTel, affiliatePhone, memberNo, 
+    agencyNo, recommenderNo, affiliateStatus, regType, regAdminNo, affiliateEmail, greenPointAccStatus, 
+    redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -38,7 +39,7 @@
     where affiliateNo = #{affiliateNo,jdbcType=INTEGER}
   </select>
   
-   <select id="selectBySerial" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="selectBySerial" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from affiliate
@@ -51,27 +52,29 @@
   </delete>
   <insert id="insert" parameterType="com.returnp.pointback.model.Affiliate">
     insert into affiliate (affiliateNo, affiliateSerial, affiliateComm, 
-      affiliateCode, affiliateName, affiliateAddress, 
-      affiliateTel, affiliatePhone, memberNo, 
-      agencyNo, recommenderNo, affiliateStatus, 
-      affiliateType, regType, regAdminNo, 
-      affiliateEmail, greenPointAccStatus, redPointAccStatus, 
-      greenPointUseStatus, redPointUseStatus, createTime, 
-      updateTime)
+      giftCardPayRefundRate, affiliateCode, affiliateType, 
+      affiliateName, affiliateAddress, affiliateTel, 
+      affiliatePhone, memberNo, agencyNo, 
+      recommenderNo, affiliateStatus, regType, 
+      regAdminNo, affiliateEmail, greenPointAccStatus, 
+      redPointAccStatus, greenPointUseStatus, redPointUseStatus, 
+      createTime, updateTime)
     values (#{affiliateNo,jdbcType=INTEGER}, #{affiliateSerial,jdbcType=VARCHAR}, #{affiliateComm,jdbcType=REAL}, 
-      #{affiliateCode,jdbcType=VARCHAR}, #{affiliateName,jdbcType=VARCHAR}, #{affiliateAddress,jdbcType=VARCHAR}, 
-      #{affiliateTel,jdbcType=VARCHAR}, #{affiliatePhone,jdbcType=VARCHAR}, #{memberNo,jdbcType=INTEGER}, 
-      #{agencyNo,jdbcType=INTEGER}, #{recommenderNo,jdbcType=INTEGER}, #{affiliateStatus,jdbcType=VARCHAR}, 
-      #{affiliateType,jdbcType=VARCHAR}, #{regType,jdbcType=CHAR}, #{regAdminNo,jdbcType=INTEGER}, 
-      #{affiliateEmail,jdbcType=VARCHAR}, #{greenPointAccStatus,jdbcType=CHAR}, #{redPointAccStatus,jdbcType=CHAR}, 
-      #{greenPointUseStatus,jdbcType=CHAR}, #{redPointUseStatus,jdbcType=CHAR}, NOW(), NOW())
+      #{giftCardPayRefundRate,jdbcType=REAL}, #{affiliateCode,jdbcType=VARCHAR}, #{affiliateType,jdbcType=VARCHAR}, 
+      #{affiliateName,jdbcType=VARCHAR}, #{affiliateAddress,jdbcType=VARCHAR}, #{affiliateTel,jdbcType=VARCHAR}, 
+      #{affiliatePhone,jdbcType=VARCHAR}, #{memberNo,jdbcType=INTEGER}, #{agencyNo,jdbcType=INTEGER}, 
+      #{recommenderNo,jdbcType=INTEGER}, #{affiliateStatus,jdbcType=VARCHAR}, #{regType,jdbcType=CHAR}, 
+      #{regAdminNo,jdbcType=INTEGER}, #{affiliateEmail,jdbcType=VARCHAR}, #{greenPointAccStatus,jdbcType=CHAR}, 
+      #{redPointAccStatus,jdbcType=CHAR}, #{greenPointUseStatus,jdbcType=CHAR}, #{redPointUseStatus,jdbcType=CHAR}, 
+      NOW(), NOW())
       
-        <selectKey keyProperty="affiliateNo" resultType="java.lang.Integer" order ="AFTER">
-            SELECT LAST_INSERT_ID()
-       </selectKey> 
+          
+    <selectKey keyProperty="affiliateNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
   </insert>
   <insert id="insertSelective" parameterType="com.returnp.pointback.model.Affiliate">
-    insert into affiliate
+      insert into affiliate
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="affiliateNo != null">
         affiliateNo,
@@ -82,8 +85,14 @@
       <if test="affiliateComm != null">
         affiliateComm,
       </if>
+      <if test="giftCardPayRefundRate != null">
+        giftCardPayRefundRate,
+      </if>
       <if test="affiliateCode != null">
         affiliateCode,
+      </if>
+      <if test="affiliateType != null">
+        affiliateType,
       </if>
       <if test="affiliateName != null">
         affiliateName,
@@ -108,9 +117,6 @@
       </if>
       <if test="affiliateStatus != null">
         affiliateStatus,
-      </if>
-      <if test="affiliateType != null">
-        affiliateType,
       </if>
       <if test="regType != null">
         regType,
@@ -150,8 +156,14 @@
       <if test="affiliateComm != null">
         #{affiliateComm,jdbcType=REAL},
       </if>
+      <if test="giftCardPayRefundRate != null">
+        #{giftCardPayRefundRate,jdbcType=REAL},
+      </if>
       <if test="affiliateCode != null">
         #{affiliateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateType != null">
+        #{affiliateType,jdbcType=VARCHAR},
       </if>
       <if test="affiliateName != null">
         #{affiliateName,jdbcType=VARCHAR},
@@ -176,9 +188,6 @@
       </if>
       <if test="affiliateStatus != null">
         #{affiliateStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="affiliateType != null">
-        #{affiliateType,jdbcType=VARCHAR},
       </if>
       <if test="regType != null">
         #{regType,jdbcType=CHAR},
@@ -210,7 +219,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.Affiliate">
-    update affiliate
+     update affiliate
     <set>
       <if test="affiliateSerial != null">
         affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR},
@@ -218,8 +227,14 @@
       <if test="affiliateComm != null">
         affiliateComm = #{affiliateComm,jdbcType=REAL},
       </if>
+      <if test="giftCardPayRefundRate != null">
+        giftCardPayRefundRate = #{giftCardPayRefundRate,jdbcType=REAL},
+      </if>
       <if test="affiliateCode != null">
         affiliateCode = #{affiliateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliateType != null">
+        affiliateType = #{affiliateType,jdbcType=VARCHAR},
       </if>
       <if test="affiliateName != null">
         affiliateName = #{affiliateName,jdbcType=VARCHAR},
@@ -244,9 +259,6 @@
       </if>
       <if test="affiliateStatus != null">
         affiliateStatus = #{affiliateStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="affiliateType != null">
-        affiliateType = #{affiliateType,jdbcType=VARCHAR},
       </if>
       <if test="regType != null">
         regType = #{regType,jdbcType=CHAR},
@@ -279,10 +291,12 @@
     where affiliateNo = #{affiliateNo,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.Affiliate">
-    update affiliate
+     update affiliate
     set affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR},
       affiliateComm = #{affiliateComm,jdbcType=REAL},
+      giftCardPayRefundRate = #{giftCardPayRefundRate,jdbcType=REAL},
       affiliateCode = #{affiliateCode,jdbcType=VARCHAR},
+      affiliateType = #{affiliateType,jdbcType=VARCHAR},
       affiliateName = #{affiliateName,jdbcType=VARCHAR},
       affiliateAddress = #{affiliateAddress,jdbcType=VARCHAR},
       affiliateTel = #{affiliateTel,jdbcType=VARCHAR},
@@ -291,7 +305,6 @@
       agencyNo = #{agencyNo,jdbcType=INTEGER},
       recommenderNo = #{recommenderNo,jdbcType=INTEGER},
       affiliateStatus = #{affiliateStatus,jdbcType=VARCHAR},
-      affiliateType = #{affiliateType,jdbcType=VARCHAR},
       regType = #{regType,jdbcType=CHAR},
       regAdminNo = #{regAdminNo,jdbcType=INTEGER},
       affiliateEmail = #{affiliateEmail,jdbcType=VARCHAR},

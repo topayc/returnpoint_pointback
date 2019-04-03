@@ -567,7 +567,10 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   <resultMap id="AffiliateResultMap" type="com.returnp.pointback.model.Affiliate">
     <id column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
     <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
+    <result column="affiliateComm" jdbcType="REAL" property="affiliateComm" />
+    <result column="giftCardPayRefundRate" jdbcType="REAL" property="giftCardPayRefundRate" />
     <result column="affiliateCode" jdbcType="VARCHAR" property="affiliateCode" />
+    <result column="affiliateType" jdbcType="VARCHAR" property="affiliateType" />
     <result column="affiliateName" jdbcType="VARCHAR" property="affiliateName" />
     <result column="affiliateAddress" jdbcType="VARCHAR" property="affiliateAddress" />
     <result column="affiliateTel" jdbcType="VARCHAR" property="affiliateTel" />
@@ -588,10 +591,10 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   </resultMap>
   
   <sql id="Affiliate_Column_List">
-    affiliateNo, affiliateSerial, affiliateCode, affiliateName, affiliateAddress, affiliateTel, 
-    affiliatePhone, memberNo, agencyNo, recommenderNo, affiliateStatus, regType, regAdminNo, 
-    affiliateEmail, greenPointAccStatus, redPointAccStatus, greenPointUseStatus, redPointUseStatus, 
-    createTime, updateTime
+ affiliateNo, affiliateSerial, affiliateComm, giftCardPayRefundRate, affiliateCode, 
+    affiliateType, affiliateName, affiliateAddress, affiliateTel, affiliatePhone, memberNo, 
+    agencyNo, recommenderNo, affiliateStatus, regType, regAdminNo, affiliateEmail, greenPointAccStatus, 
+    redPointAccStatus, greenPointUseStatus, redPointUseStatus, createTime, updateTime
   </sql>
   
     <sql id ="affiliateSearchWhereStatement">

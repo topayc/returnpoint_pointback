@@ -24,14 +24,26 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 
 public class QRManager {
+	public static class QRCmd {
+		public static final String GEN_JOIN_RECOM_QR = "10000";
+		public static final String GEN_PRODUCT_QR = "10001";
+		public static final String GEN_GIFT_QR = "10002";
+		public static final String EXE_JOIN_WITH_RECOM = "20000";
+
+		public static final String ACC_BY_GIFTCARD= "900";
+		public static final String PAY_BY_GIFTCARD= "901";
+		
+	}
 	
 	public static String QR_MAP_KEY_D = "D";
 	public static String QR_MAP_KEY_F = "F";
 	public static String QR_MAP_SEP_CREDIT = "!";
 	public static String QR_MAP_SEP_CASH = "@";
 	public static String QR_VAN_CODE_1= "1";
-	
+	public static String CHARSET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+
 	public static HashMap<String, String> parseQRToMap(String queryQR) throws ParseException{
+		/*System.out.println("QRManager.parseQRToMap");*/
 		HashMap<String, String> queryMap = Util.queryToMap(queryQR);
 		if (!QRManager.beforeValidateQR(queryMap)) {
 			return null;
@@ -46,29 +58,62 @@ public class QRManager {
 			return null;
 		}
 		
+		
 		String[] encArr =  encData.split(sep);
 		if (encArr.length != 5) return null;
 		
-/*		System.out.println(encArr[0]);
+		/*System.out.println(encData);
+		System.out.println(encArr[0]);
 		System.out.println(encArr[1]);
 		System.out.println(encArr[2]);
 		System.out.println(encArr[3]);
-		System.out.println(encArr[4]);*/
-		//System.out.println();
+		System.out.println(encArr[4]);
+		System.out.println();*/
+		
+		long field1 = AntiLogarithm62.get62CharDecode(encArr[0]);
+		long field2 = AntiLogarithm62.get62CharDecode(encArr[1]);
+		long field3 = AntiLogarithm62.get62CharDecode(encArr[2]);
+		long field4 = AntiLogarithm62.get62CharDecode(encArr[3]);
+		long field5 = AntiLogarithm62.get62CharDecode(encArr[4]);
+		
+	/*	if (!QRManager.afterValidateQR(field1, field2, field3 ,  field4, field5)) {
+			return null;
+		}*/
+	/*	System.out.println("결제 금액");
+		System.out.println(field4);
+		System.out.println(String.format("%09d", Long.valueOf(field4)) );
+		System.out.println("결제 승인 번호 마지막 4자리 ");
+		System.out.println(String.format("%04d", Long.valueOf(field5)) );*/
+		String qrPText = 
+				String.format("%09d", field1)+ 
+				String.format("%09d", field2) + 
+				String.format("%09d", field3) + 
+				String.format("%09d", field4) +
+				String.format("%04d", field5);
+		/* 
+		 * 기존 소스 코드 문제 있어, 새로운 코드로 대체함 
 		String field1 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[0]));
 		String field2 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[1]));
 		String field3 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[2]));
 		String field4 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[3]));
 		String field5 = AntiLogarithm62.convertBase62toBase10(AntiLogarithm62.strEachReverse(encArr[4]));
 		
-	/*	if (!QRManager.afterValidateQR(field1, field2, field3 ,  field4, field5)) {
+		if (!QRManager.afterValidateQR(field1, field2, field3 ,  field4, field5)) {
 			return null;
-		}*/
-		
-		String qrPText = field1 + field2 + field3 + field4 + field5;
-		qrPText = qrPText.substring(0, 27) + String.format("%013d", Long.valueOf(qrPText.substring(27)));
-		//System.out.println(qrPText);
-		
+		}
+		System.out.println("결제 금액");
+		System.out.println(field4);
+		System.out.println(String.format("%09d", Long.valueOf(field4)) );
+		System.out.println("결제 승인 번호 마지막 4자리 ");
+		System.out.println(String.format("%04d", Integer.valueOf(field5)) );
+		String qrPText = 
+				String.format("%09d", Long.valueOf(field1))+ 
+				String.format("%09d", Long.valueOf(field2)) + 
+				String.format("%09d", Long.valueOf(field3)) + 
+				String.format("%09d", Long.valueOf(field4)) +
+				String.format("%04d", Long.valueOf(field5));*/
+/*		System.out.println("큐알 원문 데이타");
+		System.out.println(qrPText);*/
 		/*VAN 시간을 내부 포맷으로 변경*/
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		GregorianCalendar calendar = new GregorianCalendar(
@@ -94,11 +139,12 @@ public class QRManager {
 		
 		try {
 			qrMap.put("pat", sdf2.format(date));  //승인시간
-			qrMap.put("pan", qrPText.substring(12, 16) + qrPText.substring(23, 27) + qrPText.substring(36, 40));   // 승인 번호
+			qrMap.put("pan", qrPText.substring(12, 16) + qrPText.substring(23, 27) + qrPText.substring(36));   // 승인 번호
 			qrMap.put("af_id", qrPText.substring(16, 23));  // 가맹점 번호
 			qrMap.put("pam", String.valueOf(Integer.valueOf(qrPText.substring(27, 35))));    //승인 금액
 			qrMap.put("pas", qrPText.substring(35,36));    //승인 상태 
 			qrMap.put("pas_str", qrPText.substring(35,36).equals("0") ? "승인 완료" : "승인 취소");    //승인 상태 
+			qrMap.put("pay_type_str", sep.equals(QRManager.QR_MAP_SEP_CREDIT ) ? "신용카드 결제" : "현금 결제");    //1 : 신용카드 2 : 현금 결제 
 			qrMap.put("pay_type", sep.equals(QRManager.QR_MAP_SEP_CREDIT ) ? "1" : "2");    //1 : 신용카드 2 : 현금 결제 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,8 +152,9 @@ public class QRManager {
 		}  
 		return qrMap;
 	}
+
 	
-	public static String genQRCode(String savedir, String qrText) throws Exception {
+	public static String genQRCode(String savedir, String webRoot, String qrText, String fileName) throws Exception {
 		Charset charset = Charset.forName("UTF-8");
 		CharsetEncoder encoder = charset.newEncoder();
 
@@ -134,7 +181,7 @@ public class QRManager {
 		}
 		
 		String ext = "png";
-		String qrFileTempNm = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(10), ext);
+		String qrFileTempNm = fileName != null ?  String.format("%s.%s", fileName, ext):  String.format("%s.%s", RandomStringUtils.randomAlphanumeric(10), ext);
 		String filePath = savedir + "/" + qrFileTempNm;
 		
 		try {
@@ -159,7 +206,7 @@ public class QRManager {
 				throw e;
 			}
 
-			qrAccessUrl = "/qr_temp/" + qrFileTempNm;
+			qrAccessUrl = webRoot + "/" + qrFileTempNm;
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw e;
@@ -169,7 +216,7 @@ public class QRManager {
 	
 	/*전처리 검증*/
 	public static Boolean beforeValidateQR(HashMap<String, String> queryMap){
-		//System.out.println("beforeValidateQR" );
+		System.out.println("beforeValidateQR" );
 		if (!queryMap.containsKey(QRManager.QR_MAP_KEY_F) || !queryMap.containsKey(QRManager.QR_MAP_KEY_D) ||
 				queryMap.get(QRManager.QR_MAP_KEY_F) == null || queryMap.get(QRManager.QR_MAP_KEY_D) == null) {
 			return false;
