@@ -6,83 +6,91 @@ import java.util.Date;
 public class GiftCardAccHistory extends QueryCondition {
     private Integer giftCardAccHistoryNo;
 
-	private Integer memberNo;
+    private Integer memberNo;
 
-	private Integer baseAmount;
+    private Integer giftCardIssueNo;
 
-	private Float accRate;
+    private Integer baseAmount;
 
-	private Float accAmount;
+    private Float accRate;
 
-	private Date accTime;
+    private Float accAmount;
 
-	private Date createTime;
+    private Date accTime;
 
-	private Date updateTime;
+    private Date createTime;
 
-	public Integer getGiftCardAccHistoryNo() {
-		return giftCardAccHistoryNo;
-	}
+    private Date updateTime;
 
-	public void setGiftCardAccHistoryNo(Integer giftCardAccHistoryNo) {
-		this.giftCardAccHistoryNo = giftCardAccHistoryNo;
-	}
+    public Integer getGiftCardAccHistoryNo() {
+        return giftCardAccHistoryNo;
+    }
 
-	public Integer getMemberNo() {
-		return memberNo;
-	}
+    public void setGiftCardAccHistoryNo(Integer giftCardAccHistoryNo) {
+        this.giftCardAccHistoryNo = giftCardAccHistoryNo;
+    }
 
-	public void setMemberNo(Integer memberNo) {
-		this.memberNo = memberNo;
-	}
+    public Integer getMemberNo() {
+        return memberNo;
+    }
 
-	public Integer getBaseAmount() {
-		return baseAmount;
-	}
+    public void setMemberNo(Integer memberNo) {
+        this.memberNo = memberNo;
+    }
 
-	public void setBaseAmount(Integer baseAmount) {
-		this.baseAmount = baseAmount;
-	}
+    public Integer getGiftCardIssueNo() {
+        return giftCardIssueNo;
+    }
 
-	public Float getAccRate() {
-		return accRate;
-	}
+    public void setGiftCardIssueNo(Integer giftCardIssueNo) {
+        this.giftCardIssueNo = giftCardIssueNo;
+    }
 
-	public void setAccRate(Float accRate) {
-		this.accRate = accRate;
-	}
+    public Integer getBaseAmount() {
+        return baseAmount;
+    }
 
-	public Float getAccAmount() {
-		return accAmount;
-	}
+    public void setBaseAmount(Integer baseAmount) {
+        this.baseAmount = baseAmount;
+    }
 
-	public void setAccAmount(Float accAmount) {
-		this.accAmount = accAmount;
-	}
+    public Float getAccRate() {
+        return accRate;
+    }
 
-	public Date getAccTime() {
-		return accTime;
-	}
+    public void setAccRate(Float accRate) {
+        this.accRate = accRate;
+    }
 
-	public void setAccTime(Date accTime) {
-		this.accTime = accTime;
-	}
+    public Float getAccAmount() {
+        return accAmount;
+    }
 
-	public Date getCreateTime() {
-		return createTime;
-	}
+    public void setAccAmount(Float accAmount) {
+        this.accAmount = accAmount;
+    }
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
+    public Date getAccTime() {
+        return accTime;
+    }
 
-	public Date getUpdateTime() {
-		return updateTime;
-	}
+    public void setAccTime(Date accTime) {
+        this.accTime = accTime;
+    }
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
+    public Date getCreateTime() {
+        return createTime;
+    }
 
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 }

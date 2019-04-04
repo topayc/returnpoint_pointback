@@ -2,8 +2,8 @@ package com.returnp.pointback.dto;
 
 public class QRRequest {
 	private String key;
-	private String qrCmd;
-	private String data;
+	private String qr_cmd;
+	private String pinNumber;
 	private String memberEmai;
 	private String memberPhone;
 	private String memberPhoneCountry;
@@ -13,17 +13,17 @@ public class QRRequest {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	public String getQrCmd() {
-		return qrCmd;
+	public String getQr_cmd() {
+		return qr_cmd;
 	}
-	public void setQrCmd(String qrCmd) {
-		this.qrCmd = qrCmd;
+	public void setQr_cmd(String qr_cmd) {
+		this.qr_cmd = qr_cmd;
 	}
-	public String getData() {
-		return data;
+	public String getPinNumber() {
+		return pinNumber;
 	}
-	public void setData(String data) {
-		this.data = data;
+	public void setPinNumber(String pinNumber) {
+		this.pinNumber = pinNumber;
 	}
 	public String getMemberEmai() {
 		return memberEmai;

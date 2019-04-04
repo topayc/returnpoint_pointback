@@ -58,7 +58,7 @@ public class GiftCardApiController extends ApplicationController{
 		
 		ReturnpBaseResponse res= null;
 		ObjectMapper mapper = new ObjectMapper();
-		QRRequest qrReq = mapper.readValue(BASE64Util.decodeString(qrReqStr), QRRequest.class);
+		QRRequest qrReq = mapper.readValue(qrReqStr, QRRequest.class);
 		
 		if (!this.keys.contains(qrReq.getKey())) {
 			res = new ReturnpBaseResponse();
@@ -66,7 +66,7 @@ public class GiftCardApiController extends ApplicationController{
 			return res;
 		}
 		
-		String qrCmd = qrReq.getQrCmd();
+		String qrCmd = qrReq.getQr_cmd();
 		switch(qrCmd) {
 		case QRManager.QRCmd.ACC_BY_GIFTCARD:
 			res = this.giftCardApiService.giftCardAccumulate(qrReq);

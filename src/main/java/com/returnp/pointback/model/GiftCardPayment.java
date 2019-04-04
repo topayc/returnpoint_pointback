@@ -12,17 +12,13 @@ public class GiftCardPayment extends QueryCondition {
 
     private Integer giftCardPaymentAmount;
 
+    private Integer memberBankAccountNo;
+
     private Float refundRate;
 
-    private float  refundAmount;
+    private Float refundAmount;
 
     private String refundStatus;
-
-    private String bankName;
-
-    private String backAccount;
-
-    private String bankAccountOwner;
 
     private Date createTime;
 
@@ -60,7 +56,17 @@ public class GiftCardPayment extends QueryCondition {
         this.giftCardPaymentAmount = giftCardPaymentAmount;
     }
 
-    public Float getRefundRate() {
+ 
+
+    public Integer getMemberBankAccountNo() {
+		return memberBankAccountNo;
+	}
+
+	public void setMemberBankAccountNo(Integer memberBankAccountNo) {
+		this.memberBankAccountNo = memberBankAccountNo;
+	}
+
+	public Float getRefundRate() {
         return refundRate;
     }
 
@@ -68,46 +74,20 @@ public class GiftCardPayment extends QueryCondition {
         this.refundRate = refundRate;
     }
 
-   
+    public Float getRefundAmount() {
+        return refundAmount;
+    }
 
-    public float getRefundAmount() {
-		return refundAmount;
-	}
+    public void setRefundAmount(Float refundAmount) {
+        this.refundAmount = refundAmount;
+    }
 
-	public void setRefundAmount(float refundAmount) {
-		this.refundAmount = refundAmount;
-	}
-
-	public String getRefundStatus() {
+    public String getRefundStatus() {
         return refundStatus;
     }
 
     public void setRefundStatus(String refundStatus) {
         this.refundStatus = refundStatus == null ? null : refundStatus.trim();
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public void setBankName(String bankName) {
-        this.bankName = bankName == null ? null : bankName.trim();
-    }
-
-    public String getBackAccount() {
-        return backAccount;
-    }
-
-    public void setBackAccount(String backAccount) {
-        this.backAccount = backAccount == null ? null : backAccount.trim();
-    }
-
-    public String getBankAccountOwner() {
-        return bankAccountOwner;
-    }
-
-    public void setBankAccountOwner(String bankAccountOwner) {
-        this.bankAccountOwner = bankAccountOwner == null ? null : bankAccountOwner.trim();
     }
 
     public Date getCreateTime() {

@@ -1800,17 +1800,101 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     	ORDER by createTime DESC
   </select>
   
-  <select id="findMemberBankAccountCommands" parameterType="com.returnp.pointback.model.MemberBankAccount"  resultMap="Member_Bank_Account_Command_ResultMap" >
-    	select 
-    		sql_calc_found_rows 
-    		<include refid="Member_Bank_Account_Command_Columns" />
-    	from member_bank_account as MA
-    	inner join member as M  on (MA.memberNo = M.memberNo)
-   		where 
-    		1 = 1
-    		<include refid = "Member_Bank_Account_Command_WhereStatement"/> 
-    		<include refid = "commonStatement"/>
+   <!-- ===============================================================================================================    -->
+ 
+  
+  <!-- GiftCardAccHistoryMapper   -->
+ 
+   <resultMap id="GiftCardAccHistoryResultMap" type="com.returnp.pointback.model.GiftCardAccHistory">
+    <id column="giftCardAccHistoryNo" jdbcType="INTEGER" property="giftCardAccHistoryNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="giftCardIssueNo" jdbcType="INTEGER" property="giftCardIssueNo" />
+    <result column="baseAmount" jdbcType="INTEGER" property="baseAmount" />
+    <result column="accRate" jdbcType="REAL" property="accRate" />
+    <result column="accAmount" jdbcType="REAL" property="accAmount" />
+    <result column="accTime" jdbcType="TIMESTAMP" property="accTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+    <resultMap id="GiftCardAccHistoryCommandResultMap" type="com.returnp.pointback.dto.command.GiftCardAccHistoryCommand">
+    <id column="giftCardAccHistoryNo" jdbcType="INTEGER" property="giftCardAccHistoryNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="giftCardIssueNo" jdbcType="INTEGER" property="giftCardIssueNo" />
+    <result column="baseAmount" jdbcType="INTEGER" property="baseAmount" />
+    <result column="accRate" jdbcType="REAL" property="accRate" />
+    <result column="accAmount" jdbcType="REAL" property="accAmount" />
+    <result column="accTime" jdbcType="TIMESTAMP" property="accTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="giftCardName" jdbcType="VARCHAR" property="giftCardName" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+  </resultMap>
+  
+    <sql id="GiftCardAccHistory_Column_List">
+  giftCardAccHistoryNo, memberNo, giftCardIssueNo, baseAmount, accRate, accAmount, 
+    accTime, createTime, updateTime
+  </sql>
+
+    <sql id="GiftCardAccHistoryCommand_Column_List">
+    A.giftCardAccHistoryNo, 
+    A.memberNo, 
+    A.giftCardIssueNo, 
+    A.baseAmount, 
+    A.accRate, 
+    A.accAmount, 
+    A.accTime, 
+    A.createTime, 
+    A.updateTime, 
+    B.memberName, 
+    B.memberEmail, 
+    B.memberPhone,
+    D.giftCardName
+  </sql>
+  
+   <sql id ="GiftCardAccHistoryWhereStatement">
+   <if test="giftCardAccHistoryNo != null"> AND giftCardAccHistoryNo = #{giftCardAccHistoryNo,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER}</if>
+  </sql>
+
+   <sql id ="GiftCardAccHistoryCommandWhereStatement">
+  <if test="giftCardAccHistoryNo != null"> AND giftCardAccHistoryNo = #{giftCardAccHistoryNo,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER}</if>
+	  <if test="memberName != null or memberEmail != null or memberPhone != null or giftCardName != null"  > AND ( 1 = 2 </if>
+      
+      <if test="giftCardName != null">OR giftCardName  LIKE CONCAT('%',#{giftCardName,jdbcType=VARCHAR},'%') </if>
+      <if test="memberEmail != null">OR memberEmail  LIKE CONCAT('%',#{memberEmail,jdbcType=VARCHAR},'%' ) </if>
+      <if test="memberPhone != null">OR memberPhone LIKE CONCAT('%',#{memberPhone,jdbcType=VARCHAR},'%') </if>
+      <if test="memberName != null or memberEmail != null or memberPhone != null or giftCardName != null"> ) </if>
+  </sql>
+  
+      <select id="selectGiftCardAccHistorise" parameterType="com.returnp.pointback.model.GiftCardAccHistory" resultMap="GiftCardAccHistoryResultMap">
+  select 
+      sql_calc_found_rows 
+    <include refid="GiftCardAccHistory_Column_List" />
+    from gift_card_acc_history
+    where 
+     	 1 = 1 
+    	<include refid = "GiftCardAccHistoryWhereStatement"/>
+    	<include refid = "commonStatement"/>
+  </select>
+
+
+    <select id="selectGiftCardAccHistoryCommands" parameterType="com.returnp.pointback.dto.command.GiftCardAccHistoryCommand" resultMap="GiftCardAccHistoryCommandResultMap">
+    select 
+      sql_calc_found_rows 
+    <include refid="GiftCardAccHistoryCommand_Column_List" />
+    from gift_card_acc_history as A
+    inner join member as B join on (A.memberNo = B.memberNo)
+    inner join gift_card_issue as C on (A.gift_card_issue_no = C.gift_card_issue_no)
+    inner join gift_card as D on (C.gift_card_no = D.gift_card_no)
+    where 
+     	 1 = 1 
+    	<include refid = "GiftCardAccHistoryCommandWhereStatement"/>
+    	<include refid = "commonStatement"/>
   </select>
   
-    <!-- ===============================================================================================================    -->
+ <!-- ===============================================================================================================    -->
 </mapper>

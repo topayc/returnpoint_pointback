@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.returnp.pointback.dto.command.GiftCardAccHistoryCommand;
 import com.returnp.pointback.dto.command.GiftCardPaymentCommand;
 import com.returnp.pointback.dto.command.GreenPointCommand;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
@@ -23,6 +24,7 @@ import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.Agency;
 import com.returnp.pointback.model.Branch;
 import com.returnp.pointback.model.CompanyBankAccount;
+import com.returnp.pointback.model.GiftCardAccHistory;
 import com.returnp.pointback.model.GiftCardIssue;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
@@ -76,4 +78,7 @@ public interface PointBackMapper {
 	
 	public ArrayList<MemberBankAccount> findMemberBankAccounts(MemberBankAccount memberBankAccount);
 	public ArrayList<MemberBankAccountCommand> findMemberBankAccountCommands(MemberBankAccount memberBankAccount);
+	
+	public ArrayList<GiftCardAccHistory> selectGiftCardAccHistories(GiftCardAccHistory record);
+	public ArrayList<GiftCardAccHistoryCommand> selectGiftCardAccHistoryCommands(GiftCardAccHistoryCommand record);
 }

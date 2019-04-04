@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.returnp.pointback.model.GiftCardAccHistory">
     <id column="giftCardAccHistoryNo" jdbcType="INTEGER" property="giftCardAccHistoryNo" />
     <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="giftCardIssueNo" jdbcType="INTEGER" property="giftCardIssueNo" />
     <result column="baseAmount" jdbcType="INTEGER" property="baseAmount" />
     <result column="accRate" jdbcType="REAL" property="accRate" />
     <result column="accAmount" jdbcType="REAL" property="accAmount" />
@@ -12,8 +13,8 @@
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    giftCardAccHistoryNo, memberNo, baseAmount, accRate, accAmount, accTime, createTime, 
-    updateTime
+    giftCardAccHistoryNo, memberNo, giftCardIssueNo, baseAmount, accRate, accAmount, 
+    accTime, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,13 +27,16 @@
     where giftCardAccHistoryNo = #{giftCardAccHistoryNo,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.returnp.pointback.model.GiftCardAccHistory">
-    insert into gift_card_acc_history (giftCardAccHistoryNo, memberNo, baseAmount, 
-      accRate, accAmount, accTime, 
-      createTime, updateTime)
-    values (#{giftCardAccHistoryNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, #{baseAmount,jdbcType=INTEGER}, 
-      #{accRate,jdbcType=REAL}, #{accAmount,jdbcType=REAL}, #{accTime,jdbcType=TIMESTAMP}, 
-      NOW(), NOW())
-      <selectKey keyProperty="giftCardAccHistoryNo" resultType="java.lang.Integer" order ="AFTER">
+    insert into gift_card_acc_history (giftCardAccHistoryNo, memberNo, giftCardIssueNo, 
+      baseAmount, accRate, accAmount, 
+      accTime, createTime, updateTime
+      )
+    values (#{giftCardAccHistoryNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, #{giftCardIssueNo,jdbcType=INTEGER}, 
+      #{baseAmount,jdbcType=INTEGER}, #{accRate,jdbcType=REAL}, #{accAmount,jdbcType=REAL}, 
+      #{accTime,jdbcType=TIMESTAMP}, NOW(), NOW()
+      )
+      
+          <selectKey keyProperty="giftCardAccHistoryNo" resultType="java.lang.Integer" order ="AFTER">
 		    SELECT LAST_INSERT_ID()
 	 </selectKey>	
   </insert>
@@ -44,6 +48,9 @@
       </if>
       <if test="memberNo != null">
         memberNo,
+      </if>
+      <if test="giftCardIssueNo != null">
+        giftCardIssueNo,
       </if>
       <if test="baseAmount != null">
         baseAmount,
@@ -71,6 +78,9 @@
       <if test="memberNo != null">
         #{memberNo,jdbcType=INTEGER},
       </if>
+      <if test="giftCardIssueNo != null">
+        #{giftCardIssueNo,jdbcType=INTEGER},
+      </if>
       <if test="baseAmount != null">
         #{baseAmount,jdbcType=INTEGER},
       </if>
@@ -97,6 +107,9 @@
       <if test="memberNo != null">
         memberNo = #{memberNo,jdbcType=INTEGER},
       </if>
+      <if test="giftCardIssueNo != null">
+        giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER},
+      </if>
       <if test="baseAmount != null">
         baseAmount = #{baseAmount,jdbcType=INTEGER},
       </if>
@@ -121,12 +134,13 @@
   <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.GiftCardAccHistory">
     update gift_card_acc_history
     set memberNo = #{memberNo,jdbcType=INTEGER},
+      giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER},
       baseAmount = #{baseAmount,jdbcType=INTEGER},
       accRate = #{accRate,jdbcType=REAL},
       accAmount = #{accAmount,jdbcType=REAL},
       accTime = #{accTime,jdbcType=TIMESTAMP},
       createTime = #{createTime,jdbcType=TIMESTAMP},
-      updateTime = NOW()
+      updateTime =NOW())
     where giftCardAccHistoryNo = #{giftCardAccHistoryNo,jdbcType=INTEGER}
   </update>
 </mapper>
