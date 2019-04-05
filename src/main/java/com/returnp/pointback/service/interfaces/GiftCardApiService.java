@@ -11,6 +11,6 @@ import com.returnp.pointback.model.Member;
 public interface GiftCardApiService {
 	public ReturnpBaseResponse giftCardPayment(QRRequest qrRequest);
 	public ReturnpBaseResponse giftCardAccumulate(QRRequest qrRequest);
-	public void increasePoint( int memberNo, int nodeNo, String nodeType, String nodeTypeName, int amount, float accRate);
+	public void increaseGiftCardPoint( int memberNo, int nodeNo, String nodeType, String nodeTypeName, int amount, float accRate);
 	public GreenPoint createRecommenderRPoint(int memberNo);
 }

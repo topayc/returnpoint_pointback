@@ -262,6 +262,7 @@
   
     <sql id ="memberSearchWhereStatement">
        <if test="memberNo != null">AND  memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="memberEmail != null"> AND memberEmail = #{memberEmail,jdbcType=VARCHAR}</if>
       <if test="memberPassword != null"> AND memberPassword = #{memberPassword,jdbcType=VARCHAR}</if>
       <if test="memberPassword2 != null">AND  memberPassword2 = #{memberPassword2,jdbcType=VARCHAR}</if>
       <if test="memberType != null">AND  memberType = #{memberType,jdbcType=VARCHAR}</if>
@@ -1701,7 +1702,6 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     where 
      	 1 = 1 
     	<include refid = "GiftCardPaymentCommandWhereStatement"/>
-    	<include refid = "commonStatement"/>
   </select>
   
   <!-- ===============================================================================================================    -->
@@ -1878,7 +1878,6 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     where 
      	 1 = 1 
     	<include refid = "GiftCardAccHistoryWhereStatement"/>
-    	<include refid = "commonStatement"/>
   </select>
 
 
@@ -1893,7 +1892,6 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     where 
      	 1 = 1 
     	<include refid = "GiftCardAccHistoryCommandWhereStatement"/>
-    	<include refid = "commonStatement"/>
   </select>
   
  <!-- ===============================================================================================================    -->

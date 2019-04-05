@@ -35,7 +35,10 @@
     values (#{giftCardPaymentNo,jdbcType=INTEGER}, #{affiliateNo,jdbcType=INTEGER}, #{giftCardIssueNo,jdbcType=INTEGER}, 
       #{giftCardPaymentAmount,jdbcType=INTEGER}, #{memberBankAccountNo,jdbcType=VARCHAR}, 
       #{refundRate,jdbcType=REAL}, #{refundAmount,jdbcType=REAL}, #{refundStatus,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      NOW(), NOW())
+          <selectKey keyProperty="giftCardPaymentNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
   </insert>
   <insert id="insertSelective" parameterType="com.returnp.pointback.model.GiftCardPayment">
     insert into gift_card_payment
@@ -147,7 +150,7 @@
       refundAmount = #{refundAmount,jdbcType=REAL},
       refundStatus = #{refundStatus,jdbcType=VARCHAR},
       createTime = #{createTime,jdbcType=TIMESTAMP},
-      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+      updateTime = NOW()
     where giftCardPaymentNo = #{giftCardPaymentNo,jdbcType=INTEGER}
   </update>
 </mapper>

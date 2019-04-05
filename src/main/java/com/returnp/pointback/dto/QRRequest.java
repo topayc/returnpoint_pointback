@@ -4,9 +4,18 @@ public class QRRequest {
 	private String key;
 	private String qr_cmd;
 	private String pinNumber;
-	private String memberEmai;
+	private String memberName;
+	private String memberEmail;
 	private String memberPhone;
 	private String memberPhoneCountry;
+	
+	
+	public String getMemberName() {
+		return memberName;
+	}
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
 	public String getKey() {
 		return key;
 	}
@@ -25,11 +34,12 @@ public class QRRequest {
 	public void setPinNumber(String pinNumber) {
 		this.pinNumber = pinNumber;
 	}
-	public String getMemberEmai() {
-		return memberEmai;
+	
+	public String getMemberEmail() {
+		return memberEmail;
 	}
-	public void setMemberEmai(String memberEmai) {
-		this.memberEmai = memberEmai;
+	public void setMemberEmail(String memberEmail) {
+		this.memberEmail = memberEmail;
 	}
 	public String getMemberPhone() {
 		return memberPhone;

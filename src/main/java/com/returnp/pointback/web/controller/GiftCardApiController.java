@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+
+import javax.annotation.PostConstruct;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -51,31 +54,53 @@ public class GiftCardApiController extends ApplicationController{
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(df, false));
 	}
 	
+	 /**
+		 * 기본 초기화 작업
+		 * 외부 연결 허용 키 목록 세팅
+		 * 이후 연결 키 생성 기능구현시, 디비로 관리 
+		 */
+		@PostConstruct
+		 public void init() {
+			 keys = new ArrayList<String>(Arrays.asList(env.getProperty("keys").trim().split(",")));
+		 }
+	
 	@ResponseBody
 	@RequestMapping(value = "/handleGiftCardReq", method = RequestMethod.POST)
-	public ReturnpBaseResponse handleGiftCardReq(String qrReqStr) throws ParseException, JsonParseException, JsonMappingException, IOException{
-		logger.info("### handleGiftCardReq 호출됨");
+	public ReturnpBaseResponse handleGiftCardReq(String qrData) throws ParseException, JsonParseException, JsonMappingException, IOException{
+		System.out.println("### GiftCardApiController handleGiftCardReq 호출됨");
+		
+		JSONParser jsonParser;
+		JSONObject qrJson;
+		
+		System.out.println(">>>원문 데이타");
+		System.out.println(qrData);
+		System.out.println(">>>디코딩 데이타");
+		System.out.println(BASE64Util.decodeString(qrData));
 		
 		ReturnpBaseResponse res= null;
-		ObjectMapper mapper = new ObjectMapper();
-		QRRequest qrReq = mapper.readValue(qrReqStr, QRRequest.class);
-		
-		if (!this.keys.contains(qrReq.getKey())) {
-			res = new ReturnpBaseResponse();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
-			return res;
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			QRRequest qrReq = mapper.readValue(BASE64Util.decodeString(qrData), QRRequest.class);
+			
+			if (!this.keys.contains(qrReq.getKey())) {
+				res = new ReturnpBaseResponse();
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+				return res;
+			}
+			
+			String qrCmd = qrReq.getQr_cmd();
+			switch(qrCmd) {
+			case QRManager.QRCmd.ACC_BY_GIFTCARD:
+				res = this.giftCardApiService.giftCardAccumulate(qrReq);
+				break;
+			case QRManager.QRCmd.PAY_BY_GIFTCARD:
+				res = this.giftCardApiService.giftCardPayment(qrReq);
+				break;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		
-		String qrCmd = qrReq.getQr_cmd();
-		switch(qrCmd) {
-		case QRManager.QRCmd.ACC_BY_GIFTCARD:
-			res = this.giftCardApiService.giftCardAccumulate(qrReq);
-			break;
-		case QRManager.QRCmd.PAY_BY_GIFTCARD:
-			res = this.giftCardApiService.giftCardPayment(qrReq);
-			break;
-		}
-		return null;
+		return res;
 	}
 	
 	/**

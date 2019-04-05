@@ -14,6 +14,7 @@ import com.returnp.pointback.common.ReturnpException;
 import com.returnp.pointback.dao.mapper.AffiliateMapper;
 import com.returnp.pointback.dao.mapper.GiftCardAccHistoryMapper;
 import com.returnp.pointback.dao.mapper.GiftCardPaymentMapper;
+import com.returnp.pointback.dao.mapper.GiftCardPolicyMapper;
 import com.returnp.pointback.dao.mapper.GreenPointMapper;
 import com.returnp.pointback.dao.mapper.PaymentPointbackRecordMapper;
 import com.returnp.pointback.dao.mapper.PaymentTransactionMapper;
@@ -25,6 +26,7 @@ import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.GiftCardAccHistory;
 import com.returnp.pointback.model.GiftCardIssue;
 import com.returnp.pointback.model.GiftCardPayment;
+import com.returnp.pointback.model.GiftCardPolicy;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.MemberBankAccount;
@@ -45,6 +47,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	@Autowired PaymentPointbackRecordMapper paymentPointbackRecordMapper;
 	@Autowired GiftCardAccHistoryMapper historyMapper;
 	@Autowired GiftCardPaymentMapper giftCardPaymentMapper;
+	@Autowired GiftCardPolicyMapper giftCardPolicyMapper;
 	/* 
 	 * 상품권 적립 큐알 스캔에 의한 적립 처리 
 	 */
@@ -53,12 +56,12 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		try {
 			 Member member = new Member();
-	         member.setMemberEmail(qrRequest.getMemberEmai());
+	         member.setMemberEmail(qrRequest.getMemberEmail());
 	         ArrayList<Member> members = this.pointBackMapper.findMembers(member);
 	         
-	         if (members.size() !=1 || members == null) {
+	         if (members == null || members.size() !=1  ) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "601", 
-	        			 this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {qrRequest.getMemberEmai()}));
+	        			 this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {qrRequest.getMemberEmail()}));
 	                throw new ReturnpException(res);
 	            }
 	         
@@ -73,28 +76,41 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         /* * 핀번호가 존재하는 지 검사 */
 	         GiftCardIssue issue = new GiftCardIssue();
 	         issue.setPinNumber(qrRequest.getPinNumber());
-	         ArrayList<GiftCardIssue> issues =this.pointBackMapper.selectGiftCardIssues(issue);
-	         if (issues.size() !=1 || issues == null) {
+	         ArrayList<GiftCardIssue> issueses =this.pointBackMapper.selectGiftCardIssues(issue);
+	         if (issueses == null || issueses.size() !=1 ) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2404", this.messageUtils.getMessage("api.wrong_pinnumbe"));
 	                throw new ReturnpException(res);
 	         }
 	         
-	         float accRate = 0.1f;
+	         GiftCardPolicy giftCardPolicy = this.giftCardPolicyMapper.selectByPrimaryKey(1);
+	         if (giftCardPolicy == null) {
+	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2408", this.messageUtils.getMessage("api.no_gift_card_policy"));
+	                throw new ReturnpException(res);
+	         }
+	         float giftCardAccRate = giftCardPolicy.getGiftCardAccRate();
 	         
 	         /* 
-	          * 적립에 따른 포인트 증가
+	          * 상품권 QR 적립에 따른 포인트 증가
 	          * */
-	         this.increasePoint(member.getMemberNo(), member.getMemberNo(), "1", AppConstants.NodeType.MEMBER,  issues.get(0).getGiftCardSalePrice(), accRate);
+	         this.increaseGiftCardPoint(
+	        	members.get(0).getMemberNo(), 
+	        	members.get(0).getMemberNo(), 
+	        	"1", 
+	        	AppConstants.NodeType.MEMBER,  
+	        	issueses.get(0).
+	        	getGiftCardSalePrice(), 
+	        	giftCardAccRate
+	        );
 	         
 	         /*
-	          * 상품권 적립 내역 인서트  
+	          * 상품권 QR 적립 내역 인서트  
 	          * */
 	         GiftCardAccHistory accHistory = new GiftCardAccHistory();
-	         accHistory.setMemberNo(member.getMemberNo());
-	         accHistory.setGiftCardIssueNo(issue.getGiftCardIssueNo());
-	         accHistory.setBaseAmount(issue.getGiftCardAmount());
-	         accHistory.setAccRate(accRate);
-	         accHistory.setAccAmount(issues.get(0).getGiftCardSalePrice() * (1 - accRate));
+	         accHistory.setMemberNo(members.get(0).getMemberNo());
+	         accHistory.setGiftCardIssueNo(issueses.get(0).getGiftCardIssueNo());
+	         accHistory.setBaseAmount(issueses.get(0).getGiftCardAmount());
+	         accHistory.setAccRate(giftCardAccRate);
+	         accHistory.setAccAmount(issueses.get(0).getGiftCardSalePrice() * giftCardAccRate);
 	         accHistory.setAccTime(new Date());
 	         this.historyMapper.insert(accHistory);
 	         ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "100", "상품권 적립 처리가 완료되었습니다 ");
@@ -106,7 +122,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", "상품권 결제 QR 처리 에러 ");
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", "상품권 적립 QR 처리 에러 ");
 			return res;
 		}
 	}
@@ -119,12 +135,12 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		try {
 			 Member member = new Member();
-	         member.setMemberEmail(qrRequest.getMemberEmai());
+	         member.setMemberEmail(qrRequest.getMemberEmail());
 	         ArrayList<Member> members = this.pointBackMapper.findMembers(member);
 	         
 	         if (members.size() !=1 || members == null) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "601", 
-	        			 this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {qrRequest.getMemberEmai()}));
+	        			 this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {qrRequest.getMemberEmail()}));
 	                throw new ReturnpException(res);
 	          }
 	         
@@ -144,13 +160,14 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         
 	         /*가맹점 정보 */
 	         Affiliate affiliate = new Affiliate();
-	         affiliate.setMemberNo(member.getMemberNo());
+	         affiliate.setMemberNo(members.get(0).getMemberNo());
 	         ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
-	     	
+	     	System.out.println(" >> 가맹점 수 ");
+	     	System.out.println(affiliates.size());
 	         /*가맹점 정보가 존재하지 않으면 중지 */
 	         if (affiliates == null || affiliates.size() != 1) {
-				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "603", 
-						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {member.getMemberName()}));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "3000", 
+						this.messageUtils.getMessage("api.no_affiliate"));
 				throw new ReturnpException(res);
 			 }
 	         
@@ -176,16 +193,29 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         bankAccount.setIsDefault("Y");
 	         ArrayList<MemberBankAccount> bankAccounts = this.pointBackMapper.findMemberBankAccounts(bankAccount);
 	         
+	         /*상품권 정책 정보*/
+	         GiftCardPolicy giftCardPolicy = this.giftCardPolicyMapper.selectByPrimaryKey(1);
+	         if (giftCardPolicy == null) {
+	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2408", this.messageUtils.getMessage("api.no_gift_card_policy"));
+	                throw new ReturnpException(res);
+	         }
+	         
+	         float refundRate = (float)affiliates.get(0).getGiftCardPayRefundRate() != 0.0f ?  affiliates.get(0).getGiftCardPayRefundRate() : giftCardPolicy.getGiftCardPayRefundRate();
 	         /*상품권 결제 정보 인서트*/
 	         GiftCardPayment giftCardPayment = new GiftCardPayment();
 	         giftCardPayment.setAffiliateNo(affiliates.get(0).getAffiliateNo());
 	         giftCardPayment.setGiftCardIssueNo(issues.get(0).getGiftCardIssueNo());
 	         giftCardPayment.setGiftCardPaymentAmount(issues.get(0).getGiftCardAmount());
-	         giftCardPayment.setRefundRate(affiliates.get(0).getGiftCardPayRefundRate());
-	         giftCardPayment.setRefundAmount(issues.get(0).getGiftCardAmount() *  (1-affiliates.get(0).getGiftCardPayRefundRate()));
+	         giftCardPayment.setRefundRate(refundRate);
+	         giftCardPayment.setRefundAmount(issues.get(0).getGiftCardAmount()  -   ( issues.get(0).getGiftCardAmount() * refundRate));
 	         giftCardPayment.setRefundStatus("1");
-	         giftCardPayment.setMemberBankAccountNo(bankAccounts.get(0).getMemberBankAccountNo());
-	         this.giftCardPaymentMapper.insert(giftCardPayment);
+	         Date now = new Date();
+	         giftCardPayment.setCreateTime(now);
+	         giftCardPayment.setUpdateTime(now);
+	         if (bankAccount !=null) {
+	        	 giftCardPayment.setMemberBankAccountNo(bankAccounts.get(0).getMemberBankAccountNo());
+	         }
+	         this.giftCardPaymentMapper.insertSelective(giftCardPayment);
 	         
 	         ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "100", "상품권 결제 요청 완료되었습니다. ");
 	         return res;
@@ -196,13 +226,13 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", "상품권 적립 QR 처리 에러 ");
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", "상품권 결제 QR 처리 에러 ");
 			return res;
 		}
 	}
 
 	@Override
-	public void increasePoint( int memberNo, int nodeNo, String nodeType, String nodeTypeName, int amount, float accRate) {
+	public void increaseGiftCardPoint( int memberNo, int nodeNo, String nodeType, String nodeTypeName, int amount, float giftCardAccRate) {
 		try {
 			/* G Point 증가 업데이트 */
 			GreenPoint point =  new GreenPoint();
@@ -220,18 +250,8 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 
 			point.setNodeNo(nodeNo);
 			point.setNodeTypeName(nodeTypeName);
-			point.setPointAmount(point.getPointAmount() + (amount * accRate));
+			point.setPointAmount(point.getPointAmount() + ( amount * giftCardAccRate));
 			this.greenPointMapper.updateByPrimaryKey(point);
-
-			/* 상품권에 의한  적립 내역 저장*/
-			Date date = new Date();
-			GiftCardAccHistory accHistory = new GiftCardAccHistory();
-			accHistory.setMemberNo(memberNo);
-			accHistory.setBaseAmount(amount);
-			accHistory.setAccAmount(amount * accRate);
-			accHistory.setAccTime(date);
-			accHistory.setAccRate(accRate);
-			this.historyMapper.insert(accHistory);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.GiftCardPolicyMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.GiftCardPolicy">
+    <id column="giftCardPolicyNo" jdbcType="INTEGER" property="giftCardPolicyNo" />
+    <result column="headSaleFeeRate" jdbcType="REAL" property="headSaleFeeRate" />
+    <result column="distSaleFeeRate" jdbcType="REAL" property="distSaleFeeRate" />
+    <result column="saleOrganSaleFeeRate" jdbcType="REAL" property="saleOrganSaleFeeRate" />
+    <result column="giftCardAccRate" jdbcType="REAL" property="giftCardAccRate" />
+    <result column="giftCardPayRefundRate" jdbcType="REAL" property="giftCardPayRefundRate" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName" />
+    <result column="web" jdbcType="VARCHAR" property="web" />
+    <result column="bankName" jdbcType="VARCHAR" property="bankName" />
+    <result column="bankAccount" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="bankAccountOwner" jdbcType="VARCHAR" property="bankAccountOwner" />
+    <result column="csTel" jdbcType="VARCHAR" property="csTel" />
+    <result column="csOperationTime" jdbcType="VARCHAR" property="csOperationTime" />
+    <result column="csEmail" jdbcType="VARCHAR" property="csEmail" />
+    <result column="bankDepositText" jdbcType="VARCHAR" property="bankDepositText" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    giftCardPolicyNo, headSaleFeeRate, distSaleFeeRate, saleOrganSaleFeeRate, giftCardAccRate, 
+    giftCardPayRefundRate, companyName, web, bankName, bankAccount, bankAccountOwner, 
+    csTel, csOperationTime, csEmail, bankDepositText, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gift_card_policy
+    where giftCardPolicyNo = #{giftCardPolicyNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gift_card_policy
+    where giftCardPolicyNo = #{giftCardPolicyNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.GiftCardPolicy">
+       insert into gift_card_policy (giftCardPolicyNo, headSaleFeeRate, distSaleFeeRate, 
+      saleOrganSaleFeeRate, giftCardAccRate, giftCardPayRefundRate, 
+      companyName, web, bankName, 
+      bankAccount, bankAccountOwner, csTel, 
+      csOperationTime, csEmail, bankDepositText, 
+      createTime, updateTime)
+    values (#{giftCardPolicyNo,jdbcType=INTEGER}, #{headSaleFeeRate,jdbcType=REAL}, #{distSaleFeeRate,jdbcType=REAL}, 
+      #{saleOrganSaleFeeRate,jdbcType=REAL}, #{giftCardAccRate,jdbcType=REAL}, #{giftCardPayRefundRate,jdbcType=REAL}, 
+      #{companyName,jdbcType=VARCHAR}, #{web,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, 
+      #{bankAccount,jdbcType=VARCHAR}, #{bankAccountOwner,jdbcType=VARCHAR}, #{csTel,jdbcType=VARCHAR}, 
+      #{csOperationTime,jdbcType=VARCHAR}, #{csEmail,jdbcType=VARCHAR}, #{bankDepositText,jdbcType=VARCHAR}, 
+      NOW(), NOW())
+       <selectKey keyProperty="giftCardPolicyNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.GiftCardPolicy">
+    insert into gift_card_policy
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="giftCardPolicyNo != null">
+        giftCardPolicyNo,
+      </if>
+      <if test="headSaleFeeRate != null">
+        headSaleFeeRate,
+      </if>
+      <if test="distSaleFeeRate != null">
+        distSaleFeeRate,
+      </if>
+      <if test="saleOrganSaleFeeRate != null">
+        saleOrganSaleFeeRate,
+      </if>
+      <if test="giftCardAccRate != null">
+        giftCardAccRate,
+      </if>
+      <if test="giftCardPayRefundRate != null">
+        giftCardPayRefundRate,
+      </if>
+      <if test="companyName != null">
+        companyName,
+      </if>
+      <if test="web != null">
+        web,
+      </if>
+      <if test="bankName != null">
+        bankName,
+      </if>
+      <if test="bankAccount != null">
+        bankAccount,
+      </if>
+      <if test="bankAccountOwner != null">
+        bankAccountOwner,
+      </if>
+      <if test="csTel != null">
+        csTel,
+      </if>
+      <if test="csOperationTime != null">
+        csOperationTime,
+      </if>
+      <if test="csEmail != null">
+        csEmail,
+      </if>
+      <if test="bankDepositText != null">
+        bankDepositText,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="giftCardPolicyNo != null">
+        #{giftCardPolicyNo,jdbcType=INTEGER},
+      </if>
+      <if test="headSaleFeeRate != null">
+        #{headSaleFeeRate,jdbcType=REAL},
+      </if>
+      <if test="distSaleFeeRate != null">
+        #{distSaleFeeRate,jdbcType=REAL},
+      </if>
+      <if test="saleOrganSaleFeeRate != null">
+        #{saleOrganSaleFeeRate,jdbcType=REAL},
+      </if>
+      <if test="giftCardAccRate != null">
+        #{giftCardAccRate,jdbcType=REAL},
+      </if>
+      <if test="giftCardPayRefundRate != null">
+        #{giftCardPayRefundRate,jdbcType=REAL},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="web != null">
+        #{web,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountOwner != null">
+        #{bankAccountOwner,jdbcType=VARCHAR},
+      </if>
+      <if test="csTel != null">
+        #{csTel,jdbcType=VARCHAR},
+      </if>
+      <if test="csOperationTime != null">
+        #{csOperationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="csEmail != null">
+        #{csEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="bankDepositText != null">
+        #{bankDepositText,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.GiftCardPolicy">
+    update gift_card_policy
+    <set>
+      <if test="headSaleFeeRate != null">
+        headSaleFeeRate = #{headSaleFeeRate,jdbcType=REAL},
+      </if>
+      <if test="distSaleFeeRate != null">
+        distSaleFeeRate = #{distSaleFeeRate,jdbcType=REAL},
+      </if>
+      <if test="saleOrganSaleFeeRate != null">
+        saleOrganSaleFeeRate = #{saleOrganSaleFeeRate,jdbcType=REAL},
+      </if>
+      <if test="giftCardAccRate != null">
+        giftCardAccRate = #{giftCardAccRate,jdbcType=REAL},
+      </if>
+      <if test="giftCardPayRefundRate != null">
+        giftCardPayRefundRate = #{giftCardPayRefundRate,jdbcType=REAL},
+      </if>
+      <if test="companyName != null">
+        companyName = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="web != null">
+        web = #{web,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        bankName = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        bankAccount = #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountOwner != null">
+        bankAccountOwner = #{bankAccountOwner,jdbcType=VARCHAR},
+      </if>
+      <if test="csTel != null">
+        csTel = #{csTel,jdbcType=VARCHAR},
+      </if>
+      <if test="csOperationTime != null">
+        csOperationTime = #{csOperationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="csEmail != null">
+        csEmail = #{csEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="bankDepositText != null">
+        bankDepositText = #{bankDepositText,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where giftCardPolicyNo = #{giftCardPolicyNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.GiftCardPolicy">
+    update gift_card_policy
+    set headSaleFeeRate = #{headSaleFeeRate,jdbcType=REAL},
+      distSaleFeeRate = #{distSaleFeeRate,jdbcType=REAL},
+      saleOrganSaleFeeRate = #{saleOrganSaleFeeRate,jdbcType=REAL},
+      giftCardAccRate = #{giftCardAccRate,jdbcType=REAL},
+      giftCardPayRefundRate = #{giftCardPayRefundRate,jdbcType=REAL},
+      companyName = #{companyName,jdbcType=VARCHAR},
+      web = #{web,jdbcType=VARCHAR},
+      bankName = #{bankName,jdbcType=VARCHAR},
+      bankAccount = #{bankAccount,jdbcType=VARCHAR},
+      bankAccountOwner = #{bankAccountOwner,jdbcType=VARCHAR},
+      csTel = #{csTel,jdbcType=VARCHAR},
+      csOperationTime = #{csOperationTime,jdbcType=VARCHAR},
+      csEmail = #{csEmail,jdbcType=VARCHAR},
+      bankDepositText = #{bankDepositText,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = NOW()
+    where giftCardPolicyNo = #{giftCardPolicyNo,jdbcType=INTEGER}
+  </update>
+</mapper>
