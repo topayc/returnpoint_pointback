@@ -84,10 +84,19 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	                throw new ReturnpException(res);
 	         }
 	         
+	         
+	         
 	         /*존재하는 핀 번호가 이미 적립 처리가 되었는지 검사 */
-	         if (issueses.get(0).equals(AppConstants.GiftCardAccableStatus.ACCUMULATE_COMPLETE)) {
+	         if (issueses.get(0).getAccableStatus().equals(AppConstants.GiftCardAccableStatus.ACCUMULATE_COMPLETE)) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2409", this.messageUtils.getMessage("api.already_accumulated_gift_card"));
 	                throw new ReturnpException(res);
+	         }
+	         
+	         /*상품권 상태 조사 */
+	         switch(issueses.get(0).getGiftCardStatus()) {
+	         case "2" : ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2602", this.messageUtils.getMessage("api.stop_acc_and_pay")); throw new ReturnpException(res);
+	         case "3" : ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2603", this.messageUtils.getMessage("api.stop_acc")); throw new ReturnpException(res);
+	         case "5" : ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2605", this.messageUtils.getMessage("api.expiration_gift_card")); throw new ReturnpException(res);
 	         }
 	         
 	         GiftCardPolicy giftCardPolicy = this.giftCardPolicyMapper.selectByPrimaryKey(1);
@@ -202,12 +211,20 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	                throw new ReturnpException(res);
 	         }
 	         
+	         
 	         /*상품권이 이미 결제 처리가 된 상품권인지 검사 */
-	         if (issues.get(0).equals(AppConstants.GiftCardPayableStatus.PAYED_COMPLETE)) {
+	         if (issues.get(0).getPayableStatus().equals(AppConstants.GiftCardPayableStatus.PAYED_COMPLETE)) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2501", this.messageUtils.getMessage("api.already_payed_gift_card"));
 	                throw new ReturnpException(res);
 	         }
 	         
+	         /*상품권 상태 조사 */
+	         switch(issues.get(0).getGiftCardStatus()) {
+	         case "2" : ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2602", this.messageUtils.getMessage("api.stop_acc_and_pay")); throw new ReturnpException(res);
+	         case "4" : ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2604", this.messageUtils.getMessage("api.stop_pay")); throw new ReturnpException(res);
+	         case "5" : ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2605", this.messageUtils.getMessage("api.expiration_gift_card")); throw new ReturnpException(res);
+	         }
+
 	         /*주 은행 찾기*/
 	         MemberBankAccount bankAccount= new MemberBankAccount();
 	         bankAccount.setMemberNo(member.getMemberNo());
