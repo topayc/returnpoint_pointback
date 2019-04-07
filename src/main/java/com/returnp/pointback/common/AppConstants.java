@@ -212,14 +212,19 @@ public class AppConstants {
 		public static String NOT_MEMBER  = "2";
 	}
 	
-	public static class GiftCardAccStatus {
-		public static String ACC_OK = "1";
-		public static String ACC_NOT = "2";
+	public static class GiftCardAccableStatus {
+		public static String ACCUMULAT_NOT = "Y";
+		public static String ACCUMULATE_COMPLETE= " N";
+	}
+	
+	public static class GiftCardPayableStatus {
+		public static String PAYED_NOT = "Y";
+		public static String PAYED_COMPLETE= " N";
 	}
 	
 	public static class GiftCardUseStatus {
-		public static String USED  = "1";
-		public static String NOT_USED= "2";
+		public static String NOT_PAYED = "Y";
+		public static String ALREADY_PAYED= "N";
 	}
 	
 	public static class GiftCardStatus {
@@ -290,4 +295,9 @@ public class AppConstants {
 		public static String ISSUED   = "3";  /* 발행 완료  */
 		public static String ISSUE_CANCEL   = "4";  /* 발행 취소 */
 	}
+	
+
+	
+	
+	
 }

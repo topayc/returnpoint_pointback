@@ -13,6 +13,7 @@ import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
 import com.returnp.pointback.dao.mapper.AffiliateMapper;
 import com.returnp.pointback.dao.mapper.GiftCardAccHistoryMapper;
+import com.returnp.pointback.dao.mapper.GiftCardIssueMapper;
 import com.returnp.pointback.dao.mapper.GiftCardPaymentMapper;
 import com.returnp.pointback.dao.mapper.GiftCardPolicyMapper;
 import com.returnp.pointback.dao.mapper.GreenPointMapper;
@@ -48,6 +49,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	@Autowired GiftCardAccHistoryMapper historyMapper;
 	@Autowired GiftCardPaymentMapper giftCardPaymentMapper;
 	@Autowired GiftCardPolicyMapper giftCardPolicyMapper;
+	@Autowired GiftCardIssueMapper  giftCardIssueMapper;
 	/* 
 	 * 상품권 적립 큐알 스캔에 의한 적립 처리 
 	 */
@@ -82,6 +84,12 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	                throw new ReturnpException(res);
 	         }
 	         
+	         /*존재하는 핀 번호가 이미 적립 처리가 되었는지 검사 */
+	         if (issueses.get(0).equals(AppConstants.GiftCardAccableStatus.ACCUMULATE_COMPLETE)) {
+	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2409", this.messageUtils.getMessage("api.already_accumulated_gift_card"));
+	                throw new ReturnpException(res);
+	         }
+	         
 	         GiftCardPolicy giftCardPolicy = this.giftCardPolicyMapper.selectByPrimaryKey(1);
 	         if (giftCardPolicy == null) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2408", this.messageUtils.getMessage("api.no_gift_card_policy"));
@@ -113,7 +121,14 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         accHistory.setAccAmount(issueses.get(0).getGiftCardSalePrice() * giftCardAccRate);
 	         accHistory.setAccTime(new Date());
 	         this.historyMapper.insert(accHistory);
-	         ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "100", "상품권 적립 처리가 완료되었습니다 ");
+	         
+	         /*상품권을 적립 됨 상태로 변경*/
+	         issue = issueses.get(0);
+	         issue.setAccableStatus(AppConstants.GiftCardAccableStatus.ACCUMULATE_COMPLETE);
+	         issue.setAccQrScanTime(new Date());
+	         issue.setAccQrScanner(members.get(0).getMemberEmail());
+	         this.giftCardIssueMapper.updateByPrimaryKey(issue);
+	         ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "100", this.messageUtils.getMessage("api.gift_card_acc_success"));
 			return res;
 		} catch(ReturnpException e) {
 			e.printStackTrace();
@@ -122,13 +137,13 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", "상품권 적립 QR 처리 에러 ");
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", this.messageUtils.getMessage("api.gift_card_acc_error"));
 			return res;
 		}
 	}
 
 	/* 
-	 * 상품권 결제 큐알 스캔에 의한 적립 처리
+	 * 상품권 결제 큐알 스캔에 의한 결제 처리
 	 */
 	@Override
 	public ReturnpBaseResponse giftCardPayment(QRRequest qrRequest) {
@@ -187,6 +202,12 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	                throw new ReturnpException(res);
 	         }
 	         
+	         /*상품권이 이미 결제 처리가 된 상품권인지 검사 */
+	         if (issues.get(0).equals(AppConstants.GiftCardPayableStatus.PAYED_COMPLETE)) {
+	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2501", this.messageUtils.getMessage("api.already_payed_gift_card"));
+	                throw new ReturnpException(res);
+	         }
+	         
 	         /*주 은행 찾기*/
 	         MemberBankAccount bankAccount= new MemberBankAccount();
 	         bankAccount.setMemberNo(member.getMemberNo());
@@ -217,7 +238,12 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         }
 	         this.giftCardPaymentMapper.insertSelective(giftCardPayment);
 	         
-	         ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "100", "상품권 결제 요청 완료되었습니다. ");
+	         /*상품권 상태를 결제 됨으로 변경*/
+	         issues.get(0).setPayableStatus(AppConstants.GiftCardPayableStatus.PAYED_COMPLETE);
+	         issues.get(0).setPayQrScanTime(new Date());
+	         issues.get(0).setPayQrScanner(members.get(0).getMemberEmail());
+	         this.giftCardIssueMapper.updateByPrimaryKey(issues.get(0));
+	         ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "100", this.messageUtils.getMessage("api.gift_card_pay_success"));
 	         return res;
 		} catch(ReturnpException e) {
 			e.printStackTrace();
@@ -226,7 +252,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", "상품권 결제 QR 처리 에러 ");
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", this.messageUtils.getMessage("api.gift_card_acc_error"));
 			return res;
 		}
 	}
