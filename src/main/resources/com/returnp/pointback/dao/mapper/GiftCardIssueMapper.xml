@@ -24,6 +24,14 @@
     <result column="payQrCodeWebPath" jdbcType="VARCHAR" property="payQrCodeWebPath" />
     <result column="accQrCodeFilePath" jdbcType="VARCHAR" property="accQrCodeFilePath" />
     <result column="payQrCodeFilePath" jdbcType="VARCHAR" property="payQrCodeFilePath" />
+    <result column="receiverPhone" jdbcType="VARCHAR" property="receiverPhone" />
+    <result column="receiverEmail" jdbcType="VARCHAR" property="receiverEmail" />
+    <result column="receiverName" jdbcType="VARCHAR" property="receiverName" />
+    <result column="receiverAddress" jdbcType="VARCHAR" property="receiverAddress" />
+    <result column="receiverIsMember" jdbcType="VARCHAR" property="receiverIsMember" />
+    <result column="deliveryMessage" jdbcType="VARCHAR" property="deliveryMessage" />
+    <result column="deliveryStatus" jdbcType="VARCHAR" property="deliveryStatus" />
+    <result column="deliveryNumber" jdbcType="VARCHAR" property="deliveryNumber" />
     <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -31,8 +39,9 @@
     giftCardIssueNo, pinNumber, giftCardOrderNo, giftCardNo, accableStatus, payableStatus, 
     giftCardStatus, giftCardType, giftCardAmount, giftCardSalePrice, accQrData, payQrData, 
     accQrScanner, payQrScanner, accQrScanTime, payQrScanTime, issueTime, expirationTime, 
-    accQrCodeWebPath, payQrCodeWebPath, accQrCodeFilePath, payQrCodeFilePath, createTime, 
-    updateTime
+    accQrCodeWebPath, payQrCodeWebPath, accQrCodeFilePath, payQrCodeFilePath, receiverPhone, 
+    receiverEmail, receiverName, receiverAddress, receiverIsMember, deliveryMessage, 
+    deliveryStatus, deliveryNumber, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="com.returnp.pointback.model.GiftCardIssueKey" resultMap="BaseResultMap">
     select 
@@ -46,6 +55,57 @@
     where giftCardIssueNo = #{giftCardIssueNo,jdbcType=INTEGER}
       and pinNumber = #{pinNumber,jdbcType=VARCHAR}
   </delete>
+  
+   <insert id = "insertBatch" parameterType = "HashMap">
+        insert into gift_card_issue (
+        giftCardOrderNo,
+        giftCardNo,
+        pinNumber,
+        accableStatus,
+        payableStatus,
+        giftCardStatus,
+        giftCardType,
+        giftCardAmount,
+        giftCardSalePrice,
+        deliveryStatus,
+        accQrData,
+        payQrData,
+        accQrScanner,
+        payQrScanner,
+        accQrScanTime,
+        payQrScanTime,
+        issueTime,
+        expirationTime,
+        createTime,
+        updateTime
+        ) 
+        values 
+        <foreach collection="giftCardIssueList" item="item" separator=" , ">
+         (
+            #{item.giftCardOrderNo}, 
+            #{item.giftCardNo},
+            #{item.pinNumber},
+            #{item.accableStatus},
+            #{item.payableStatus},
+            #{item.giftCardStatus},
+            #{item.giftCardType},
+            #{item.giftCardAmount},
+            #{item.giftCardSalePrice},
+            #{item.deliveryStatus},
+            #{item.accQrData},
+            #{item.payQrData},
+            #{item.accQrScanner},
+            #{item.payQrScanner},
+            #{item.accQrScanTime},
+            #{item.payQrScanTime},
+            #{item.issueTime},
+            #{item.expirationTime},
+            NOW(),
+            NOW()
+         )
+     </foreach>
+  </insert>
+  
   <insert id="insert" parameterType="com.returnp.pointback.model.GiftCardIssue">
     insert into gift_card_issue (giftCardIssueNo, pinNumber, giftCardOrderNo, 
       giftCardNo, accableStatus, payableStatus, 
@@ -54,8 +114,10 @@
       accQrScanner, payQrScanner, accQrScanTime, 
       payQrScanTime, issueTime, expirationTime, 
       accQrCodeWebPath, payQrCodeWebPath, accQrCodeFilePath, 
-      payQrCodeFilePath, createTime, updateTime
-      )
+      payQrCodeFilePath, receiverPhone, receiverEmail, 
+      receiverName, receiverAddress, receiverIsMember, 
+      deliveryMessage, deliveryStatus, deliveryNumber, 
+      createTime, updateTime)
     values (#{giftCardIssueNo,jdbcType=INTEGER}, #{pinNumber,jdbcType=VARCHAR}, #{giftCardOrderNo,jdbcType=INTEGER}, 
       #{giftCardNo,jdbcType=INTEGER}, #{accableStatus,jdbcType=VARCHAR}, #{payableStatus,jdbcType=VARCHAR}, 
       #{giftCardStatus,jdbcType=VARCHAR}, #{giftCardType,jdbcType=VARCHAR}, #{giftCardAmount,jdbcType=INTEGER}, 
@@ -63,12 +125,13 @@
       #{accQrScanner,jdbcType=VARCHAR}, #{payQrScanner,jdbcType=VARCHAR}, #{accQrScanTime,jdbcType=TIMESTAMP}, 
       #{payQrScanTime,jdbcType=TIMESTAMP}, #{issueTime,jdbcType=TIMESTAMP}, #{expirationTime,jdbcType=TIMESTAMP}, 
       #{accQrCodeWebPath,jdbcType=VARCHAR}, #{payQrCodeWebPath,jdbcType=VARCHAR}, #{accQrCodeFilePath,jdbcType=VARCHAR}, 
-      #{payQrCodeFilePath,jdbcType=VARCHAR}, NOW(), NOW()
-      )
-      
+      #{payQrCodeFilePath,jdbcType=VARCHAR}, #{receiverPhone,jdbcType=VARCHAR}, #{receiverEmail,jdbcType=VARCHAR}, 
+      #{receiverName,jdbcType=VARCHAR}, #{receiverAddress,jdbcType=VARCHAR}, #{receiverIsMember,jdbcType=VARCHAR}, 
+      #{deliveryMessage,jdbcType=VARCHAR}, #{deliveryStatus,jdbcType=VARCHAR}, #{deliveryNumber,jdbcType=VARCHAR}, 
+      NOW(), NOW())
           <selectKey keyProperty="giftCardIssueNo" resultType="java.lang.Integer" order ="AFTER">
-		    SELECT LAST_INSERT_ID()
-	 </selectKey>	
+                SELECT LAST_INSERT_ID()
+       </selectKey>     
   </insert>
   <insert id="insertSelective" parameterType="com.returnp.pointback.model.GiftCardIssue">
     insert into gift_card_issue
