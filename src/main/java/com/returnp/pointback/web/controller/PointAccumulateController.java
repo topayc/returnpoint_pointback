@@ -265,7 +265,7 @@ public class PointAccumulateController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/qrAccumulatePoint", method = RequestMethod.GET)
-	public ReturnpBaseResponse handleAccumulateQRRequest( 
+	public ReturnpBaseResponse qrAccumulatePoint( 
 			@RequestParam(value = "qr_org", required = false) String qr_org, 
 			@RequestParam(value = "pam", required = true ) int pam,
 			@RequestParam(value = "pas", required = true ) String pas,
@@ -367,7 +367,6 @@ public class PointAccumulateController extends ApplicationController{
 		
 		return res;
 	}
-	
 	
 	/**
 	 * PaymentTransactionNo 에 의한 적립 취소 처리 

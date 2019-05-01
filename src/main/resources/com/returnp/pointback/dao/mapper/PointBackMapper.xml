@@ -1895,4 +1895,49 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   </select>
   
  <!-- ===============================================================================================================    -->
+  <!-- AffilaiteTid Mapperr   -->
+ 
+   <resultMap id="AffilaiteTidCommandResultMap" type="com.returnp.pointback.dto.command.AffiliateTidCommand">
+    <id column="affiliateTidNo" jdbcType="INTEGER" property="affiliateTidNo" />
+    <result column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="affiliateName" jdbcType="VARCHAR" property="affiliateName" />
+    <result column="affiliateEmail" jdbcType="VARCHAR" property="affiliateEmail" />
+    <result column="tid" jdbcType="VARCHAR" property="tid" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+    <sql id="AffilaiteTidCommand_Column_List">
+  AT.affiliateTidNo,
+  AT.affiliateNo, 
+  A.affiliateName, 
+  A.affiliateEmail, 
+  A.memberNo, 
+  AT.tid, 
+  AT.createTime, 
+  AT.updateTime
+  </sql>
+  
+   <sql id ="AffilaiteTidCommandWhereStatement">
+      <if test="affiliateTidNo != null"> AND AT.affiliateTidNo = #{affiliateTidNo,jdbcType=INTEGER}</if>
+      <if test="affiliateNo != null"> AND AT.affiliateNo = #{affiliateNo,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND AT.memberNo = #{memberNo,jdbcType=INTEGER}</if>
+       <if test="affiliateName != null"> AND A.affiliateName = #{affiliateName,jdbcType=VARCHAR}</if>
+       <if test="affiliateEmail != null"> AND A.affiliateEmail = #{affiliateEmail,jdbcType=VARCHAR}</if>
+       <if test="tid != null"> AND AT.tid = #{tid,jdbcType=VARCHAR}</if>
+  </sql>
+  
+   <select id="selectAffilaiteTidCommands" parameterType="com.returnp.pointback.dto.command.AffiliateTidCommand" resultMap="AffilaiteTidCommandResultMap">
+    select 
+      sql_calc_found_rows 
+    <include refid="AffilaiteTidCommand_Column_List" />
+    from affiliate_tid as AT
+    inner join Affiliate as A on (AT.affiliateNo= A.AffiliateNo)
+    
+    where 
+     	 1 = 1 
+    	<include refid = "AffilaiteTidCommandWhereStatement"/>
+    	<include refid = "commonStatement"/>
+  </select>
 </mapper>

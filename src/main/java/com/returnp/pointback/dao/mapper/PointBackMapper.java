@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.returnp.pointback.dto.command.AffiliateTidCommand;
 import com.returnp.pointback.dto.command.GiftCardAccHistoryCommand;
 import com.returnp.pointback.dto.command.GiftCardPaymentCommand;
 import com.returnp.pointback.dto.command.GreenPointCommand;
@@ -81,4 +82,5 @@ public interface PointBackMapper {
 	
 	public ArrayList<GiftCardAccHistory> selectGiftCardAccHistories(GiftCardAccHistory record);
 	public ArrayList<GiftCardAccHistoryCommand> selectGiftCardAccHistoryCommands(GiftCardAccHistoryCommand record);
+	public ArrayList<AffiliateTidCommand> selectAffilaiteTidCommands(AffiliateTidCommand record);
 }

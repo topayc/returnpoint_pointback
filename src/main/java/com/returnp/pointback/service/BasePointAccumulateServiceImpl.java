@@ -21,6 +21,7 @@ import com.returnp.pointback.dao.mapper.PaymentPointbackRecordMapper;
 import com.returnp.pointback.dao.mapper.PaymentTransactionMapper;
 import com.returnp.pointback.dao.mapper.PointBackMapper;
 import com.returnp.pointback.dao.mapper.PolicyMapper;
+import com.returnp.pointback.dto.command.AffiliateTidCommand;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PointBackTarget;
@@ -171,13 +172,36 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	public Affiliate validateAffiliateAuth(String afId) throws ReturnpException {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		try {
-			/* * 존재하는 가맹점인지 검사 */
-			Affiliate affiliate = new Affiliate();
+			/* * 
+			 * 존재하는 가맹점인지 검사 
+			 * 기존의 하나의 TID 만 등록할 수 있는 시스템에서 하나의 가맹점에 다수의 TID 를 등록할 수 있게 
+			 * 변경했기 때문에 하나의 소스는 주석 처리
+			 * */
+		/*	Affiliate affiliate = new Affiliate();
 			affiliate.setAffiliateSerial(afId);
 			ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
 			
 			if (affiliates == null || affiliates.size() != 1) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "603", 
+						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
+				throw new ReturnpException(res);
+			}
+			*/
+			
+			/* 하나의 가맹점에서 다수의 TID 를 등록할 수 있게 변경됨으로써, 인증 로직을 다음과 같이 수정함 */
+			AffiliateTidCommand atidCommand = new AffiliateTidCommand();
+			atidCommand.setTid(afId);
+			
+			ArrayList<AffiliateTidCommand> atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
+			if (atidList == null || atidList.size() < 1) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "603", 
+						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
+				throw new ReturnpException(res);
+			}
+			
+			Affiliate affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
+			if (affiliate == null) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "609", 
 						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
 				throw new ReturnpException(res);
 			}
