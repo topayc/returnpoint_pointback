@@ -1938,6 +1938,5 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     where 
      	 1 = 1 
     	<include refid = "AffilaiteTidCommandWhereStatement"/>
-    	<include refid = "commonStatement"/>
   </select>
 </mapper>
