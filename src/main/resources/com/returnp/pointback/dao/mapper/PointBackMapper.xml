@@ -1766,10 +1766,11 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   </sql>
 
    <sql id ="Member_Bank_Account_WhereStatement">
-   	  <if test="memberBankAccountNo!= null"> AND  MA.memberBankAccountNo = #{memberBankAccountNo,jdbcType=INTEGER}</if>
-   	  <if test="memberNo != null"> AND  MA.memberNo = #{memberNo,jdbcType=INTEGER}</if>
-      <if test="accountOwner != null"> AND MA.accountOwner = #{accountOwner,jdbcType=VARCHAR}</if>
-      <if test="accountStatus != null"> AND MA.accountStatus = #{accountStatus,jdbcType=VARCHAR}</if>
+   	  <if test="memberBankAccountNo!= null"> AND  memberBankAccountNo = #{memberBankAccountNo,jdbcType=INTEGER}</if>
+   	  <if test="memberNo != null"> AND  memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="accountOwner != null"> AND accountOwner = #{accountOwner,jdbcType=VARCHAR}</if>
+      <if test="accountStatus != null"> AND accountStatus = #{accountStatus,jdbcType=VARCHAR}</if>
+      <if test="isDefault != null"> AND isDefault = #{isDefault,jdbcType=VARCHAR}</if>
    </sql>
    
     <sql id ="Member_Bank_Account_Command_WhereStatement">

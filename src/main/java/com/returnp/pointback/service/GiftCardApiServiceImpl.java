@@ -153,6 +153,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 
 	/* 
 	 * 상품권 결제 큐알 스캔에 의한 결제 처리
+	 * 상품권 결제의 경우, 관련 노드 적립 프로세스 진행 안함 (단순 결제처리만 진행)
 	 */
 	@Override
 	public ReturnpBaseResponse giftCardPayment(QRRequest qrRequest) {
@@ -187,6 +188,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         affiliate.setMemberNo(members.get(0).getMemberNo());
 	         ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
 	     	System.out.println(" >> 가맹점 수 ");
+	     	
 	     	System.out.println(affiliates.size());
 	         /*가맹점 정보가 존재하지 않으면 중지 */
 	         if (affiliates == null || affiliates.size() != 1) {
@@ -196,6 +198,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 			 }
 	         
 	        affiliate = affiliates.get(0);
+	        /*해당 협력업체가 상품권으로 결제 할 수 있는 제휴점이 아닌 경우, 결제 중지*/
 	        if (!affiliate.getAffiliateType().contains(AppConstants.AffiliateType.GIFT_CARD_USAGE_AFFILIATE)) {
 	        	ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "3001", 
 						this.messageUtils.getMessage("api.unqualified_affiliate_for_giftcard", new Object[] {member.getMemberName()}));
@@ -247,6 +250,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         giftCardPayment.setRefundRate(refundRate);
 	         giftCardPayment.setRefundAmount(issues.get(0).getGiftCardAmount()  -   ( issues.get(0).getGiftCardAmount() * refundRate));
 	         giftCardPayment.setRefundStatus("1");
+	         giftCardPayment.setMemberBankAccountNo(bankAccounts.get(0).getMemberBankAccountNo());
 	         Date now = new Date();
 	         giftCardPayment.setCreateTime(now);
 	         giftCardPayment.setUpdateTime(now);
