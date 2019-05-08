@@ -1914,7 +1914,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   AT.affiliateNo, 
   A.affiliateName, 
   A.affiliateEmail, 
-  A.memberNo, 
+  AT.memberNo, 
   AT.tid, 
   AT.createTime, 
   AT.updateTime
@@ -1934,7 +1934,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
       sql_calc_found_rows 
     <include refid="AffilaiteTidCommand_Column_List" />
     from affiliate_tid as AT
-    inner join Affiliate as A on (AT.affiliateNo= A.AffiliateNo)
+    inner join affiliate as A on (AT.affiliateNo= A.AffiliateNo)
     
     where 
      	 1 = 1 

@@ -476,4 +476,12 @@ public class PointAccumulateController extends ApplicationController{
 		this.setErrorRespone(res,"test 접속 성공");
 		return res;
 	}
+	
+
+	@ResponseBody
+	@RequestMapping(value = "/manageData", method = RequestMethod.GET)
+	public ReturnpBaseResponse manageData() {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		return res;
+	}
 }

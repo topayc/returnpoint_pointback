@@ -27,6 +27,7 @@ import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PointBackTarget;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
+import com.returnp.pointback.model.AffiliateTid;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.PaymentPointbackRecord;
@@ -195,7 +196,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			ArrayList<AffiliateTidCommand> atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
 			if (atidList == null || atidList.size() < 1) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "603", 
-						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
+						this.messageUtils.getMessage("pointback.message.invalide_tid", new Object[] {afId}));
 				throw new ReturnpException(res);
 			}
 			
@@ -939,10 +940,12 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			ArrayList<Member> members = this.pointBackMapper.findMembers(mem);
 			mem = members.get(0);
 	
+			AffiliateTidCommand atidCommand = new AffiliateTidCommand();
+			atidCommand.setTid(dataMap.getStr("af_id"));
+			ArrayList<AffiliateTidCommand> atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
+			
 			Affiliate affiliate = new Affiliate();
-			affiliate.setAffiliateSerial(dataMap.getStr("af_id"));
-			ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
-			affiliate = affiliates.get(0);
+			affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
 			
 			pt = new PaymentTransaction();
 			pt.setMemberNo(mem.getMemberNo());
@@ -954,7 +957,8 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			pt.setNodeName(mem.getMemberName());;
 			pt.setMemberPhone(mem.getMemberPhone());
 			pt.setAffiliateNo(affiliate.getAffiliateNo());
-			pt.setAffiliateSerial(affiliate.getAffiliateSerial());
+			//pt.setAffiliateSerial(affiliate.getAffiliateSerial());
+			pt.setAffiliateSerial(dataMap.getStr("af_id"));
 			//paymentTransaction.setOrgPaymentData(BASE64Util.decodeString(qrOrg));
 			pt.setPaymentApprovalAmount(dataMap.getInt("pam"));
 			pt.setPaymentApprovalNumber(dataMap.getStr("pan"));

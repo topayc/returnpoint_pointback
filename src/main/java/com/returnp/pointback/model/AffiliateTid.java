@@ -6,6 +6,8 @@ import java.util.Date;
 public class AffiliateTid extends QueryCondition {
     private Integer affiliateTidNo;
 
+    private Integer memberNo;
+
     private Integer affiliateNo;
 
     private String tid;
@@ -20,6 +22,14 @@ public class AffiliateTid extends QueryCondition {
 
     public void setAffiliateTidNo(Integer affiliateTidNo) {
         this.affiliateTidNo = affiliateTidNo;
+    }
+
+    public Integer getMemberNo() {
+        return memberNo;
+    }
+
+    public void setMemberNo(Integer memberNo) {
+        this.memberNo = memberNo;
     }
 
     public Integer getAffiliateNo() {
