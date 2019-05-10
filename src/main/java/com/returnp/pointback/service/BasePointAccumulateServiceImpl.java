@@ -636,8 +636,12 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			 * Inner Node 적립(협력업체, 협력업체 추천인, 추천인의 영업 관리자, 대리점, 지사 총판)
 			 * */
 			
+			AffiliateTidCommand atidCommand = new AffiliateTidCommand();
+			atidCommand.setTid(transaction.getAffiliateSerial());
+			ArrayList<AffiliateTidCommand> atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
+			Affiliate targetAffiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
+			
 			InnerPointBackTarget innerTarget = this.findInnerPointBackTarget(transaction.getAffiliateSerial());
-			Affiliate targetAffiliate = this.affiliateMapper.selectBySerial(transaction.getAffiliateSerial());
 			float affiliateComm =  targetAffiliate.getAffiliateComm() > 0 ?  targetAffiliate.getAffiliateComm()  : policy.getAffiliateComm();
 			
 			/*

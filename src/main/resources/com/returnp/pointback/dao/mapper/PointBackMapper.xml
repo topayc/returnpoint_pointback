@@ -110,7 +110,8 @@
    	select 
     <include refid="InnerPointBackTarget_Column_List"/>
        from 
-    	(select * from affiliate where affiliateSerial = #{affiliateSerial}) as AF
+       (select * from affiliate where affiliateNo = ( select affiliateNo from affiliate_tid where tid = #{affiliateSerial} limit 1) ) as AF
+
 	left outer join member as M1
         on (AF.recommenderNo = M1.memberNo)
     left outer join member as M2
