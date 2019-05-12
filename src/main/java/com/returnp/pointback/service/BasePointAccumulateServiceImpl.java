@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.returnp.pointback.common.AppConstants;
+import com.returnp.pointback.common.AppConstants.AffiliateType;
 import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
@@ -203,7 +204,13 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			Affiliate affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
 			if (affiliate == null) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "609", 
-						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
+						this.messageUtils.getMessage("pointback.message.not_connected_tid_affiliate"));
+				throw new ReturnpException(res);
+			}
+			
+			if (!affiliate.getAffiliateType().contains(AppConstants.AffiliateType.COMMON_AFFILIATE)) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "619", 
+						this.messageUtils.getMessage("pointback.message.acc_ok_but_not_accable_affiliate"));
 				throw new ReturnpException(res);
 			}
 			return affiliate;

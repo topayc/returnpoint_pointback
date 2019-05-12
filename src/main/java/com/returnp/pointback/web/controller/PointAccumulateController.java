@@ -142,7 +142,7 @@ public class PointAccumulateController extends ApplicationController{
 		@RequestParam(value = "paymentTransactionNo", required = true ) int paymentTransactionNo,
 		@RequestParam(value = "key", required = true ) String key) {
 		
-		System.out.println("PointAccumulateController - accumulateByAdmin");
+		//System.out.println("PointAccumulateController - accumulateByAdmin");
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		if (!this.keys.contains(key)) {
 			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
@@ -209,7 +209,7 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "key", required = true ) String key
 			){
 		
-		System.out.println("####### manualAccumulatePoint");
+		//System.out.println("####### manualAccumulatePoint");
 		ReturnpBaseResponse res= null;
 		
 		DataMap dataMap = new DataMap();
@@ -406,7 +406,7 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "key", required = true ) String key
 			){
 		
-		System.out.println("####### forcedCancelAccByPaymentTransactionNo");
+		//System.out.println("####### forcedCancelAccByPaymentTransactionNo");
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
@@ -431,7 +431,7 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "key", required = true ) String key
 			){
 		
-		System.out.println("####### forcedlAccByPaymentTransactionNo");
+		//System.out.println("####### forcedlAccByPaymentTransactionNo");
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains(key)) {
 			res = new ReturnpBaseResponse();
@@ -456,7 +456,7 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "key", required = true ) String key
 			){
 		
-		System.out.println("####### cancelAccumulateByPaymentApprovalNumber");
+		//System.out.println("####### cancelAccumulateByPaymentApprovalNumber");
 		ReturnpBaseResponse res= null;
 		
 		if (!this.keys.contains(key)) {

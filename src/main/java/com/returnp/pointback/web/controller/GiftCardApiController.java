@@ -72,9 +72,9 @@ public class GiftCardApiController extends ApplicationController{
 		JSONParser jsonParser;
 		JSONObject qrJson;
 		
-		System.out.println(">>>원문 데이타");
+		/*System.out.println(">>>원문 데이타");
 		System.out.println(qrData);
-		System.out.println(">>>디코딩 데이타");
+		System.out.println(">>>디코딩 데이타");*/
 		System.out.println(BASE64Util.decodeString(qrData));
 		
 		ReturnpBaseResponse res= null;
@@ -114,7 +114,7 @@ public class GiftCardApiController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/giftCardPayment", method = RequestMethod.POST)
 	public ReturnpBaseResponse giftCardPayment( HashMap<String, Object> reqMap){
-		logger.info("### giftCardPayment 호출됨");
+		//logger.info("### giftCardPayment 호출됨");
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains((String)reqMap.get("key"))) {
 			res = new ReturnpBaseResponse();
@@ -137,7 +137,7 @@ public class GiftCardApiController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/giftCardAccumulate", method = RequestMethod.POST)
 	public ReturnpBaseResponse giftCardAccumulate( HashMap<String, Object> reqMap){
-		logger.info("### giftCardAcculate 호출됨");
+		//logger.info("### giftCardAcculate 호출됨");
 		ReturnpBaseResponse res= null;
 		if (!this.keys.contains((String)reqMap.get("qrCmd"))) {
 			res = new ReturnpBaseResponse();

@@ -84,8 +84,6 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	                throw new ReturnpException(res);
 	         }
 	         
-	         
-	         
 	         /*존재하는 핀 번호가 이미 적립 처리가 되었는지 검사 */
 	         if (issueses.get(0).getAccableStatus().equals(AppConstants.GiftCardAccableStatus.ACCUMULATE_COMPLETE)) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2409", this.messageUtils.getMessage("api.already_accumulated_gift_card"));
@@ -187,9 +185,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         Affiliate affiliate = new Affiliate();
 	         affiliate.setMemberNo(members.get(0).getMemberNo());
 	         ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
-	     	System.out.println(" >> 가맹점 수 ");
 	     	
-	     	System.out.println(affiliates.size());
 	         /*가맹점 정보가 존재하지 않으면 중지 */
 	         if (affiliates == null || affiliates.size() != 1) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "3000", 
@@ -233,6 +229,10 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         bankAccount.setMemberNo(member.getMemberNo());
 	         bankAccount.setIsDefault("Y");
 	         ArrayList<MemberBankAccount> bankAccounts = this.pointBackMapper.findMemberBankAccounts(bankAccount);
+	         if (bankAccounts.size() < 1) {
+	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2410", this.messageUtils.getMessage("api.no_default_bank"));
+	                throw new ReturnpException(res);
+	         }
 	         
 	         /*상품권 정책 정보*/
 	         GiftCardPolicy giftCardPolicy = this.giftCardPolicyMapper.selectByPrimaryKey(1);
@@ -273,7 +273,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 		}catch(Exception e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", this.messageUtils.getMessage("api.gift_card_acc_error"));
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "500", this.messageUtils.getMessage("api.gift_card_pay_error"));
 			return res;
 		}
 	}
