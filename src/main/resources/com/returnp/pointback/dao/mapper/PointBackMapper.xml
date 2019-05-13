@@ -284,7 +284,6 @@
       <if test="greenPointUseStatus != null">AND  greenPointUseStatus = #{greenPointUseStatus,jdbcType=CHAR}</if>
       <if test="redPointUseStatus != null">AND  redPointUseStatus = #{redPointUseStatus,jdbcType=CHAR}</if>
       <if test="memberPhone != null">AND  memberPhone = #{memberPhone,jdbcType=CHAR}</if>
-      <if test="memberEmail != null">AND  memberEmail = #{memberEmail,jdbcType=CHAR}</if>
       <if test="memberName != null or statusReason != null">
       	AND ( 1 = 2 
       </if>

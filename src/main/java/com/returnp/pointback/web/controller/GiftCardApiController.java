@@ -88,6 +88,10 @@ public class GiftCardApiController extends ApplicationController{
 				return res;
 			}
 			
+	/*		  System.out.println("qrRequest.handleGiftCardReq(");
+		         System.out.println(">> 상품권 결제 제휴점 이메일");
+		         System.out.println(qrReq.getMemberEmail());*/
+		         
 			String qrCmd = qrReq.getQr_cmd();
 			switch(qrCmd) {
 			case QRManager.QRCmd.ACC_BY_GIFTCARD:

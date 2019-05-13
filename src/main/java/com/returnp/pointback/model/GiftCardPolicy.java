@@ -6,6 +6,10 @@ import java.util.Date;
 public class GiftCardPolicy extends QueryCondition {
     private Integer giftCardPolicyNo;
 
+    private String salesCommissionTarget;
+
+    private Float salesCommissionRate;
+
     private Float headSaleFeeRate;
 
     private Float distSaleFeeRate;
@@ -44,6 +48,22 @@ public class GiftCardPolicy extends QueryCondition {
 
     public void setGiftCardPolicyNo(Integer giftCardPolicyNo) {
         this.giftCardPolicyNo = giftCardPolicyNo;
+    }
+
+    public String getSalesCommissionTarget() {
+        return salesCommissionTarget;
+    }
+
+    public void setSalesCommissionTarget(String salesCommissionTarget) {
+        this.salesCommissionTarget = salesCommissionTarget == null ? null : salesCommissionTarget.trim();
+    }
+
+    public Float getSalesCommissionRate() {
+        return salesCommissionRate;
+    }
+
+    public void setSalesCommissionRate(Float salesCommissionRate) {
+        this.salesCommissionRate = salesCommissionRate;
     }
 
     public Float getHeadSaleFeeRate() {

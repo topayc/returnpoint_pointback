@@ -3,6 +3,8 @@
 <mapper namespace="com.returnp.pointback.dao.mapper.GiftCardPolicyMapper">
   <resultMap id="BaseResultMap" type="com.returnp.pointback.model.GiftCardPolicy">
     <id column="giftCardPolicyNo" jdbcType="INTEGER" property="giftCardPolicyNo" />
+    <result column="salesCommissionTarget" jdbcType="VARCHAR" property="salesCommissionTarget" />
+    <result column="salesCommissionRate" jdbcType="REAL" property="salesCommissionRate" />
     <result column="headSaleFeeRate" jdbcType="REAL" property="headSaleFeeRate" />
     <result column="distSaleFeeRate" jdbcType="REAL" property="distSaleFeeRate" />
     <result column="saleOrganSaleFeeRate" jdbcType="REAL" property="saleOrganSaleFeeRate" />
@@ -21,9 +23,10 @@
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    giftCardPolicyNo, headSaleFeeRate, distSaleFeeRate, saleOrganSaleFeeRate, giftCardAccRate, 
-    giftCardPayRefundRate, companyName, web, bankName, bankAccount, bankAccountOwner, 
-    csTel, csOperationTime, csEmail, bankDepositText, createTime, updateTime
+    giftCardPolicyNo, salesCommissionTarget, salesCommissionRate, headSaleFeeRate, distSaleFeeRate, 
+    saleOrganSaleFeeRate, giftCardAccRate, giftCardPayRefundRate, companyName, web, bankName, 
+    bankAccount, bankAccountOwner, csTel, csOperationTime, csEmail, bankDepositText, 
+    createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -36,19 +39,21 @@
     where giftCardPolicyNo = #{giftCardPolicyNo,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.returnp.pointback.model.GiftCardPolicy">
-       insert into gift_card_policy (giftCardPolicyNo, headSaleFeeRate, distSaleFeeRate, 
-      saleOrganSaleFeeRate, giftCardAccRate, giftCardPayRefundRate, 
-      companyName, web, bankName, 
-      bankAccount, bankAccountOwner, csTel, 
-      csOperationTime, csEmail, bankDepositText, 
-      createTime, updateTime)
-    values (#{giftCardPolicyNo,jdbcType=INTEGER}, #{headSaleFeeRate,jdbcType=REAL}, #{distSaleFeeRate,jdbcType=REAL}, 
-      #{saleOrganSaleFeeRate,jdbcType=REAL}, #{giftCardAccRate,jdbcType=REAL}, #{giftCardPayRefundRate,jdbcType=REAL}, 
-      #{companyName,jdbcType=VARCHAR}, #{web,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, 
-      #{bankAccount,jdbcType=VARCHAR}, #{bankAccountOwner,jdbcType=VARCHAR}, #{csTel,jdbcType=VARCHAR}, 
-      #{csOperationTime,jdbcType=VARCHAR}, #{csEmail,jdbcType=VARCHAR}, #{bankDepositText,jdbcType=VARCHAR}, 
-      NOW(), NOW())
-       <selectKey keyProperty="giftCardPolicyNo" resultType="java.lang.Integer" order ="AFTER">
+    insert into branch (branchNo, soleDistNo, branchCode, 
+      branchName, branchAddress, branchTel, 
+      branchPhone, branchStatus, memberNo, 
+      recommenderNo, regType, regAdminNo, 
+      branchEmail, greenPointAccStatus, redPointAccStatus, 
+      greenPointUseStatus, redPointUseStatus, createTime, 
+      updateTime)
+    values (#{branchNo,jdbcType=INTEGER}, #{soleDistNo,jdbcType=INTEGER}, #{branchCode,jdbcType=VARCHAR}, 
+      #{branchName,jdbcType=VARCHAR}, #{branchAddress,jdbcType=VARCHAR}, #{branchTel,jdbcType=VARCHAR}, 
+      #{branchPhone,jdbcType=VARCHAR}, #{branchStatus,jdbcType=VARCHAR}, #{memberNo,jdbcType=INTEGER}, 
+      #{recommenderNo,jdbcType=INTEGER}, #{regType,jdbcType=CHAR}, #{regAdminNo,jdbcType=INTEGER}, 
+      #{branchEmail,jdbcType=VARCHAR}, #{greenPointAccStatus,jdbcType=CHAR}, #{redPointAccStatus,jdbcType=CHAR}, 
+      #{greenPointUseStatus,jdbcType=CHAR}, #{redPointUseStatus,jdbcType=CHAR}, NOW(), NOW())
+    
+    <selectKey keyProperty="branchNo" resultType="java.lang.Integer" order ="AFTER">
 		    SELECT LAST_INSERT_ID()
 	 </selectKey>	
   </insert>
@@ -57,6 +62,12 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="giftCardPolicyNo != null">
         giftCardPolicyNo,
+      </if>
+      <if test="salesCommissionTarget != null">
+        salesCommissionTarget,
+      </if>
+      <if test="salesCommissionRate != null">
+        salesCommissionRate,
       </if>
       <if test="headSaleFeeRate != null">
         headSaleFeeRate,
@@ -111,6 +122,12 @@
       <if test="giftCardPolicyNo != null">
         #{giftCardPolicyNo,jdbcType=INTEGER},
       </if>
+      <if test="salesCommissionTarget != null">
+        #{salesCommissionTarget,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCommissionRate != null">
+        #{salesCommissionRate,jdbcType=REAL},
+      </if>
       <if test="headSaleFeeRate != null">
         #{headSaleFeeRate,jdbcType=REAL},
       </if>
@@ -164,6 +181,12 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.GiftCardPolicy">
     update gift_card_policy
     <set>
+      <if test="salesCommissionTarget != null">
+        salesCommissionTarget = #{salesCommissionTarget,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCommissionRate != null">
+        salesCommissionRate = #{salesCommissionRate,jdbcType=REAL},
+      </if>
       <if test="headSaleFeeRate != null">
         headSaleFeeRate = #{headSaleFeeRate,jdbcType=REAL},
       </if>
@@ -217,7 +240,9 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.GiftCardPolicy">
     update gift_card_policy
-    set headSaleFeeRate = #{headSaleFeeRate,jdbcType=REAL},
+    set salesCommissionTarget = #{salesCommissionTarget,jdbcType=VARCHAR},
+      salesCommissionRate = #{salesCommissionRate,jdbcType=REAL},
+      headSaleFeeRate = #{headSaleFeeRate,jdbcType=REAL},
       distSaleFeeRate = #{distSaleFeeRate,jdbcType=REAL},
       saleOrganSaleFeeRate = #{saleOrganSaleFeeRate,jdbcType=REAL},
       giftCardAccRate = #{giftCardAccRate,jdbcType=REAL},

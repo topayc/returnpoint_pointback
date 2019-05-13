@@ -161,6 +161,10 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         member.setMemberEmail(qrRequest.getMemberEmail());
 	         ArrayList<Member> members = this.pointBackMapper.findMembers(member);
 	         
+	       /*  System.out.println("qrRequest.getMemberEmail(");
+	         System.out.println(">> 상품권 결제 제휴점 이메일");
+	         System.out.println(qrRequest.getMemberEmail());*/
+	         
 	         if (members.size() !=1 || members == null) {
 	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "601", 
 	        			 this.messageUtils.getMessage("pointback.message.not_argu_member", new Object[] {qrRequest.getMemberEmail()}));
@@ -226,7 +230,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 
 	         /*주 은행 찾기*/
 	         MemberBankAccount bankAccount= new MemberBankAccount();
-	         bankAccount.setMemberNo(member.getMemberNo());
+	         bankAccount.setMemberNo(members.get(0).getMemberNo());
 	         bankAccount.setIsDefault("Y");
 	         ArrayList<MemberBankAccount> bankAccounts = this.pointBackMapper.findMemberBankAccounts(bankAccount);
 	         if (bankAccounts.size() < 1) {
