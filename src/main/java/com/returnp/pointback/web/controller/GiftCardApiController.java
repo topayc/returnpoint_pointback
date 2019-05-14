@@ -64,6 +64,7 @@ public class GiftCardApiController extends ApplicationController{
 			 keys = new ArrayList<String>(Arrays.asList(env.getProperty("keys").trim().split(",")));
 		 }
 	
+	/* 사용자가 상품권의 큐알 적립, 및 큐알 결제를 실행했을 경우 호출됨*/
 	@ResponseBody
 	@RequestMapping(value = "/handleGiftCardReq", method = RequestMethod.POST)
 	public ReturnpBaseResponse handleGiftCardReq(String qrData) throws ParseException, JsonParseException, JsonMappingException, IOException{

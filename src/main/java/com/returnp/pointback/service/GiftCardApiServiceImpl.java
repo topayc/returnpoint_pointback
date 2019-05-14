@@ -22,6 +22,7 @@ import com.returnp.pointback.dao.mapper.PaymentTransactionMapper;
 import com.returnp.pointback.dao.mapper.PointBackMapper;
 import com.returnp.pointback.dao.mapper.PolicyMapper;
 import com.returnp.pointback.dto.QRRequest;
+import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.GiftCardAccHistory;
@@ -31,6 +32,9 @@ import com.returnp.pointback.model.GiftCardPolicy;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.MemberBankAccount;
+import com.returnp.pointback.model.Policy;
+import com.returnp.pointback.model.SoleDist;
+import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.service.interfaces.GiftCardApiService;
 import com.returnp.pointback.web.message.MessageUtils;
 
@@ -50,6 +54,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	@Autowired GiftCardPaymentMapper giftCardPaymentMapper;
 	@Autowired GiftCardPolicyMapper giftCardPolicyMapper;
 	@Autowired GiftCardIssueMapper  giftCardIssueMapper;
+	@Autowired BasePointAccumulateService basePointAccumulateService;;
 	/* 
 	 * 상품권 적립 큐알 스캔에 의한 적립 처리 
 	 */
@@ -104,18 +109,7 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         }
 	         float giftCardAccRate = giftCardPolicy.getGiftCardAccRate();
 	         
-	         /* 
-	          * 상품권 QR 적립에 따른 포인트 증가
-	          * */
-	         this.increaseGiftCardPoint(
-	        	members.get(0).getMemberNo(), 
-	        	members.get(0).getMemberNo(), 
-	        	"1", 
-	        	AppConstants.NodeType.MEMBER,  
-	        	issueses.get(0).
-	        	getGiftCardSalePrice(), 
-	        	giftCardAccRate
-	        );
+	
 	         
 	         /*
 	          * 상품권 QR 적립 내역 인서트  
@@ -128,7 +122,70 @@ public class GiftCardApiServiceImpl implements GiftCardApiService {
 	         accHistory.setAccAmount(issueses.get(0).getGiftCardSalePrice() * giftCardAccRate);
 	         accHistory.setAccTime(new Date());
 	         this.historyMapper.insert(accHistory);
-	         
+	        
+	         /*정책 조회*/
+	         Policy policy = new Policy();
+			 ArrayList<Policy> policies = this.pointBackMapper.findPolicies(policy);
+			policy = policies.get(policies.size() -1 );
+			
+			/*
+			 * 유일한 1개의 SoleDist 검색
+			 * 관련 노드가 존재하지 않을 경우 Default 로 SoleDist(총판)에게 분배  
+			 * */
+			ArrayList<SoleDist> soleDistList = this.pointBackMapper.findSoleDists(new SoleDist());
+			SoleDist defaultSoleDist = null;
+			if (soleDistList .size() >= 0) {
+				defaultSoleDist  = soleDistList.get(0);
+			}
+			
+	         /* 적립자의 1대 , 2대 추천인 포인트 적립 */
+			OuterPointBackTarget outerTarget = new OuterPointBackTarget();
+			outerTarget.setMemberNo(members.get(0).getMemberNo());
+			outerTarget = this.basePointAccumulateService.findOuterPointBackTarget(outerTarget);
+			
+			/*
+			 * 상품권 적립자 및 적립자의 1 대 , 2대 추천인 포인트 적립
+			 * */
+			if (outerTarget.getMemberNo() != null) {
+		         this.increaseGiftCardPoint(
+		        	members.get(0).getMemberNo(), 
+		        	members.get(0).getMemberNo(), 
+		        	AppConstants.NodeType.MEMBER,
+		        	"member",  
+		        	issueses.get(0). getGiftCardSalePrice(),
+		        	giftCardAccRate
+		        );
+			}
+			
+			/* 
+			 * 적립자의 1대 추천인 포인트 적립
+			 * */
+			if (outerTarget.getFirstRecommenderMemberNo() != null) {
+				this.increaseGiftCardPoint(
+						outerTarget.getFirstRecommenderMemberNo(), 
+						outerTarget.getFirstRecommenderMemberNo(), 
+						AppConstants.NodeType.RECOMMENDER,
+						"recommender", 
+						issueses.get(0). getGiftCardSalePrice(),
+						policy.getCustomerRecCom()
+					);
+			}
+			
+			/* 
+			 * 적립자의 2대 추천인 포인트 적립
+			 * */
+			if (outerTarget.getSecondRecommenderMemberNo() != null) {
+				 this.increaseGiftCardPoint(
+						outerTarget.getSecondRecommenderMemberNo(), 
+						outerTarget.getSecondRecommenderMemberNo(), 
+						AppConstants.NodeType.RECOMMENDER,
+						"recommender", 
+						issueses.get(0). getGiftCardSalePrice(),
+						policy.getCustomerRecManagerComm()
+					 );
+			}
+	        // ------> 적립자및 적립자의 1 대 , 2대 추천인 포인트 적립 완료
+			
 	         /*상품권을 적립 됨 상태로 변경*/
 	         issue = issueses.get(0);
 	         issue.setAccableStatus(AppConstants.GiftCardAccableStatus.ACCUMULATE_COMPLETE);
