@@ -182,14 +182,14 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		System.out.println(apiRequest.getRecommenderEmail());
 		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
 		try {
-			HashMap<String, Object> affilaiteMap = this.apiMapper.selectAffiliate(apiRequest);
+		/*	HashMap<String, Object> affilaiteMap = this.apiMapper.selectAffiliate(apiRequest);
 			System.out.println(apiRequest.getAfId());
 			if (affilaiteMap == null) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "305", this.messageUtils.getMessage( "api.message.wrong_affiliate"));
 					throw new ReturnpException(res);
 			}else {
 				apiRequest.setJoinRoute((String)affilaiteMap.get("affiliateName"));
-			}
+			}*/
 			
 			/*이메일 중복 확인*/
 			ApiRequest apiQuery = new ApiRequest(); 
@@ -197,7 +197,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			int count = this.apiMapper.selectMemberCount(apiQuery);
 			
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "300", this.messageUtils.getMessage( "api.duplicated", new Object[] { "E-MAIL " + apiRequest.getMemberEmail() }));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage( "api.duplicated", new Object[] { "E-MAIL " + apiRequest.getMemberEmail() }));
 				throw new ReturnpException(res);
 			}
 			
@@ -206,7 +206,7 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			apiQuery.setMemberPhone(apiRequest.getMemberPhone());
 			count = this.apiMapper.selectMemberCount(apiQuery);
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "300", this.messageUtils.getMessage( "api.duplicated", new Object[] { "PHONE  " + apiRequest.getMemberPhone()}));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "307", this.messageUtils.getMessage( "api.duplicated", new Object[] { "PHONE  " + apiRequest.getMemberPhone()}));
 				throw new ReturnpException(res);
 			}
 			
