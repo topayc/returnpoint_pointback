@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.returnp.pointback.common.AppConstants;
-import com.returnp.pointback.common.AppConstants.AffiliateType;
 import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
@@ -28,7 +28,6 @@ import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PointBackTarget;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
-import com.returnp.pointback.model.AffiliateTid;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.PaymentPointbackRecord;
@@ -43,7 +42,9 @@ import com.returnp.pointback.web.message.MessageUtils;
 @Service
 /*@PropertySource("classpath:/messages.properties")*/
 public class BasePointAccumulateServiceImpl implements BasePointAccumulateService {
-
+	
+	private Logger logger = Logger.getLogger(BasePointAccumulateServiceImpl.class);
+	
 	@Autowired PointBackMapper pointBackMapper;
 	@Autowired PolicyMapper policyMapper;
 	@Autowired AffiliateMapper affiliateMapper;
@@ -113,7 +114,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			 * 강제 적립인 경우에는 유효성 검사 없이 바로 적립 진행
 			 * */
 			if (!dataMap.containsKey("forceAcc") || !((String)dataMap.get("forceAcc")).equals("Y")) {
-				this.validateAccumulateRequest(dataMap.getStr("pan"),dataMap.getStr("pas"));
+				this.validateAccumulateRequest(dataMap);
 			}
 			//this.validate(dataMap);
 			PaymentTransaction paymentTransaction = this.createPaymentTransaction(dataMap);
@@ -228,17 +229,32 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	 * 적립 요청이 유효한지 검사
 	 */
 	@Override
-	public void validateAccumulateRequest(String pan, String pas) throws ReturnpException {
+	public void validateAccumulateRequest(DataMap dataMap) throws ReturnpException {
 		ReturnpBaseResponse res =  new ReturnpBaseResponse();
 		try {
+			
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			/*
+			 * 결제 번호 및 승인 일시로 조회하여 이미 등록된 결제 정보가 있는지 조회
+			 * */
 			PaymentTransaction paymentTransaction = new PaymentTransaction();
-			paymentTransaction.setPaymentApprovalNumber(pan);
+			paymentTransaction.setPaymentApprovalNumber(dataMap.getStr("pan"));
+			paymentTransaction.setPaymentApprovalDateTime((Date)dataMap.get("pat"));
+			
 			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(paymentTransaction);
-			System.out.println("결제 번호");
-			System.out.println(pan);
+
+			logger.info("------------------------------------- 적립 결제 정보---------------------------------------");
+			logger.info("Approval Payment Number : "  + dataMap.getStr("pan"));
+			logger.info("Approval Payment Date Time : "  + df.format((Date)dataMap.get("pat")));
+			
+			if (paymentTransactions.size() >  0  ) {
+				logger.info("기 등록된 결제의 승인 일시 : "  + df.format(paymentTransactions.get(0).getPaymentApprovalDateTime())); 
+			}
+			
+			logger.info("----------------------------------------------------------------------------------------------");
 			
 			if (paymentTransactions.size() >  1  ) {
-				 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "604", this.messageUtils.getMessage("pointback.message.already_accumulate_or_canceled"));
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "604", this.messageUtils.getMessage("pointback.message.already_accumulate_or_canceled"));
 					throw new ReturnpException(res);
 			}
 			/* 
@@ -247,7 +263,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			 * */
 			if (paymentTransactions.size() == 1) {
 				paymentTransaction = paymentTransactions.get(0);
-				/* 부적절한 요청 - 현재 적립 처리중인 내역에 대한 중복 적립 요청*/
+				 //부적절한 요청 - 현재 적립 처리중인 내역에 대한 중복 적립 요청
 				 if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
 					 if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
 							 paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_PROGRESS)) {
@@ -255,19 +271,19 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 						 throw new ReturnpException(res);
 					 }
 					
-					 /* 부적절한 요청 - 적립 처리가 완료된 내역에 대한 중복 적립 요청*/
+					  //부적절한 요청 - 적립 처리가 완료된 내역에 대한 중복 적립 요청
 					if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_COMPLETE) ) {
 						ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "606", this.messageUtils.getMessage("pointback.message.already_complete_req"));
 						throw new ReturnpException(res);
 					}
 					
-					/* 부적절한 요청 - 적립 처리 에러 내역에 대한 중복 적립 요청*/
+					 //부적절한 요청 - 적립 처리 에러 내역에 대한 중복 적립 요청
 					if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_STOP) ) {
 						ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "607", this.messageUtils.getMessage("pointback.message.error_accumulate"));
 						throw new ReturnpException(res);
 					}
 				}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL)){
-					/* 이미 결제 취소된 중이거나 결제 취소가 완료, 혹은 결제 취소 에러가 발생한 내역에 대한 적립 요청인 경우 - 부적절한 적립 요청  */
+					 //이미 결제 취소된 중이거나 결제 취소가 완료, 혹은 결제 취소 에러가 발생한 내역에 대한 적립 요청인 경우 - 부적절한 적립 요청  
 					ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "608", this.messageUtils.getMessage("pointback.message.error_acc_req_to_already_canceled_payement"));
 					throw new ReturnpException(res);
 				}else if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_ERROR)){
@@ -292,14 +308,29 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	 */
 	
 	@Override
-	public PaymentTransaction validateCancelRequest(String pan, String pas) throws ReturnpException {
+	public PaymentTransaction validateCancelRequest(DataMap dataMap) throws ReturnpException {
 		ReturnpBaseResponse res =  new ReturnpBaseResponse();
 		try {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			/*
+			 * 결제 번호 및 승인 일시로 조회하여 등록된 결제 정보가 있는지 조회
+			 * */
 			PaymentTransaction paymentTransaction = new PaymentTransaction();
-			paymentTransaction.setPaymentApprovalNumber(pan);
+			paymentTransaction.setPaymentApprovalNumber(dataMap.getStr("pan"));
+			paymentTransaction.setPaymentApprovalDateTime((Date)dataMap.get("pat"));
 			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(paymentTransaction);
-			System.out.println("결제 번호");
-			System.out.println(pan);
+			
+			logger.info("------------------------------------- 적립 취소 결제 정보---------------------------------------");
+			logger.info("Approval Payment Number : "  + dataMap.getStr("pan"));
+			logger.info("Approval Payment Date Time : "  + df.format((Date)dataMap.get("pat")));
+			
+			if (paymentTransactions.size() >  0  ) {
+				logger.info("기 등록된 결제의 승인 일시 : "  + df.format(paymentTransactions.get(0).getPaymentApprovalDateTime())); 
+			}
+			
+			logger.info("---------------------------------------------------------------------------------------------------");
+			
 			
 			/* 존재하지 않는 내역에 대한 취소 요청  */	
 			if (paymentTransactions.size() == 0  ) {
@@ -308,7 +339,6 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			}
 			
 			/* 디비 내역 무결성 깨짐, 관리자 문의*/	
-		
 			
 			paymentTransaction = paymentTransactions.get(0);
 			
@@ -1041,7 +1071,15 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			
 			this.validateMemberAuth(dataMap.getStr("memberEmail"),dataMap.getStr("phoneNumber"),dataMap.getStr("phoneNumberCountry"));
 			this.validateAffiliateAuth(dataMap.getStr("af_id"));
-			this.validateCancelRequest(dataMap.getStr("pan"),dataMap.getStr("pas"));
+			
+			/* 
+			 * 강제 취소인지 여부 확인
+			 * 강제 취소인 경우에는 유효성 검사 없이 바로 적립 진행
+			 * */
+			if (!dataMap.containsKey("forceCancel") || !((String)dataMap.get("forceCancel")).equals("Y")) {
+				this.validateCancelRequest(dataMap);
+			}
+			
 			this.restorePoint(dataMap);
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.cancel_accumulate_ok"));
 			return res;

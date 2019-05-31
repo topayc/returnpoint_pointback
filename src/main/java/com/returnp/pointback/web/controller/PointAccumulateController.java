@@ -56,7 +56,7 @@ public class PointAccumulateController extends ApplicationController{
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(df, false));
 	}
 	

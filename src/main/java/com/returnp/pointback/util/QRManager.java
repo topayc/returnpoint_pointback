@@ -216,7 +216,7 @@ public class QRManager {
 	
 	/*전처리 검증*/
 	public static Boolean beforeValidateQR(HashMap<String, String> queryMap){
-		System.out.println("beforeValidateQR" );
+		//System.out.println("beforeValidateQR" );
 		if (!queryMap.containsKey(QRManager.QR_MAP_KEY_F) || !queryMap.containsKey(QRManager.QR_MAP_KEY_D) ||
 				queryMap.get(QRManager.QR_MAP_KEY_F) == null || queryMap.get(QRManager.QR_MAP_KEY_D) == null) {
 			return false;
