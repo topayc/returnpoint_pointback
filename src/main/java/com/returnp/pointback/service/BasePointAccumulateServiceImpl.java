@@ -1046,8 +1046,15 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		/*
 		 * 기본 결제 번호만으로는 중복이 될 수 있기 때문에 
 		 * 결제 번호에 TID 를 연결하여 TID 별 결제 번호를 생성
+		 *  
+		 *  관리자에 의한 취소는 이미 결제 적립 데이타에 afid +  결제 번호가 조합된 결제 승인 번호가 들어가 있기 때문에
+		 *  읽어온 결제 번호를 그대로 사용함
 		 *  */
-		dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getStr("pan")); 
+		if (dataMap.containsKey("cancel_from") && dataMap.getStr("cancel_from").equals("admin")) {
+			
+		}else {
+			dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getStr("pan")); 
+		}
 		
 		try {
 			switch(dataMap.getStr("acc_from").trim()){
@@ -1115,6 +1122,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			}
 			
 			dataMap = this.convertPaymentTransactionToDataMap(pts.get(0));
+			dataMap.put("cancel_from", "admin");
 			return this.cancelAccumulate(dataMap);
 		}catch(ReturnpException e) {
 			e.printStackTrace();
@@ -1150,6 +1158,8 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			}
 			
 			dataMap = this.convertPaymentTransactionToDataMap(pt);
+			dataMap.put("cancel_from", "admin");
+			
 			/*요청처리를 결제 쥐소로 파라메터를 변경*/
 			dataMap.put("pas", "1");  
 			return this.cancelAccumulate(dataMap);
@@ -1189,6 +1199,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			dataMap = this.convertPaymentTransactionToDataMap(pt);
 			/*요청처리를 결제 쥐소로 파라메터를 변경*/
 			dataMap.put("pas", "1");  
+			dataMap.put("cancel_from", "admin");
 			
 			/*유효성 검사를 하지 않는 강제 처리 플래그 설정*/
 			dataMap.put("forceCancel", "Y");
