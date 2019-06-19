@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PaymentTransactionRouterMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PaymentTransactionRouter">
+    <id column="paymentTransactionRouterNo" jdbcType="INTEGER" property="paymentTransactionRouterNo" />
+    <result column="paymentTransactionNo" jdbcType="INTEGER" property="paymentTransactionNo" />
+    <result column="paymentTransactionRouterType" jdbcType="VARCHAR" property="paymentTransactionRouterType" />
+    <result column="paymentTransactionRouterName" jdbcType="VARCHAR" property="paymentTransactionRouterName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    paymentTransactionRouterNo, paymentTransactionNo, paymentTransactionRouterType, paymentTransactionRouterName
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from payment_transaction_router
+    where paymentTransactionRouterNo = #{paymentTransactionRouterNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payment_transaction_router
+    where paymentTransactionRouterNo = #{paymentTransactionRouterNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.PaymentTransactionRouter">
+    insert into payment_transaction_router (paymentTransactionRouterNo, paymentTransactionNo, 
+      paymentTransactionRouterType, paymentTransactionRouterName
+      )
+    values (#{paymentTransactionRouterNo,jdbcType=INTEGER}, #{paymentTransactionNo,jdbcType=INTEGER}, 
+      #{paymentTransactionRouterType,jdbcType=VARCHAR}, #{paymentTransactionRouterName,jdbcType=VARCHAR}
+      )
+             <selectKey keyProperty="paymentTransactionRouterNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
+      
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PaymentTransactionRouter">
+    insert into payment_transaction_router
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="paymentTransactionRouterNo != null">
+        paymentTransactionRouterNo,
+      </if>
+      <if test="paymentTransactionNo != null">
+        paymentTransactionNo,
+      </if>
+      <if test="paymentTransactionRouterType != null">
+        paymentTransactionRouterType,
+      </if>
+      <if test="paymentTransactionRouterName != null">
+        paymentTransactionRouterName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="paymentTransactionRouterNo != null">
+        #{paymentTransactionRouterNo,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTransactionNo != null">
+        #{paymentTransactionNo,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTransactionRouterType != null">
+        #{paymentTransactionRouterType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTransactionRouterName != null">
+        #{paymentTransactionRouterName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PaymentTransactionRouter">
+    update payment_transaction_router
+    <set>
+      <if test="paymentTransactionNo != null">
+        paymentTransactionNo = #{paymentTransactionNo,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTransactionRouterType != null">
+        paymentTransactionRouterType = #{paymentTransactionRouterType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTransactionRouterName != null">
+        paymentTransactionRouterName = #{paymentTransactionRouterName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where paymentTransactionRouterNo = #{paymentTransactionRouterNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PaymentTransactionRouter">
+    update payment_transaction_router
+    set paymentTransactionNo = #{paymentTransactionNo,jdbcType=INTEGER},
+      paymentTransactionRouterType = #{paymentTransactionRouterType,jdbcType=VARCHAR},
+      paymentTransactionRouterName = #{paymentTransactionRouterName,jdbcType=VARCHAR}
+    where paymentTransactionRouterNo = #{paymentTransactionRouterNo,jdbcType=INTEGER}
+  </update>
+</mapper>

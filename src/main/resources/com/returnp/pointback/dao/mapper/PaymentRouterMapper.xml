@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PaymentRouterMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PaymentRouter">
+    <id column="paymentRouterNo" jdbcType="INTEGER" property="paymentRouterNo" />
+    <result column="paymentRouterType" jdbcType="VARCHAR" property="paymentRouterType" />
+    <result column="paymentRouterCode" jdbcType="VARCHAR" property="paymentRouterCode" />
+    <result column="paymentRouterName" jdbcType="VARCHAR" property="paymentRouterName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    paymentRouterNo, paymentRouterType, paymentRouterCode, paymentRouterName
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from payment_router
+    where paymentRouterNo = #{paymentRouterNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payment_router
+    where paymentRouterNo = #{paymentRouterNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.PaymentRouter">
+    insert into payment_router (paymentRouterNo, paymentRouterType, 
+      paymentRouterCode, paymentRouterName)
+    values (#{paymentRouterNo,jdbcType=INTEGER}, #{paymentRouterType,jdbcType=VARCHAR}, 
+      #{paymentRouterCode,jdbcType=VARCHAR}, #{paymentRouterName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PaymentRouter">
+    insert into payment_router
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="paymentRouterNo != null">
+        paymentRouterNo,
+      </if>
+      <if test="paymentRouterType != null">
+        paymentRouterType,
+      </if>
+      <if test="paymentRouterCode != null">
+        paymentRouterCode,
+      </if>
+      <if test="paymentRouterName != null">
+        paymentRouterName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="paymentRouterNo != null">
+        #{paymentRouterNo,jdbcType=INTEGER},
+      </if>
+      <if test="paymentRouterType != null">
+        #{paymentRouterType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentRouterCode != null">
+        #{paymentRouterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentRouterName != null">
+        #{paymentRouterName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PaymentRouter">
+    update payment_router
+    <set>
+      <if test="paymentRouterType != null">
+        paymentRouterType = #{paymentRouterType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentRouterCode != null">
+        paymentRouterCode = #{paymentRouterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentRouterName != null">
+        paymentRouterName = #{paymentRouterName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where paymentRouterNo = #{paymentRouterNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PaymentRouter">
+    update payment_router
+    set paymentRouterType = #{paymentRouterType,jdbcType=VARCHAR},
+      paymentRouterCode = #{paymentRouterCode,jdbcType=VARCHAR},
+      paymentRouterName = #{paymentRouterName,jdbcType=VARCHAR}
+    where paymentRouterNo = #{paymentRouterNo,jdbcType=INTEGER}
+  </update>
+</mapper>
