@@ -3,6 +3,12 @@ package com.returnp.pointback.common;
 public class AppConstants {
 	public static String ADMIN_SESSION = "adminSession";
 
+	public static class AdminType {
+		public static  final String SUPER = "1";   /*전체 시스템 관리자*/
+		public static  final String HEAD_ORGAN= "10";    /*상품권 본사*/
+		public static  final String DIST_ORGAN = "11";  /*상품권 총판*/ 
+		public static  final String SALES_ORGAN = "12";  /*상품권 판매점 */ 
+	}
 	public static class NodeType {
 		public static final String MEMBER = "1";
 		public static final String RECOMMENDER = "2";
@@ -109,8 +115,9 @@ public class AppConstants {
 	public static class PaymentTransactionType{
 		public static final String  QR = "1";
 		public static final  String  VAN= "2";
-		public static final  String  ADMIN= "3";
-		public static final  String  SHOPPING_MAL= "4";
+		public static final  String  MANUAL= "3";
+		public static final  String  APP= "4";
+		public static final  String  API= "5";
 	}
 
 	public static class VanPaymentStatus {
@@ -296,8 +303,19 @@ public class AppConstants {
 		public static String ISSUE_CANCEL   = "4";  /* 발행 취소 */
 	}
 	
+	public static class PaymentRouterType{
+		public static final String  VAN = "VAN";
+		public static final  String  PG= "PG";
+		public static final  String  ADMIN= "ADMIN";
+	}
+	
+	public static class PaymentRouterName{
+		public static final String  KICC  = "KICC";
+		public static final  String  KFT= "KFT";
+		public static final  String  SAIDA= "SAIDA";
+		public static final  String  ADMIN= "ADMIN";
+	}
+	
+	
 
-	
-	
-	
 }

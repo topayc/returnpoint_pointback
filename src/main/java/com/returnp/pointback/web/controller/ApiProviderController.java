@@ -260,7 +260,7 @@ public class ApiProviderController extends ApplicationController{
 			dataMap.put("phoneNumberCountry", apiRequest.getMemberPhone().trim());
 			dataMap.put("memberEmail", apiRequest.getMemberEmail());
 			dataMap.put("key", (String)apiServiceMap.get("apiKey"));
-			dataMap.put("acc_from", AppConstants.PaymentTransactionType.SHOPPING_MAL);
+			dataMap.put("acc_from", AppConstants.PaymentTransactionType.API);
 			System.out.println("getPaymentApprovalStatus : " + apiRequest.getPaymentApprovalStatus());
 			/*적립*/
 			if (apiRequest.getPaymentApprovalStatus().equals("0")) {

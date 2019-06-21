@@ -37,6 +37,14 @@
 	 <appender-ref ref="console" />
 	</logger>
 	
+		<logger name="com.returnp.pointback.dao.mapper" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="console" />
+	</logger>
+		<logger name="org.mybatis" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="console" />
+	</logger>
 	<logger name="jdbc.sqlonly" additivity="false">
 	 <level value="info" />
 	 <appender-ref ref="console" />
@@ -44,7 +52,7 @@
 
 	<!-- Root Logger -->
 	<root>
-		<priority value="warn" />
+		<priority value="debug" />
 		<appender-ref ref="console" />
 	</root>
 	

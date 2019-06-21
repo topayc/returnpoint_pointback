@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.returnp.pointback.dto.command.AffiliateCommand;
 import com.returnp.pointback.dto.command.AffiliateTidCommand;
 import com.returnp.pointback.dto.command.GiftCardAccHistoryCommand;
 import com.returnp.pointback.dto.command.GiftCardPaymentCommand;
@@ -14,6 +15,7 @@ import com.returnp.pointback.dto.command.MemberBankAccountCommand;
 import com.returnp.pointback.dto.command.MembershipRequestCommand;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PaymentPointbackRecordCommand;
+import com.returnp.pointback.dto.command.PaymentTransactionCommand;
 import com.returnp.pointback.dto.command.PointBackTarget;
 import com.returnp.pointback.dto.command.PointConversionTransactionCommand;
 import com.returnp.pointback.dto.command.PointConvertRequestCommand;
@@ -58,12 +60,14 @@ public interface PointBackMapper {
 	public ArrayList<Branch> findBranches(Branch brach);
 	public ArrayList<Agency> findAgencies(Agency agency);
 	public ArrayList<Affiliate> findAffiliates(Affiliate affiliate);
+	public ArrayList<AffiliateCommand> findAffiliateCommands(AffiliateCommand affiliateCommand);
 	public ArrayList<SaleManager> findSaleManagers(SaleManager saleManager);
 	public ArrayList<MembershipRequestCommand> findMembershipRequests(SearchCondition  nodeSearch);
 	public MembershipRequest findMembershipRequest(MembershipRequest  membershipRequest);
 	public MembershipRequestCommand findMembershipRequestCommand(MembershipRequestCommand  membershipRequestCommand);
 	public ArrayList<CompanyBankAccount> findCompanyBanks(CompanyBankAccount companyBankAccount);
 	public ArrayList<PaymentTransaction> findPaymentTransactions(PaymentTransaction record);
+	public ArrayList<PaymentTransactionCommand> findPaymentTransactionCommands(PaymentTransactionCommand record);
 	public ArrayList<SoleDist> findSoleDists(SoleDist record);
 	public ArrayList<MembershipRequestCommand> findMembershipRequestCommands(MembershipRequestCommand mrCond);
 

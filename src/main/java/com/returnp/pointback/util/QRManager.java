@@ -188,7 +188,7 @@ public class QRManager {
 		 * */
 		
 		try {
-			qrMap.put("van", queryMap.get("v"));  //van 이름  
+			qrMap.put("vanName", queryMap.get("v"));  //van 이름  
 			qrMap.put("seq", queryMap.get("s"));  // 포스별 고유 번호 
 			
 			qrMap.put("pat", sdf2.format(date));  //승인시간

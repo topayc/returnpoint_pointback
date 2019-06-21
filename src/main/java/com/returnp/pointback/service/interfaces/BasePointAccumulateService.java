@@ -45,7 +45,7 @@ public interface BasePointAccumulateService {
 	
 	public Member validateMemberAuth(String MemberEmail, String phoneNumber, String phoneNumberCountry) throws ReturnpException;
 
-	public Affiliate validateAffiliateAuth(String afId) throws ReturnpException;
+	public Affiliate validateAffiliateAuth(String paymentRouterType, String paymentRouterName, String afId) throws ReturnpException;
 
 	public PaymentTransaction  validate(String pan, String pas) throws ReturnpException;
 	

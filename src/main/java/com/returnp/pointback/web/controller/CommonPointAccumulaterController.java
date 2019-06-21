@@ -68,22 +68,11 @@ public class CommonPointAccumulaterController extends ApplicationController{
 	
 	/**
 	 * 기존 KICC 외에 다른 밴사를 통해 요청되어 지는 큐알 적립 요청 처리 
-	 * @param qr_org
-	 * @param pam
-	 * @param pas
-	 * @param pat
-	 * @param pan
-	 * @param afId
-	 * @param phoneNumber
-	 * @param phoneNumberCountry
-	 * @param memberEmail
-	 * @param key
-	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/commonQrAccPoint", method = RequestMethod.GET)
 	public ReturnpBaseResponse commonqQrAccPoint( 
-			@RequestParam(value = "van", required = false ) String van, 
+			@RequestParam(value = "vanName", required = false ) String vanName, 
 			//@RequestParam(value = "seq", required = false, defaultValue = "1") int seq, 
 			@RequestParam(value = "qr_org", required = false) String qr_org, 
 			@RequestParam(value = "pam", required = true ) int pam,
@@ -96,10 +85,49 @@ public class CommonPointAccumulaterController extends ApplicationController{
 			@RequestParam(value = "memberEmail", required = true ) String memberEmail,
 			@RequestParam(value = "key", required = true ) String key
 			){
-		ReturnpBaseResponse res= null;
+		
 		System.out.println("-------------------------commonqQrAccPoint--------------------------------");
 		System.out.println("--------------------------------------------------------------------------------");
+		
+		ReturnpBaseResponse res= null;
+		
+		DataMap dataMap = new DataMap();
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			if (qr_org != null) {
+				dataMap.put("qr_org", qr_org.trim());
+			}
+			dataMap.put("pam", pam);
+			dataMap.put("pas", pas.trim());
+			
+			dataMap.put("pat", (pat == null ? new Date(): pat));
+			dataMap.put("pan", pan.trim());
+			dataMap.put("af_id", afId.trim());
+			dataMap.put("phoneNumber", phoneNumber.trim());
 
+			if (phoneNumberCountry != null) {
+				dataMap.put("phoneNumberCountry", phoneNumberCountry.trim());
+			}
+			dataMap.put("memberEmail", memberEmail);
+			dataMap.put("key", key.trim());
+			
+			dataMap.put("payment_router_type", AppConstants.PaymentRouterType.VAN);
+			dataMap.put("payment_router_name", vanName);
+			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.QR);
+			
+			/*적립*/
+			if (pas.equals("0")) {
+				res = this.basePointAccumulateService.accumulate(dataMap);
+			}
+		
+			/*적립 취소*/
+			else if (pas.equals("1")) {
+				res = this.basePointAccumulateService.cancelAccumulate(dataMap);
+			}
+		}
 		return res;
 	}
 	

@@ -182,17 +182,6 @@ public class PointAccumulateController extends ApplicationController{
 	 * 새로 추가된 메서드 관리자에서 수동으로 매출및 적립을 발생
 	 * 관리자에서 호출은 이 메서드로 단일화 함 
 	 * 적립 및 취소에 대한 처리 컨트롤러
-	 * @param qr_org
-	 * @param pam
-	 * @param pas
-	 * @param pat
-	 * @param pan
-	 * @param afId
-	 * @param phoneNumber
-	 * @param phoneNumberCountry
-	 * @param memberEmail
-	 * @param key
-	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/manualAccumulatePoint", method = RequestMethod.GET)
@@ -234,12 +223,16 @@ public class PointAccumulateController extends ApplicationController{
 			}
 			dataMap.put("memberEmail", memberEmail);
 			dataMap.put("key", key.trim());
-			dataMap.put("acc_from", AppConstants.PaymentTransactionType.ADMIN);
-			
+
+			dataMap.put("payment_router_type", AppConstants.PaymentRouterType.ADMIN);
+			dataMap.put("payment_router_name", AppConstants.PaymentRouterName.ADMIN);
+			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.MANUAL);
+		
 			/*적립*/
 			if (pas.equals("0")) {
 				res = this.basePointAccumulateService.accumulate(dataMap);
 			}
+		
 			/*적립 취소*/
 			else if (pas.equals("1")) {
 				res = this.basePointAccumulateService.cancelAccumulate(dataMap);
@@ -250,18 +243,8 @@ public class PointAccumulateController extends ApplicationController{
 	
 	/**
 	 * 새로 추가된 메서드로 qr 로 부터 매출 및 적립 처리 
+	 * KICC 에서 요청되는 결제 적립 요청만 처리함 
 	 * qr 에서 호출은 이 메서드로 단일화 함 
-	 * @param qr_org
-	 * @param pam
-	 * @param pas
-	 * @param pat
-	 * @param pan
-	 * @param afId
-	 * @param phoneNumber
-	 * @param phoneNumberCountry
-	 * @param memberEmail
-	 * @param key
-	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/qrAccumulatePoint", method = RequestMethod.GET)
@@ -302,12 +285,16 @@ public class PointAccumulateController extends ApplicationController{
 			}
 			dataMap.put("memberEmail", memberEmail);
 			dataMap.put("key", key.trim());
-			dataMap.put("acc_from", AppConstants.PaymentTransactionType.QR);
+			
+			dataMap.put("payment_router_type", AppConstants.PaymentRouterType.VAN);
+			dataMap.put("payment_router_name", AppConstants.PaymentRouterName.KICC);
+			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.QR);
 			
 			/*적립*/
 			if (pas.equals("0")) {
 				res = this.basePointAccumulateService.accumulate(dataMap);
 			}
+		
 			/*적립 취소*/
 			else if (pas.equals("1")) {
 				res = this.basePointAccumulateService.cancelAccumulate(dataMap);

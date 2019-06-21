@@ -635,6 +635,170 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
 		<include refid = "affiliateSearchWhereStatement"/>
   </select>
   
+      <resultMap id="AffiliateCommandResultMap" type="com.returnp.pointback.dto.command.AffiliateCommand">
+    <id column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="affiliateSerialCount" jdbcType="INTEGER" property="affiliateSerialCount" />
+    <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
+    <result column="affiliateCode" jdbcType="VARCHAR" property="affiliateCode" />
+    <result column="affiliateName" jdbcType="VARCHAR" property="affiliateName" />
+    <result column="affiliateAddress" jdbcType="VARCHAR" property="affiliateAddress" />
+    <result column="affiliateTel" jdbcType="VARCHAR" property="affiliateTel" />
+    <result column="affiliatePhone" jdbcType="VARCHAR" property="affiliatePhone" />
+    <result column="affiliateType" jdbcType="VARCHAR" property="affiliateType" />
+     <result column="affiliateComm" jdbcType="FLOAT" property="affiliateComm" />
+      <result column="giftCardPayRefundRate" jdbcType="REAL" property="giftCardPayRefundRate" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="agencyNo" jdbcType="INTEGER" property="agencyNo" />
+    <result column="recommenderNo" jdbcType="INTEGER" property="recommenderNo" />
+    <result column="affiliateStatus" jdbcType="VARCHAR" property="affiliateStatus" />
+    <result column="regType" jdbcType="CHAR" property="regType" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="affiliateEmail" jdbcType="VARCHAR" property="affiliateEmail" />
+    <result column="greenPointAccStatus" jdbcType="CHAR" property="greenPointAccStatus" />
+    <result column="redPointAccStatus" jdbcType="CHAR" property="redPointAccStatus" />
+    <result column="greenPointUseStatus" jdbcType="CHAR" property="greenPointUseStatus" />
+    <result column="redPointUseStatus" jdbcType="CHAR" property="redPointUseStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="greenPointAmount" jdbcType="REAL" property="greenPointAmount" />
+    <result column="redPointAmount" jdbcType="REAL" property="redPointAmount" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="roadFullAddr" jdbcType="VARCHAR" property="roadFullAddr" />
+    <result column="roadAddrPart1" jdbcType="VARCHAR" property="roadAddrPart1" />
+    <result column="roadAddrPart2" jdbcType="VARCHAR" property="roadAddrPart2" />
+    <result column="addrDetail" jdbcType="VARCHAR" property="addrDetail" />
+    <result column="engAddr" jdbcType="VARCHAR" property="engAddr" />
+    <result column="jibunAddr" jdbcType="VARCHAR" property="jibunAddr" />
+    <result column="zipNo" jdbcType="VARCHAR" property="zipNo" />
+    <result column="admCd" jdbcType="VARCHAR" property="admCd" />
+    <result column="rnMgtSn" jdbcType="VARCHAR" property="rnMgtSn" />
+    <result column="bdMgtSn" jdbcType="VARCHAR" property="bdMgtSn" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="lng" jdbcType="VARCHAR" property="lng" />
+    <result column="recommenderName" jdbcType="VARCHAR" property="recommenderName" />
+    <result column="agencyName" jdbcType="VARCHAR" property="agencyName" />
+    <result column="paymentRouterNo" jdbcType="INTEGER" property="paymentRouterNo" />
+    <result column="paymentRouterType" jdbcType="VARCHAR" property="paymentRouterType" />
+    <result column="paymentRouterName" jdbcType="VARCHAR" property="paymentRouterName" />
+    <result column="paymentRouterCode" jdbcType="VARCHAR" property="paymentRouterCode" />
+  </resultMap>
+  
+    <sql id="AffiliateCommand_Column_List">
+    AF.affiliateNo, 
+	APR.paymentRouterNo, 
+    (SELECT A.paymentRouterType from payment_router as A WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterType,
+    (SELECT B.paymentRouterName from payment_router as B WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterName,
+    (SELECT C.paymentRouterCode  from payment_router as C WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterCode,
+    AT.tid as affiliateSerial, 
+    AF.affiliateCode, 
+    AF.affiliateName, 
+    AF.affiliateAddress, 
+    AF.affiliateTel, 
+    AF.affiliatePhone, 
+    AF.affiliateType,
+    AF.affiliateComm,
+    AF.giftCardPayRefundRate,
+    AF.memberNo, 
+    AF.agencyNo, 
+    AF.recommenderNo, 
+    AF.affiliateStatus,
+    AF.regType, 
+    AF.regAdminNo, 
+    AF.affiliateEmail, 
+    AF.greenPointAccStatus, 
+    AF.redPointAccStatus, 
+    AF.greenPointUseStatus, 
+    AF.redPointUseStatus, 
+    AF.createTime, 
+    AF.updateTime,
+  	M.memberEmail as memberEmail, 
+    M.memberName as memberName, 
+    M.memberPhone as memberPhone, 
+    GP.pointAmount as greenPointAmount, 
+    RP.pointAmount as redPointAmount,
+    MA.memberAddressNo, 
+    MA.memberNo, 
+    MA.nodeNo, 
+    MA.nodeType, 
+    MA.roadFullAddr, 
+    MA.roadAddrPart1, 
+    MA.roadAddrPart2, 
+    MA.addrDetail, 
+    MA.engAddr, 
+    MA.jibunAddr, 
+    MA.zipNo, 
+    MA.admCd, 
+    MA.rnMgtSn, 
+    MA.bdMgtSn, 
+    MA.lat, 
+    MA.lng,
+    M2.memberName as recommenderName,
+    AG.agencyName
+  </sql>
+   
+       <sql id ="affiliateCommandSearchWhereStatement">
+      <if test="affiliateNo != null">AND affiliateNo = #{affiliateNo,jdbcType=INTEGER} </if>
+      <if test="memberNo != null">AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
+      <if test="agencyNo != null">AND agencyNo = #{agencyNo,jdbcType=INTEGER} </if>
+      <if test="affiliateSerial != null">AND affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR} </if>
+      <if test="affiliateType != null">AND affiliateType = #{affiliateType,jdbcType=VARCHAR} </if>
+      <if test="recommenderNo != null">AND recommenderNo = #{recommenderNo,jdbcType=INTEGER} </if>
+      <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="redPointAccStatus != null"> AND redPointAccStatus = #{redPointAccStatus,jdbcType=INTEGER} </if>
+      <if test="greenPointUseStatus != null"> AND greenPointUseStatus = #{greenPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="redPointUseStatus != null"> AND redPointUseStatus = #{redPointUseStatus,jdbcType=INTEGER} </if>
+      <if test="affiliateStatus != null and affiliateStatus !=  '0'  and affiliateStatus !=  0">AND affiliateStatus = #{affiliateStatus,jdbcType=VARCHAR} </if>
+      <if test="regType != null">AND regType = #{regType,jdbcType=CHAR} </if>
+      <if test="regAdminNo != null">AND regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+
+      <if test="paymentRouterType != null"> 
+      		AND (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterType,jdbcType=VARCHAR} 
+      </if>
+      <if test="paymentRouterName != null"> 
+      		AND (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterName,jdbcType=VARCHAR} 
+      	</if>
+      <if test="paymentRouterCode != null"> 
+      		AND (SELECT paymentRouterCode from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterCode,jdbcType=VARCHAR} 
+      	</if>
+      
+       <if test="affiliateCode != null or affiliateAddress != null or affiliateTel != null or affiliatePhone != null or affiliateName != null  or affiliateEmail != null or memberName != null or memberPhone != null ">
+      	AND ( 1 = 2 
+      </if>
+       <if test="memberName != null"> OR M.memberName  LIKE CONCAT('%',#{memberName},'%')</if>
+       <if test="memberPhone != null"> OR M.memberPhone  LIKE CONCAT('%',#{memberPhone},'%')</if>
+       <if test="affiliateCode != null"> OR affiliateCode  LIKE CONCAT('%',#{affiliateCode},'%')</if>
+      <if test="affiliateAddress != null"> OR affiliateAddress  LIKE CONCAT('%',#{affiliateAddress},'%')</if>
+      <if test="affiliateEmail != null"> OR affiliateEmail  LIKE CONCAT('%',#{affiliateEmail},'%')</if>
+      <if test="affiliateTel != null"> OR affiliateTel  LIKE CONCAT('%',#{affiliateTel},'%')</if>
+      <if test="affiliatePhone != null">OR affiliatePhone  LIKE CONCAT('%',#{affiliatePhone},'%') </if>
+      <if test="affiliateName != null">OR affiliateName  LIKE CONCAT('%',#{affiliateName},'%')</if>
+    <if test="affiliateCode != null or affiliateAddress != null or affiliateTel != null or affiliatePhone != null or affiliateName != null  or affiliateEmail != null or memberName != null or memberPhone != null ">
+      	)
+      </if>
+   </sql>
+  
+  
+  <select id="findAffiliateCommands" parameterType="com.returnp.pointback.dto.command.AffiliateCommand"  resultMap="AffiliateCommandResultMap" >
+    select 
+    sql_calc_found_rows 
+    <include refid="AffiliateCommand_Column_List" />
+	 from affiliate as AF  
+    inner join member as M on (AF.memberNo = M.memberNo)
+    inner join red_point as RP on (AF.memberNo = RP.memberNo)
+    inner join green_point as GP on (AF.memberNo = GP.memberNo AND GP.nodeType ='5' )    
+    left outer join member_address as MA on (AF.affiliateNo = MA.nodeNo AND MA.nodeType ='5' )
+    left outer join member as M2 on (AF.recommenderNo = M2.memberNo)
+    left outer join agency as AG on (AF.agencyNo= AG.agencyNo)
+    inner join affiliate_tid AT on (AF.affiliateNo = AT.affiliateNo)
+    left outer join affiliate_payment_router as APR on (AF.affiliateNo= APR.affiliateNo)
+    where 
+      1 = 1
+		<include refid = "affiliateCommandSearchWhereStatement"/>
+  </select>
   
   <!-- ===============================================================================================================    -->
   <!-- Recommender -->
@@ -1024,6 +1188,117 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     	1 = 1
     	<include refid = "PaymentTransaction_Where"/>
   </select>
+  
+  <resultMap id="PaymentTransactionCommand_ResultMap" type="com.returnp.pointback.dto.command.PaymentTransactionCommand">
+    <id column="paymentTransactionNo" jdbcType="INTEGER" property="paymentTransactionNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
+    <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
+    <result column="nodeEmail" jdbcType="VARCHAR" property="nodeEmail" />
+    <result column="nodeName" jdbcType="VARCHAR" property="nodeName" />
+    <result column="nodePhone" jdbcType="VARCHAR" property="nodePhone" />
+    <result column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="affiliateSerial" jdbcType="VARCHAR" property="affiliateSerial" />
+    <result column="affiliateName" jdbcType="VARCHAR" property="affiliateName" />
+    
+    <result column="paymentApprovalAmount" jdbcType="INTEGER" property="paymentApprovalAmount" />
+    <result column="paymentApprovalNumber" jdbcType="VARCHAR" property="paymentApprovalNumber" />
+    <result column="paymentApprovalStatus" jdbcType="CHAR" property="paymentApprovalStatus" />
+    
+    <result column="pointBackStatus" jdbcType="VARCHAR" property="pointBackStatus" />
+    <result column="paymentTransactionType" jdbcType="VARCHAR" property="paymentTransactionType" />
+    <result column="paymentApprovalDateTime" jdbcType="TIMESTAMP" property="paymentApprovalDateTime" />
+    <result column="orgPaymentData" jdbcType="VARCHAR" property="orgPaymentData" />
+    <result column="regAdminNo" jdbcType="INTEGER" property="regAdminNo" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+
+    <result column="paymentRouterNo" jdbcType="INTEGER" property="paymentRouterNo" />
+    <result column="paymentRouterType" jdbcType="VARCHAR" property="paymentRouterType" />
+    <result column="paymentRouterName" jdbcType="VARCHAR" property="paymentRouterName" />
+    <result column="paymentRouterCode" jdbcType="VARCHAR" property="paymentRouterCode" />
+
+  </resultMap>
+    
+    <sql id="PaymentTransactionCommand_Column_List">
+    PA.paymentTransactionNo, 
+    PA.memberNo, 
+    PA.memberName, 
+    PA.memberPhone, 
+    PA.memberEmail, 
+    PA.nodeType, 
+    PA.nodeNo, 
+    PA.nodeEmail, 
+    PA.nodeName, 
+    PA.nodePhone, 
+    PA.affiliateNo, 
+    PA.affiliateSerial, 
+    AF.affiliateName, 
+    PA.paymentApprovalAmount, 
+    PA.paymentApprovalNumber, 
+    PA.paymentApprovalStatus, 
+    PA.pointBackStatus, 
+    PA.paymentTransactionType, 
+    PA.paymentApprovalDateTime, 
+    PA.orgPaymentData, 
+    PA.regAdminNo, 
+    PA.createTime, 
+    PA.updateTime,
+     APR.paymentRouterNo, 
+    (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterType,
+    (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterName,
+    (SELECT paymentRouterCode  from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterCode
+  </sql>
+  
+  <sql id="PaymentTransactionCommand_Where">
+      <if test="paymentTransactionNo != null"> AND PA.paymentTransactionNo = #{paymentTransactionNo,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND PA.memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="affiliateNo != null"> AND PA.affiliateNo = #{affiliateNo,jdbcType=INTEGER}  </if>
+      <if test="paymentApprovalAmount != null"> AND PA.paymentApprovalAmount = #{paymentApprovalAmount,jdbcType=INTEGER} </if>
+      <if test="paymentApprovalNumber != null"> AND PA.paymentApprovalNumber = #{paymentApprovalNumber,jdbcType=INTEGER} </if>
+      <if test="pointBackStatus != null"> AND PA.pointBackStatus = #{pointBackStatus,jdbcType=INTEGER} </if>
+      <if test="paymentApprovalStatus != null"> AND PA.paymentApprovalStatus = #{paymentApprovalStatus,jdbcType=CHAR} </if>
+      <if test="paymentTransactionType != null"> AND PA.paymentTransactionType = #{paymentTransactionType,jdbcType=VARCHAR} </if>
+      <if test="affiliateSerial != null"> AND PA.affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR} </if>
+      <if test="paymentApprovalDateTime != null"> AND PA.paymentApprovalDateTime = #{paymentApprovalDateTime,jdbcType=TIMESTAMP} </if>
+      <if test="regAdminNo != null"> AND PA.regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
+         
+     <if test="paymentRouterType != null"> 
+      		AND (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterType,jdbcType=VARCHAR} 
+      </if>
+      <if test="paymentRouterName != null"> 
+      		AND (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterName,jdbcType=VARCHAR} 
+      	</if>
+      <if test="paymentRouterCode != null"> 
+      		AND (SELECT paymentRouterCode from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterCode,jdbcType=VARCHAR} 
+      	</if>
+
+       <if test="memberName != null or memberEmail != null  or memberPhone != null || affiliateName != null">
+        AND ( 1 = 2 
+      </if>
+      <if test="memberName != null">  OR PA.memberName  LIKE CONCAT('%',#{memberName},'%') </if>
+      <if test="memberEmail != null"> OR PA.memberEmail  LIKE CONCAT('%',#{memberEmail},'%') </if>
+      <if test="memberPhone != null"> OR PA.memberPhone  LIKE CONCAT('%',#{memberPhone},'%') </if>
+      <if test="affiliateName != null"> OR AF.affiliateName  LIKE CONCAT('%',#{affiliateName},'%') </if>
+      <if test="memberName != null or memberEmail != null  or memberPhone != null  || affiliateName != null">
+        )
+      </if>
+  </sql>
+  
+   <select id="findPaymentTransactionCommands" parameterType="com.returnp.pointback.dto.command.PaymentTransactionCommand"  resultMap="PaymentTransactionCommand_ResultMap" >
+    select 
+    <include refid="PaymentTransactionCommand_Column_List" />
+    from payment_transaction as PA
+    inner join affiliate as AF on (PA.affiliateNo= AF.affiliateNo)
+    inner join affiliate_payment_router  as APR on (APR.affiliateNo= AF.affiliateNo)
+    where 
+      1 = 1
+      <include refid = "PaymentTransactionCommand_Where"/>
+  </select>
+  
   
   <!-- ===============================================================================================================    -->
   <!-- GreenPointCommand  find Mapper -->
@@ -1940,4 +2215,5 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
      	 1 = 1 
     	<include refid = "AffilaiteTidCommandWhereStatement"/>
   </select>
+  
 </mapper>

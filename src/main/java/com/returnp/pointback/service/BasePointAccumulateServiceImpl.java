@@ -22,9 +22,11 @@ import com.returnp.pointback.dao.mapper.PaymentPointbackRecordMapper;
 import com.returnp.pointback.dao.mapper.PaymentTransactionMapper;
 import com.returnp.pointback.dao.mapper.PointBackMapper;
 import com.returnp.pointback.dao.mapper.PolicyMapper;
+import com.returnp.pointback.dto.command.AffiliateCommand;
 import com.returnp.pointback.dto.command.AffiliateTidCommand;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
+import com.returnp.pointback.dto.command.PaymentTransactionCommand;
 import com.returnp.pointback.dto.command.PointBackTarget;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
@@ -87,7 +89,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getStr("pan")); 
 		
 		try {
-			switch(dataMap.getStr("acc_from").trim()){
+			switch(dataMap.getStr("payment_transaction_type").trim()){
 				case AppConstants.PaymentTransactionType.QR:
 					String decode64Qr = BASE64Util.decodeString(dataMap.getStr("qr_org"));
 					URL url = new URL(decode64Qr);
@@ -99,15 +101,17 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 							throw new ReturnpException(res);
 					}
 					break;
-				case AppConstants.PaymentTransactionType.ADMIN:
+				case AppConstants.PaymentTransactionType.MANUAL:
 					break;
-				case AppConstants.PaymentTransactionType.SHOPPING_MAL:
+				case AppConstants.PaymentTransactionType.APP:
+					break;
+				case AppConstants.PaymentTransactionType.API:
 					break;
 			}
 		
 			
 			this.validateMemberAuth(dataMap.getStr("memberEmail"),dataMap.getStr("phoneNumber"),dataMap.getStr("phoneNumberCountry"));
-			this.validateAffiliateAuth(dataMap.getStr("af_id"));
+			this.validateAffiliateAuth(dataMap.getStr("payment_router_type"), dataMap.getStr("payment_router_name"), dataMap.getStr("af_id"));
 			
 			/* 
 			 * 강제 적립 인지 여부 확인
@@ -172,25 +176,9 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	}
 
 	@Override
-	public Affiliate validateAffiliateAuth(String afId) throws ReturnpException {
+	public Affiliate validateAffiliateAuth(String paymentRouterType, String paymentRouterName, String afId) throws ReturnpException {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
 		try {
-			/* * 
-			 * 존재하는 가맹점인지 검사 
-			 * 기존의 하나의 TID 만 등록할 수 있는 시스템에서 하나의 가맹점에 다수의 TID 를 등록할 수 있게 
-			 * 변경했기 때문에 하나의 소스는 주석 처리
-			 * */
-		/*	Affiliate affiliate = new Affiliate();
-			affiliate.setAffiliateSerial(afId);
-			ArrayList<Affiliate> affiliates = this.pointBackMapper.findAffiliates(affiliate);
-			
-			if (affiliates == null || affiliates.size() != 1) {
-				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "603", 
-						this.messageUtils.getMessage("pointback.message.not_argu_affiliate", new Object[] {afId}));
-				throw new ReturnpException(res);
-			}
-			*/
-			
 			/* 하나의 가맹점에서 다수의 TID 를 등록할 수 있게 변경됨으로써, 인증 로직을 다음과 같이 수정함 */
 			AffiliateTidCommand atidCommand = new AffiliateTidCommand();
 			atidCommand.setTid(afId);
@@ -202,9 +190,22 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 				throw new ReturnpException(res);
 			}
 			
-			Affiliate affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
-			if (affiliate == null) {
+			AffiliateCommand affiliateCommand= new AffiliateCommand();
+			affiliateCommand.setAffiliateSerial(afId);
+			affiliateCommand.setPaymentRouterName(paymentRouterName);
+			affiliateCommand.setPaymentRouterType(paymentRouterType);
+			ArrayList<AffiliateCommand> affiliateCommandList = this.pointBackMapper.findAffiliateCommands(affiliateCommand);
+			
+			if (affiliateCommandList.size() != 1) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "609", 
+						this.messageUtils.getMessage("pointback.message.not_connected_tid_affiliate"));
+				throw new ReturnpException(res);
+			}
+			
+			Affiliate affiliate = this.affiliateMapper.selectByPrimaryKey(affiliateCommandList.get(0).getAffiliateNo());
+			
+			if (affiliate == null) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "698", 
 						this.messageUtils.getMessage("pointback.message.not_connected_tid_affiliate"));
 				throw new ReturnpException(res);
 			}
@@ -235,13 +236,21 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			/*
+			 * PaymentTransaction paymentTransaction = new PaymentTransaction();
+				ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(paymentTransaction);
+			 */
+
+			/*
 			 * 결제 번호 및 승인 일시로 조회하여 이미 등록된 결제 정보가 있는지 조회
 			 * */
-			PaymentTransaction paymentTransaction = new PaymentTransaction();
-			paymentTransaction.setPaymentApprovalNumber(dataMap.getStr("pan"));
-			paymentTransaction.setPaymentApprovalDateTime((Date)dataMap.get("pat"));
 			
-			ArrayList<PaymentTransaction> paymentTransactions = this.pointBackMapper.findPaymentTransactions(paymentTransaction);
+			PaymentTransactionCommand ptCommand = new PaymentTransactionCommand();
+			ptCommand.setPaymentApprovalNumber(dataMap.getStr("pan"));
+			ptCommand.setPaymentApprovalDateTime((Date)dataMap.get("pat"));
+			ptCommand.setPaymentRouterType(dataMap.getStr("payment_router_type"));
+			ptCommand.setPaymentRouterName(dataMap.getStr("payment_router_name"));
+			
+			ArrayList<PaymentTransactionCommand> paymentTransactions = this.pointBackMapper.findPaymentTransactionCommands(ptCommand);
 
 			logger.info("------------------------------------- 적립 결제 정보---------------------------------------");
 			logger.info("Approval Payment Number : "  + dataMap.getStr("pan"));
@@ -253,6 +262,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			
 			logger.info("----------------------------------------------------------------------------------------------");
 			
+			PaymentTransaction paymentTransaction = new PaymentTransaction();
 			if (paymentTransactions.size() >  1  ) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "604", this.messageUtils.getMessage("pointback.message.already_accumulate_or_canceled"));
 					throw new ReturnpException(res);
@@ -1026,7 +1036,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 				(dataMap.getStr("pas").equals("1") ? AppConstants.AccumulateStatus.POINTBACK_CANCEL_PROGRESS : AppConstants.AccumulateStatus.POINTBACK_REQ_ERROR) ;
 			pt.setPointBackStatus(pbs);
 			
-			pt.setPaymentTransactionType(dataMap.getStr("acc_from"));
+			pt.setPaymentTransactionType(dataMap.getStr("payment_transaction_type"));
 			pt.setPaymentApprovalDateTime((Date)dataMap.get("pat"));
 			pt.setRegAdminNo(0);
 			this.paymentTransactionMapper.insert(pt);
@@ -1057,7 +1067,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		}
 		
 		try {
-			switch(dataMap.getStr("acc_from").trim()){
+			switch(dataMap.getStr("payment_transaction_type").trim()){
 				case AppConstants.PaymentTransactionType.QR:
 					String decode64Qr = BASE64Util.decodeString(dataMap.getStr("qr_org"));
 					URL url = new URL(decode64Qr);
@@ -1070,14 +1080,16 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 					}
 					dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getDateStr("pan"));
 					break;
-				case AppConstants.PaymentTransactionType.ADMIN:
+				case AppConstants.PaymentTransactionType.MANUAL:
 					break;
-				case AppConstants.PaymentTransactionType.SHOPPING_MAL:
+				case AppConstants.PaymentTransactionType.APP:
+					break;
+				case AppConstants.PaymentTransactionType.API:
 					break;
 			}
 			
 			this.validateMemberAuth(dataMap.getStr("memberEmail"),dataMap.getStr("phoneNumber"),dataMap.getStr("phoneNumberCountry"));
-			this.validateAffiliateAuth(dataMap.getStr("af_id"));
+			this.validateAffiliateAuth(dataMap.getStr("payment_router_type"), dataMap.getStr("payment_router_name"), dataMap.getStr("af_id"));
 			
 			/* 
 			 * 강제 취소인지 여부 확인
@@ -1374,7 +1386,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		dataMap.put("phoneNumber", pt.getMemberPhone());
 
 		dataMap.put("memberEmail", pt.getMemberEmail());
-		dataMap.put("acc_from", AppConstants.PaymentTransactionType.ADMIN);
+		dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.MANUAL);
 		return dataMap;
 	}
 
