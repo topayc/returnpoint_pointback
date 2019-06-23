@@ -137,7 +137,7 @@ public class CommonPointAccumulaterController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/pg/pgAccumulate", method = RequestMethod.GET)
-	public ReturnpBaseResponse commonqQrAccPoint( 
+	public ReturnpBaseResponse pgAccumulate( 
 			){
 		ReturnpBaseResponse res= null;
 		return res;

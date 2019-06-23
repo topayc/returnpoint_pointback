@@ -784,7 +784,6 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   
   <select id="findAffiliateCommands" parameterType="com.returnp.pointback.dto.command.AffiliateCommand"  resultMap="AffiliateCommandResultMap" >
     select 
-    sql_calc_found_rows 
     <include refid="AffiliateCommand_Column_List" />
 	 from affiliate as AF  
     inner join member as M on (AF.memberNo = M.memberNo)
@@ -2206,7 +2205,6 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   
    <select id="selectAffilaiteTidCommands" parameterType="com.returnp.pointback.dto.command.AffiliateTidCommand" resultMap="AffilaiteTidCommandResultMap">
     select 
-      sql_calc_found_rows 
     <include refid="AffilaiteTidCommand_Column_List" />
     from affiliate_tid as AT
     inner join affiliate as A on (AT.affiliateNo= A.AffiliateNo)

@@ -108,10 +108,12 @@ public class QRManager {
 		 * pas_str : 승인 상태에 따른 추가된 문자열
 		 * */
 		
-		System.out.println("-------------------------------QR Manager KICC QR 파싱 데이타--------------------------------------");
+	/*	System.out.println("-------------------------------QR Manager KICC QR 파싱 데이타--------------------------------------");
 		System.out.println(qrPText);
-		System.out.println("--------------------------------------------------------------------------------------");
+		System.out.println("--------------------------------------------------------------------------------------");*/
 		try {
+			qrMap.put("paymentRouterName", "KICC");  //결제 라우터 이름  
+			qrMap.put("paymentRouterType", "VAN");  //결제 라우터 타입
 			qrMap.put("pat", sdf2.format(date));  //승인시간
 			qrMap.put("pan",  qrPText.substring(23, 27) + qrPText.substring(36) + qrPText.substring(12, 16));   // 승인 번호
 			qrMap.put("af_id", qrPText.substring(16, 23));  // 가맹점 번호
@@ -187,8 +189,13 @@ public class QRManager {
 		 * pas_str : 승인 상태에 따른 추가된 문자열
 		 * */
 		
+/*		System.out.println("-------------------------------QR Manager Common QR 파싱 데이타--------------------------------------");
+		System.out.println(qrPText);
+		System.out.println("---------------------------------------------------------------------------------------------------------------");*/
+		
 		try {
-			qrMap.put("vanName", queryMap.get("v"));  //van 이름  
+			qrMap.put("paymentRouterName", queryMap.get("v"));  //결제 라우터 이름
+			qrMap.put("paymentRouterType", "VAN");  //결제 라우터 타입
 			qrMap.put("seq", queryMap.get("s"));  // 포스별 고유 번호 
 			
 			qrMap.put("pat", sdf2.format(date));  //승인시간

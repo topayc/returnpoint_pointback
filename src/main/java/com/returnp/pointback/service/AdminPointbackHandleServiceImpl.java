@@ -36,16 +36,19 @@ import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PaymentTransaction;
 import com.returnp.pointback.model.Policy;
 import com.returnp.pointback.model.SoleDist;
+import com.returnp.pointback.service.interfaces.AdminPointbackHandleService;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
+import com.returnp.pointback.service.interfaces.PointbackTargetService;
+import com.returnp.pointback.service.interfaces.QRPointbackHandleService;
 import com.returnp.pointback.util.BASE64Util;
 import com.returnp.pointback.util.QRManager;
 import com.returnp.pointback.web.message.MessageUtils;
 
 @Service
 /*@PropertySource("classpath:/messages.properties")*/
-public class BasePointAccumulateServiceImpl implements BasePointAccumulateService {
+public class AdminPointbackHandleServiceImpl implements AdminPointbackHandleService {
 	
-	private Logger logger = Logger.getLogger(BasePointAccumulateServiceImpl.class);
+	private Logger logger = Logger.getLogger(AdminPointbackHandleServiceImpl.class);
 	
 	@Autowired PointBackMapper pointBackMapper;
 	@Autowired PolicyMapper policyMapper;
@@ -55,6 +58,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	@Autowired PaymentPointbackRecordMapper paymentPointbackRecordMapper;
 	@Autowired MessageUtils messageUtils;
 	@Autowired Environment env;
+	@Autowired PointbackTargetService pointBackTargetService;
 	
 	public static class Command {
 		public static class Control{
@@ -90,29 +94,15 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		
 		try {
 			switch(dataMap.getStr("payment_transaction_type").trim()){
-				case AppConstants.PaymentTransactionType.QR:
-					String decode64Qr = BASE64Util.decodeString(dataMap.getStr("qr_org"));
-					URL url = new URL(decode64Qr);
-					String queryParmStr =url.getQuery();
-					
-					HashMap<String, String> qrParsemap = QRManager.parseQRToMap(queryParmStr);
-					if (qrParsemap == null) {
-						 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK,"600", this.messageUtils.getMessage("pointback.message.invalid_qr"));
-							throw new ReturnpException(res);
-					}
-					break;
-				case AppConstants.PaymentTransactionType.MANUAL:
-					break;
-				case AppConstants.PaymentTransactionType.APP:
-					break;
-				case AppConstants.PaymentTransactionType.API:
-					break;
+				case AppConstants.PaymentTransactionType.QR: break;
+				case AppConstants.PaymentTransactionType.MANUAL: break;
+				case AppConstants.PaymentTransactionType.APP: break;
+				case AppConstants.PaymentTransactionType.API: break;
 			}
-		
 			
 			this.validateMemberAuth(dataMap.getStr("memberEmail"),dataMap.getStr("phoneNumber"),dataMap.getStr("phoneNumberCountry"));
 			this.validateAffiliateAuth(dataMap.getStr("payment_router_type"), dataMap.getStr("payment_router_name"), dataMap.getStr("af_id"));
-			
+
 			/* 
 			 * 강제 적립 인지 여부 확인
 			 * 강제 적립인 경우에는 유효성 검사 없이 바로 적립 진행
@@ -125,7 +115,6 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			this.accumuatePoint(paymentTransaction);
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.success_acc_ok"));
 			return res;
-			
 		}catch(ReturnpException e) {
 			e.printStackTrace();
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -622,7 +611,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			
 			OuterPointBackTarget outerTarget = new OuterPointBackTarget();
 			outerTarget.setMemberNo(transaction.getMemberNo());
-			outerTarget = this.findOuterPointBackTarget(outerTarget);
+			outerTarget = this.pointBackTargetService.findOuterPointBackTarget(outerTarget);
 			
 			if (outerTarget == null) {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "622", this.messageUtils.getMessage("pointback.message.cant_searching_outer_node"));
@@ -701,7 +690,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			ArrayList<AffiliateTidCommand> atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
 			Affiliate targetAffiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
 			
-			InnerPointBackTarget innerTarget = this.findInnerPointBackTarget(transaction.getAffiliateSerial());
+			InnerPointBackTarget innerTarget = this.pointBackTargetService.findInnerPointBackTarget(transaction.getAffiliateSerial());
 			float affiliateComm =  targetAffiliate.getAffiliateComm() > 0 ?  targetAffiliate.getAffiliateComm()  : policy.getAffiliateComm();
 			
 			/*
@@ -1026,6 +1015,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			//paymentTransaction.setOrgPaymentData(BASE64Util.decodeString(qrOrg));
 			pt.setPaymentApprovalAmount(dataMap.getInt("pam"));
 			pt.setPaymentApprovalNumber(dataMap.getStr("pan"));
+			pt.setRegAdminNo(dataMap.getInt("adminNo"));
 			Date date = new Date();
 			pt.setCreateTime(date);
 			pt.setUpdateTime(date);
@@ -1064,31 +1054,12 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	@Override
 	public ReturnpBaseResponse cancelAccumulate(DataMap dataMap) {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
-		
-		/*
-		 * 기본 결제 번호만으로는 중복이 될 수 있기 때문에 
-		 * 결제 번호에 TID 를 연결하여 TID 별 결제 번호를 생성
-		 *  
-		 *  관리자에 의한 취소는 이미 결제 적립 데이타에 afid +  결제 번호가 조합된 결제 승인 번호가 들어가 있기 때문에
-		 *  읽어온 결제 번호를 그대로 사용함
-		 *  */
-		
-		if (dataMap.getStr("payment_router_type").equals(AppConstants.PaymentRouterType.ADMIN)) {
-
-		}else {
-			dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getStr("pan")); 
-		}
-		
 		try {
 			switch(dataMap.getStr("payment_transaction_type").trim()){
-				case AppConstants.PaymentTransactionType.QR:
-					break;
-				case AppConstants.PaymentTransactionType.MANUAL:
-					break;
-				case AppConstants.PaymentTransactionType.APP:
-					break;
-				case AppConstants.PaymentTransactionType.API:
-					break;
+				case AppConstants.PaymentTransactionType.QR: break;
+				case AppConstants.PaymentTransactionType.MANUAL: break;
+				case AppConstants.PaymentTransactionType.APP: break;
+				case AppConstants.PaymentTransactionType.API: break;
 			}
 			
 			this.validateMemberAuth(dataMap.getStr("memberEmail"),dataMap.getStr("phoneNumber"),dataMap.getStr("phoneNumberCountry"));
@@ -1180,7 +1151,7 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 			dataMap = this.convertPaymentTransactionToDataMap(ptList.get(0));
 			dataMap.put("payment_router_type", ptList.get(0).getPaymentRouterType());
 			dataMap.put("payment_router_name", ptList.get(0).getPaymentRouterName());
-			dataMap.put("payment_transaction_type", ptList.get(0).getPaymentTransactionType());
+			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.MANUAL);
 			
 			/*요청처리를 결제 쥐소로 파라메터를 변경*/
 			dataMap.put("pas", "1");  
@@ -1208,20 +1179,28 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 	 */
 	@Override
 	public ReturnpBaseResponse forcedCancelAccumuate(int paymentTrasactionNo) {
-		DataMap dataMap = null;
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
-		PaymentTransaction pt = null;
+		DataMap dataMap = null;
+		
+		ArrayList<PaymentTransactionCommand> ptList  = null;
+		PaymentTransactionCommand com = new PaymentTransactionCommand();
+		com.setPaymentTransactionNo(paymentTrasactionNo);
+		
+		ptList  =this.pointBackMapper.findPaymentTransactionCommands(com);
+				
 		try {
-			pt = paymentTransactionMapper.selectByPrimaryKey(paymentTrasactionNo);
-			if (pt == null) {
-				 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "625", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+			if (ptList.size() == 0) {
+				 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "665", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
 					throw new ReturnpException(res);
 			}
 			
-			dataMap = this.convertPaymentTransactionToDataMap(pt);
+			dataMap = this.convertPaymentTransactionToDataMap(ptList.get(0));
+			dataMap.put("payment_router_type", ptList.get(0).getPaymentRouterType());
+			dataMap.put("payment_router_name", ptList.get(0).getPaymentRouterName());
+			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.MANUAL);
+			
 			/*요청처리를 결제 쥐소로 파라메터를 변경*/
 			dataMap.put("pas", "1");  
-			dataMap.put("cancel_from", "admin");
 			
 			/*유효성 검사를 하지 않는 강제 처리 플래그 설정*/
 			dataMap.put("forceCancel", "Y");
@@ -1358,20 +1337,6 @@ public class BasePointAccumulateServiceImpl implements BasePointAccumulateServic
 		return greenPoint;
 	}
 	
-	@Override
-	public PointBackTarget findInnerPointBackFindTarget(PointBackTarget target) {
-		return this.pointBackMapper.findInnerPointBackFindTarget(target);
-	}
-	
-	@Override
-	public OuterPointBackTarget findOuterPointBackTarget(OuterPointBackTarget target) {
-		return this.pointBackMapper.findOuterPointBackTarget(target);
-	}
-	
-	@Override
-	public InnerPointBackTarget findInnerPointBackTarget(String affiliateSerial) {
-		return this.pointBackMapper.findInnerPointBackTarget(affiliateSerial);
-	}
 
 	@Override
 	public DataMap convertPaymentTransactionToDataMap(PaymentTransaction pt) {
