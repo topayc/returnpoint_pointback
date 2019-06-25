@@ -1,10 +1,8 @@
 package com.returnp.pointback.service;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,6 @@ import com.returnp.pointback.dto.command.AffiliateTidCommand;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PaymentTransactionCommand;
-import com.returnp.pointback.dto.command.PointBackTarget;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.GreenPoint;
@@ -37,11 +34,7 @@ import com.returnp.pointback.model.PaymentTransaction;
 import com.returnp.pointback.model.Policy;
 import com.returnp.pointback.model.SoleDist;
 import com.returnp.pointback.service.interfaces.AdminPointbackHandleService;
-import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.service.interfaces.PointbackTargetService;
-import com.returnp.pointback.service.interfaces.QRPointbackHandleService;
-import com.returnp.pointback.util.BASE64Util;
-import com.returnp.pointback.util.QRManager;
 import com.returnp.pointback.web.message.MessageUtils;
 
 @Service

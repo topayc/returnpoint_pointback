@@ -9,15 +9,7 @@
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
 		</layout>
 	</appender>
-	<!-- //날짜별 로그 파일 생성 하기 -->	
-	<appender name="file" class="org.apache.log4j.rolling.RollingFileAppender">
-	    <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-	            <param name="FileNamePattern" value="${catalina.base}/logs/returnp/log-%d.log.gz"/>
-	    </rollingPolicy>
-	    <layout class="org.apache.log4j.PatternLayout">
-	        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n" />
-	    </layout>
-	</appender>
+
 	<!-- Application Loggers -->
 	<logger name="org.springframework" additivity="false">
 	 <level value="info" />
@@ -65,7 +57,6 @@
 	<root>
 		<priority value="debug" />
 		<appender-ref ref="console" />
-		<appender-ref ref="file" />
 	</root>
 	
 </log4j:configuration>

@@ -755,15 +755,9 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
       <if test="regType != null">AND regType = #{regType,jdbcType=CHAR} </if>
       <if test="regAdminNo != null">AND regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
 
-      <if test="paymentRouterType != null"> 
-      		AND (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterType,jdbcType=VARCHAR} 
-      </if>
-      <if test="paymentRouterName != null"> 
-      		AND (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterName,jdbcType=VARCHAR} 
-      	</if>
-      <if test="paymentRouterCode != null"> 
-      		AND (SELECT paymentRouterCode from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterCode,jdbcType=VARCHAR} 
-      	</if>
+      <if test="paymentRouterType != null"> AND (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterType,jdbcType=VARCHAR} </if>
+      <if test="paymentRouterName != null"> AND (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterName,jdbcType=VARCHAR} </if>
+      <if test="paymentRouterCode != null"> AND (SELECT paymentRouterCode from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterCode,jdbcType=VARCHAR} </if>
       
        <if test="affiliateCode != null or affiliateAddress != null or affiliateTel != null or affiliatePhone != null or affiliateName != null  or affiliateEmail != null or memberName != null or memberPhone != null ">
       	AND ( 1 = 2 
