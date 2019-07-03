@@ -744,7 +744,8 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
       <if test="affiliateNo != null">AND affiliateNo = #{affiliateNo,jdbcType=INTEGER} </if>
       <if test="memberNo != null">AND memberNo = #{memberNo,jdbcType=INTEGER} </if>
       <if test="agencyNo != null">AND agencyNo = #{agencyNo,jdbcType=INTEGER} </if>
-      <if test="affiliateSerial != null">AND affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR} </if>
+     <!--  <if test="affiliateSerial != null">AND affiliateSerial = #{affiliateSerial,jdbcType=VARCHAR} </if> -->
+      <if test="affiliateSerial != null">AND AT.tid = #{affiliateSerial,jdbcType=VARCHAR} </if>
       <if test="affiliateType != null">AND affiliateType = #{affiliateType,jdbcType=VARCHAR} </if>
       <if test="recommenderNo != null">AND recommenderNo = #{recommenderNo,jdbcType=INTEGER} </if>
       <if test="greenPointAccStatus != null"> AND greenPointAccStatus = #{greenPointAccStatus,jdbcType=INTEGER} </if>

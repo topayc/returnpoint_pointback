@@ -84,7 +84,9 @@ public class QRManager {
 			String.format("%09d", field3) + 
 			String.format("%09d", field4) +
 			String.format("%04d", field5);
-		
+		System.out.println("----------------------KICC 큐알 적립 원본 데이타--------------------");
+		System.out.println(qrPText);
+		System.out.println("------------------------------------------------------------------------");
 		/*VAN 시간을 내부 포맷으로 변경*/
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		GregorianCalendar calendar = new GregorianCalendar(
@@ -112,8 +114,8 @@ public class QRManager {
 		System.out.println(qrPText);
 		System.out.println("--------------------------------------------------------------------------------------");*/
 		try {
-			qrMap.put("paymentRouterName", "KICC");  //결제 라우터 이름  
-			qrMap.put("paymentRouterType", "VAN");  //결제 라우터 타입
+			qrMap.put("paymentRouterType", "VAN");  //라우터 타입
+			qrMap.put("paymentRouterName", "KICC");  //밴사명
 			qrMap.put("pat", sdf2.format(date));  //승인시간
 			qrMap.put("pan",  qrPText.substring(23, 27) + qrPText.substring(36) + qrPText.substring(12, 16));   // 승인 번호
 			qrMap.put("af_id", qrPText.substring(16, 23));  // 가맹점 번호
@@ -137,12 +139,12 @@ public class QRManager {
 	 */
 	public static HashMap<String, String> parseCommonQRToMap(String queryQR) throws ParseException{
 		HashMap<String, String> queryMap = Util.queryToMap(queryQR);
-		if (!QRManager.beforeValidateQR(queryMap)) {
+	/*	if (!QRManager.beforeValidateQR(queryMap)) {
 			return null;
-		}
+		}*/
 		
 		HashMap<String, String> qrMap = new HashMap<String, String>();
-		String encData = queryMap.get("d");
+		String encData = queryMap.get("D");
 		String sep   = encData.contains(QRManager.QR_MAP_SEP_CREDIT) ? 
 				QRManager.QR_MAP_SEP_CREDIT  :  (encData.contains(QRManager.QR_MAP_SEP_CASH) ? QRManager.QR_MAP_SEP_CASH : "NOT" );
 		
@@ -157,14 +159,13 @@ public class QRManager {
 		long field2 = AntiLogarithm62.get62CharDecode(encArr[1]);
 		long field3 = AntiLogarithm62.get62CharDecode(encArr[2]);
 		long field4 = AntiLogarithm62.get62CharDecode(encArr[3]);
-		long field5 = AntiLogarithm62.get62CharDecode(encArr[4]);
+		String af_id  = encArr[4];
 		
 		String qrPText = 
 			String.format("%09d", field1)+ 
 			String.format("%09d", field2) + 
 			String.format("%09d", field3) + 
-			String.format("%09d", field4) +
-			String.format("%04d", field5);
+			String.format("%06d", field4);
 		
 		/*VAN 시간을 내부 포맷으로 변경*/
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -189,21 +190,21 @@ public class QRManager {
 		 * pas_str : 승인 상태에 따른 추가된 문자열
 		 * */
 		
-/*		System.out.println("-------------------------------QR Manager Common QR 파싱 데이타--------------------------------------");
+		System.out.println("-------------------------------QR Manager Common QR 파싱 데이타--------------------------------------");
 		System.out.println(qrPText);
-		System.out.println("---------------------------------------------------------------------------------------------------------------");*/
+		System.out.println("제품 번호 " + af_id);
+		System.out.println("---------------------------------------------------------------------------------------------------------------");
 		
 		try {
-			qrMap.put("paymentRouterName", queryMap.get("v"));  //결제 라우터 이름
-			qrMap.put("paymentRouterType", "VAN");  //결제 라우터 타입
-			qrMap.put("seq", queryMap.get("s"));  // 포스별 고유 번호 
-			
+			qrMap.put("paymentRouterType", "VAN");  //라우터 타입
+			qrMap.put("paymentRouterName", queryMap.get("V"));  //밴사명
+			qrMap.put("seq", queryMap.get("S"));  //밴사 트랜잭션 고유 코드
+			qrMap.put("af_id", af_id.trim());  // 가맹점 단말 제품 번호 , TID
 			qrMap.put("pat", sdf2.format(date));  //승인시간
-			qrMap.put("pan", qrPText.substring(12, 16) + qrPText.substring(23, 27) + qrPText.substring(36));   // 승인 번호
-			qrMap.put("af_id", qrPText.substring(16, 23));  // 가맹점 번호
-			qrMap.put("pam", String.valueOf(Integer.valueOf(qrPText.substring(27, 35))));    //승인 금액
-			qrMap.put("pas", qrPText.substring(35,36));    //승인 상태 
-			qrMap.put("pas_str", qrPText.substring(35,36).equals("0") ? "승인 완료" : "승인 취소");    //승인 상태 
+			qrMap.put("pan", qrPText.substring(12, 16) + qrPText.substring(24, 28) + qrPText.substring(29));   // 승인 번호
+			qrMap.put("pam", String.valueOf(Integer.valueOf(qrPText.substring(16, 24))));    //승인 금액
+			qrMap.put("pas", qrPText.substring(28,29));    //승인 상태 
+			qrMap.put("pas_str", qrPText.substring(28,29).equals("0") ? "승인 완료" : "승인 취소");    //승인 상태 
 			qrMap.put("pay_type_str", sep.equals(QRManager.QR_MAP_SEP_CREDIT ) ? "신용카드 결제" : "현금 결제");    //1 : 신용카드 2 : 현금 결제 
 			qrMap.put("pay_type", sep.equals(QRManager.QR_MAP_SEP_CREDIT ) ? "1" : "2");    //1 : 신용카드 2 : 현금 결제 
 		} catch (Exception e) {
@@ -362,7 +363,40 @@ public class QRManager {
 		return true;
 	}
 	
-	public static void main(String[] args) throws ParseException {
-		QRManager.parseQRToMap("F=1&D=clML5!zeSE4@nopwi|264w");
+	public static void main(String[] args) throws Exception {
+		System.out.println(AntiLogarithm62.get62CharEncode(182508351L));
+		System.out.println(AntiLogarithm62.get62CharEncode(520000000L));
+		System.out.println(AntiLogarithm62.get62CharEncode(50000718L));
+		System.out.println(AntiLogarithm62.get62CharEncode(403702L));
+		System.out.println("---------------------------------------------------------------------");
+		
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(182508351L)));
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(520000000L)));
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(50000718L)));
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(403702L)));
+		
+		QRManager.genQRCode(
+			"C:\\Users\\topayc\\returnp\\van\\kftc\\qr", 
+			"/", 
+			"https://ppb.rp.com/v/qr?V=KFTC&S=5&D=clML5!zbRKM!3nNtc!1H1k!K906B92001", 
+			"credit_qr");
+		QRManager.genQRCode(
+				"C:\\Users\\topayc\\returnp\\van\\kftc\\qr", 
+				"/", 
+				"https://ppb.rp.com/v/qr?V=KFTC&S=5&D=clML5@zbRKM@3nNtc@1H1k@K906B92001", 
+				"cash_qr");
+	/*	System.out.println("---------------------------------------------------------------------");
+		System.out.println(AntiLogarithm62.get62CharEncode(182508351L));
+		System.out.println(AntiLogarithm62.get62CharEncode(520000012L));
+		System.out.println(AntiLogarithm62.get62CharEncode(345677184L));
+		System.out.println(AntiLogarithm62.get62CharEncode(500000L));
+		System.out.println(AntiLogarithm62.get62CharEncode(3702L));
+		
+		System.out.println("---------------------------------------------------------------------");
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(182508351L)));
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(520000012L)));
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(345677184L)));
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(500000L)));
+		System.out.println(AntiLogarithm62.get62CharDecode(AntiLogarithm62.get62CharEncode(3702L)));*/
 	}
 }
