@@ -21,15 +21,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.returnp.pointback.common.AppConstants.AccumulateRequestFrom;
 import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ResponseUtil;
+import com.returnp.pointback.dto.SaidaObject;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.service.interfaces.AdminPointbackHandleService;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.service.interfaces.PointAccumulateService;
 import com.returnp.pointback.service.interfaces.QRPointbackHandleService;
+import com.returnp.pointback.service.interfaces.SaidaPointbackHandleService;
 import com.returnp.pointback.web.message.MessageUtils;
 
 @Controller
@@ -42,6 +43,7 @@ public class PointAccumulateController extends ApplicationController{
 	@Autowired Environment env;
 	@Autowired QRPointbackHandleService qrPointBackHandler;
 	@Autowired AdminPointbackHandleService adminPointBackHandler;
+	@Autowired SaidaPointbackHandleService  saidaPointBackHandler;
 	
 	ArrayList<String> keys;
 	ArrayList<Integer> pointAccList = new ArrayList<Integer>();
@@ -141,6 +143,29 @@ public class PointAccumulateController extends ApplicationController{
 		return res;
 	}
 	
+	/**
+	 * 사이다 앱으로 부터 오는 적립 요청 처리 
+	 * @param saida
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/saidaAccumulatePoint", method = RequestMethod.GET)
+	public ReturnpBaseResponse saidaAccumulatePoint(SaidaObject saida) {
+		System.out.println("####### PointAccumulateService.saidaAccumulatePoint ");
+		ReturnpBaseResponse res= null;
+		
+		/*적립*/
+		if (saida.getPay_state().equals("4")) {
+			res = this.saidaPointBackHandler.accumulate(saida);
+		}
+	
+		/*적립 취소*/
+		else if (saida.getPay_state().equals("9") || saida.getPay_state().equals("64") || saida.getPay_state().equals("70") || saida.getPay_state().equals("71")) {
+			res = this.saidaPointBackHandler.cancelAccumulate(saida);
+		}
+		return res;
+	}
+			
 	/**
 	 * 관리자 시스템으로 부터 요청되는 적립 및 적립 취소를 처리 
 	 */

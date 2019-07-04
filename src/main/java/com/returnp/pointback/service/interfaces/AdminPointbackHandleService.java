@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ReturnpException;
+import com.returnp.pointback.dto.SaidaObject;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PointBackTarget;
@@ -53,4 +54,5 @@ public interface AdminPointbackHandleService {
 	public ReturnpBaseResponse forcedCancelAccumuate(int paymentTrasactionNo);
 
 	public ReturnpBaseResponse forcedAccumuate(int paymentTrasactionNo);
+
 }
