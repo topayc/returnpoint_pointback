@@ -1241,10 +1241,10 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     PA.regAdminNo, 
     PA.createTime, 
     PA.updateTime,
-     APR.paymentRouterNo, 
-    (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterType,
-    (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterName,
-    (SELECT paymentRouterCode  from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) as paymentRouterCode
+ 	PTR.paymentRouterNo, 
+    (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = PTR.paymentRouterNo) as paymentRouterType,
+    (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = PTR.paymentRouterNo) as paymentRouterName,
+    (SELECT paymentRouterCode  from payment_router WHERE paymentRouterNo = PTR.paymentRouterNo) as paymentRouterCode
   </sql>
   
   <sql id="PaymentTransactionCommand_Where">
@@ -1287,7 +1287,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     <include refid="PaymentTransactionCommand_Column_List" />
     from payment_transaction as PA
     inner join affiliate as AF on (PA.affiliateNo= AF.affiliateNo)
-    inner join affiliate_payment_router  as APR on (APR.affiliateNo= AF.affiliateNo)
+    inner join payment_transaction_router as PTR on (PA.paymentTransactionNo = PTR.paymentTransactionNo)
     where 
       1 = 1
       <include refid = "PaymentTransactionCommand_Where"/>

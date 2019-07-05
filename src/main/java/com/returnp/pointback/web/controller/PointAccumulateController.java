@@ -150,17 +150,65 @@ public class PointAccumulateController extends ApplicationController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/saidaAccumulatePoint", method = RequestMethod.GET)
-	public ReturnpBaseResponse saidaAccumulatePoint(SaidaObject saida) {
+	public ReturnpBaseResponse saidaAccumulatePoint(
+			@RequestParam(value = "userid", required = false) String userId, 
+			@RequestParam(value = "goodname", required = false) String goodName, 
+			@RequestParam(value = "price", required = false) String price, 
+			@RequestParam(value = "recvphone", required = false) String recvPhone, 
+			@RequestParam(value = "memo", required = false) String memo, 
+			@RequestParam(value = "reqaddr", required = false) String reqAddr, 
+			@RequestParam(value = "reqdate", required = false) Date reqDate, 
+			@RequestParam(value = "pay_memo", required = false) String payMemo, 
+			@RequestParam(value = "pay_addr", required = false) String payAddr, 
+			@RequestParam(value = "pay_date", required = false) Date payDate, 
+			@RequestParam(value = "pay_type", required = false) String payType, 
+			@RequestParam(value = "pay_state", required = false) String payState,
+			@RequestParam(value = "var1", required = false) String var1,
+			@RequestParam(value = "var2", required = false) String var2,
+			@RequestParam(value = "mul_no", required = false) String mulNo,
+			@RequestParam(value = "payurl", required = false) String payUrl,
+			@RequestParam(value = "csturl", required = false) String cstUrl,
+			@RequestParam(value = "card_name", required = false) String cardName,
+			@RequestParam(value = "payerPhone", required = false) String payerPhone
+			) {
 		System.out.println("####### PointAccumulateService.saidaAccumulatePoint ");
 		ReturnpBaseResponse res= null;
 		
+		SaidaObject saida = new SaidaObject();
+		saida.setUserId(userId);
+		saida.setGoodName(goodName);
+		saida.setPrice(price);
+		saida.setRecvPhone(recvPhone);
+		saida.setMemo(payMemo);
+		saida.setReqAddr(reqAddr);
+		saida.setReqDate(reqDate);
+		saida.setPayMemo(payMemo);
+		saida.setPayAddr(payAddr);
+		saida.setPayDate(payDate);
+		saida.setPayType(payType);
+		saida.setPayState(payState);
+		saida.setVar1(var1);
+		saida.setVar2(var2);
+		saida.setMulNo(mulNo);
+		saida.setPayUrl(payUrl);
+		saida.setCstUrl(cstUrl);
+		saida.setCardName(cardName);
+		saida.setPayerPhone(payerPhone);
+		
+		/*승인번호의 고유성을 확보하기 위해 승인번호를 주문번호를 통하여 재 생성 */
+		saida.setPaymentApprovalNumber("SAIDA_" + saida.getMulNo() );
+		
+		/* URL 경로에 따라 세팅되는 라우팅 정보*/
+		saida.setPaymentRouterName("SAIDA");
+		saida.setPaymentRouterType("PG");
+		
 		/*적립*/
-		if (saida.getPay_state().equals("4")) {
+		if (saida.getPayState().equals("4")) {
 			res = this.saidaPointBackHandler.accumulate(saida);
-		}
-	
-		/*적립 취소*/
-		else if (saida.getPay_state().equals("9") || saida.getPay_state().equals("64") || saida.getPay_state().equals("70") || saida.getPay_state().equals("71")) {
+		} 
+		/*적립 취소	*/
+		else if (saida.getPayState().equals("9") || saida.getPayState().equals("64") || 
+					saida.getPayState().equals("70") || saida.getPayState().equals("71")) {
 			res = this.saidaPointBackHandler.cancelAccumulate(saida);
 		}
 		return res;

@@ -1,35 +1,61 @@
 package com.returnp.pointback.dto;
 
+import java.util.Date;
+
 public class SaidaObject {
-	private String userid;
-	private String goodname;
+	private String userId;
+	private String goodName;
 	private String price;
-	private String recvphone;
+	private String recvPhone;
 	private String memo;
-	private String reqaddr;
-	private String reqdate;
-	private String pay_memo;
-	private String pay_addr;
-	private String pay_date;
-	private String pay_type;
-	private String pay_state;
+	private String reqAddr;
+	private Date reqDate;
+	private String payMemo;
+	private String payAddr;
+	private Date payDate;
+	private String payType;
+	private String payState;
 	private String var1;
 	private String var2;
-	private String mul_no;
-	private String payurl;
-	private String csturl;
-	private String card_name;
-	public String getUserid() {
-		return userid;
+	private String mulNo;
+	private String payUrl;
+	private String cstUrl;
+	private String cardName;
+	private String payerPhone;
+	private String paymentApprovalNumber;
+	private String paymentRouterName;
+	private String paymentRouterType;
+	
+	
+	public String getPaymentRouterName() {
+		return paymentRouterName;
 	}
-	public void setUserid(String userid) {
-		this.userid = userid;
+	public void setPaymentRouterName(String paymentRouterName) {
+		this.paymentRouterName = paymentRouterName;
 	}
-	public String getGoodname() {
-		return goodname;
+	public String getPaymentRouterType() {
+		return paymentRouterType;
 	}
-	public void setGoodname(String goodname) {
-		this.goodname = goodname;
+	public void setPaymentRouterType(String paymentRouterType) {
+		this.paymentRouterType = paymentRouterType;
+	}
+	public String getPaymentApprovalNumber() {
+		return paymentApprovalNumber;
+	}
+	public void setPaymentApprovalNumber(String paymentApprovalNumber) {
+		this.paymentApprovalNumber = paymentApprovalNumber;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getGoodName() {
+		return goodName;
+	}
+	public void setGoodName(String goodName) {
+		this.goodName = goodName;
 	}
 	public String getPrice() {
 		return price;
@@ -37,11 +63,11 @@ public class SaidaObject {
 	public void setPrice(String price) {
 		this.price = price;
 	}
-	public String getRecvphone() {
-		return recvphone;
+	public String getRecvPhone() {
+		return recvPhone;
 	}
-	public void setRecvphone(String recvphone) {
-		this.recvphone = recvphone;
+	public void setRecvPhone(String recvPhone) {
+		this.recvPhone = recvPhone;
 	}
 	public String getMemo() {
 		return memo;
@@ -49,47 +75,47 @@ public class SaidaObject {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	public String getReqaddr() {
-		return reqaddr;
+	public String getReqAddr() {
+		return reqAddr;
 	}
-	public void setReqaddr(String reqaddr) {
-		this.reqaddr = reqaddr;
+	public void setReqAddr(String reqAddr) {
+		this.reqAddr = reqAddr;
 	}
-	public String getReqdate() {
-		return reqdate;
+	public Date getReqDate() {
+		return reqDate;
 	}
-	public void setReqdate(String reqdate) {
-		this.reqdate = reqdate;
+	public void setReqDate(Date reqDate) {
+		this.reqDate = reqDate;
 	}
-	public String getPay_memo() {
-		return pay_memo;
+	public String getPayMemo() {
+		return payMemo;
 	}
-	public void setPay_memo(String pay_memo) {
-		this.pay_memo = pay_memo;
+	public void setPayMemo(String payMemo) {
+		this.payMemo = payMemo;
 	}
-	public String getPay_addr() {
-		return pay_addr;
+	public String getPayAddr() {
+		return payAddr;
 	}
-	public void setPay_addr(String pay_addr) {
-		this.pay_addr = pay_addr;
+	public void setPayAddr(String payAddr) {
+		this.payAddr = payAddr;
 	}
-	public String getPay_date() {
-		return pay_date;
+	public Date getPayDate() {
+		return payDate;
 	}
-	public void setPay_date(String pay_date) {
-		this.pay_date = pay_date;
+	public void setPayDate(Date payDate) {
+		this.payDate = payDate;
 	}
-	public String getPay_type() {
-		return pay_type;
+	public String getPayType() {
+		return payType;
 	}
-	public void setPay_type(String pay_type) {
-		this.pay_type = pay_type;
+	public void setPayType(String payType) {
+		this.payType = payType;
 	}
-	public String getPay_state() {
-		return pay_state;
+	public String getPayState() {
+		return payState;
 	}
-	public void setPay_state(String pay_state) {
-		this.pay_state = pay_state;
+	public void setPayState(String payState) {
+		this.payState = payState;
 	}
 	public String getVar1() {
 		return var1;
@@ -103,28 +129,34 @@ public class SaidaObject {
 	public void setVar2(String var2) {
 		this.var2 = var2;
 	}
-	public String getMul_no() {
-		return mul_no;
+	public String getMulNo() {
+		return mulNo;
 	}
-	public void setMul_no(String mul_no) {
-		this.mul_no = mul_no;
+	public void setMulNo(String mulNo) {
+		this.mulNo = mulNo;
 	}
-	public String getPayurl() {
-		return payurl;
+	public String getPayUrl() {
+		return payUrl;
 	}
-	public void setPayurl(String payurl) {
-		this.payurl = payurl;
+	public void setPayUrl(String payUrl) {
+		this.payUrl = payUrl;
 	}
-	public String getCsturl() {
-		return csturl;
+	public String getCstUrl() {
+		return cstUrl;
 	}
-	public void setCsturl(String csturl) {
-		this.csturl = csturl;
+	public void setCstUrl(String cstUrl) {
+		this.cstUrl = cstUrl;
 	}
-	public String getCard_name() {
-		return card_name;
+	public String getCardName() {
+		return cardName;
 	}
-	public void setCard_name(String card_name) {
-		this.card_name = card_name;
+	public void setCardName(String cardName) {
+		this.cardName = cardName;
+	}
+	public String getPayerPhone() {
+		return payerPhone;
+	}
+	public void setPayerPhone(String payerPhone) {
+		this.payerPhone = payerPhone;
 	}
 }
