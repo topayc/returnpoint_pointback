@@ -123,12 +123,16 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
             return res;
         }catch(ReturnpException e) {
             e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        	if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			}
             res = e.getBaseResponse();
             return res;
         }catch(Exception e) {
             e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        	if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			}
             ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
             return res;
         }
@@ -137,64 +141,74 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 
 	@Override
 	public void restorePoint(DataMap dataMap) throws ReturnpException {
-		 ReturnpBaseResponse res = new ReturnpBaseResponse();
-	        PaymentTransaction pt = new PaymentTransaction();
-	        pt.setPaymentApprovalNumber(dataMap.getStr("pan"));
-	        
-	        ArrayList<PaymentTransaction>  ptList = this.pointBackMapper.findPaymentTransactions(pt);
-	        
-	        /* 강제 적립 취소인지 여부 확인*/
-	        if (!dataMap.containsKey("forceCancel") || !((String)dataMap.get("forceCancel")).equals("Y")) {
-	            if (ptList == null || ptList.size() != 1) {
-	                ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "626", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
-	                throw new ReturnpException(res);
-	            }
-	        }
-	        
-	        PaymentPointbackRecord ppb = new PaymentPointbackRecord();
-	        ppb.setPaymentTransactionNo(ptList.get(0).getPaymentTransactionNo());
-	        ArrayList<PaymentPointbackRecord> ppbList = this.pointBackMapper.findPaymentPointbackRecords(ppb);
-	        if (ppbList.size() <  1) return;
-	        
-	        /* 결제 내역 생성 */
-	        PaymentTransaction transaction = this.createPaymentTransaction(dataMap);
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		PaymentTransaction pt = new PaymentTransaction();
+		pt.setPaymentApprovalNumber(dataMap.getStr("pan"));
 
-	        PaymentPointbackRecord record = null;   
-	        ArrayList<GreenPoint> rPoints = null;
-	        GreenPoint rPoint = null;
-	        for (PaymentPointbackRecord pointbackRecord : ppbList) {
-	            /* R Point 차감 */
-	            rPoint =  new GreenPoint();
-	            rPoint.setMemberNo(pointbackRecord.getMemberNo());
-	            rPoint.setNodeType(pointbackRecord.getNodeType());
-	            rPoint.setNodeNo(pointbackRecord.getNodeNo());
-	            
-	            rPoints  = this.pointBackMapper.findGreenPoints(rPoint);
-	            if (rPoints.size() != 1) {
-	            /*  System.out.println("갯수 : " +  rPoints.size() );
-	                System.out.println("멤버 번호 : " + pointbackRecord.getMemberNo() );
-	                System.out.println("노드 번호: " + pointbackRecord.getNodeNo() );
-	                System.out.println("노드 타입 : " + pointbackRecord.getNodeType() );*/
-	                continue;
-	            }
-	            
-	            rPoint = rPoints.get(0);
-	            rPoint.setPointAmount(rPoint.getPointAmount() - pointbackRecord.getPointbackAmount());
-	            this.greenPointMapper.updateByPrimaryKey(rPoint);
-	            
-	            /* R Point  차감 내역 생성 */ 
-	            record = new PaymentPointbackRecord();
-	            record.setPaymentTransactionNo(transaction.getPaymentTransactionNo());
-	            record.setMemberNo(pointbackRecord.getMemberNo());
-	            record.setNodeNo(record.getNodeNo());
-	            record.setNodeType(pointbackRecord.getNodeType());
-	            record.setAccRate(pointbackRecord.getAccRate());
-	            record.setPointbackAmount(transaction.getPaymentApprovalAmount() * pointbackRecord.getAccRate() * -1);
-	            paymentPointbackRecordMapper.insert(record);
-	        }
-	        
-	        transaction.setPointBackStatus(AppConstants.AccumulateStatus.POINTBACK_CANCEL_COMPLETE);
-	        this.paymentTransactionMapper.updateByPrimaryKey(transaction);
+		ArrayList<PaymentTransaction> ptList = this.pointBackMapper.findPaymentTransactions(pt);
+
+		/* 강제 적립 취소인지 여부 확인 */
+		if (!dataMap.containsKey("forceCancel") || !((String) dataMap.get("forceCancel")).equals("Y")) {
+			if (ptList == null || ptList.size() < 1) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "626",
+						this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+				throw new ReturnpException(res);
+			}
+
+			else if (ptList.size() > 1) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "675",
+						this.messageUtils.getMessage("pointback.message.already_accumulate_or_canceled"));
+				throw new ReturnpException(res);
+			}
+		}
+
+		PaymentPointbackRecord ppb = new PaymentPointbackRecord();
+		ppb.setPaymentTransactionNo(ptList.get(0).getPaymentTransactionNo());
+		ArrayList<PaymentPointbackRecord> ppbList = this.pointBackMapper.findPaymentPointbackRecords(ppb);
+		if (ppbList.size() < 1)
+			return;
+
+		/* 결제 내역 생성 */
+		PaymentTransaction transaction = this.createPaymentTransaction(dataMap);
+
+		PaymentPointbackRecord record = null;
+		ArrayList<GreenPoint> rPoints = null;
+		GreenPoint rPoint = null;
+		for (PaymentPointbackRecord pointbackRecord : ppbList) {
+			/* R Point 차감 */
+			rPoint = new GreenPoint();
+			rPoint.setMemberNo(pointbackRecord.getMemberNo());
+			rPoint.setNodeType(pointbackRecord.getNodeType());
+			rPoint.setNodeNo(pointbackRecord.getNodeNo());
+
+			rPoints = this.pointBackMapper.findGreenPoints(rPoint);
+			if (rPoints.size() != 1) {
+				/*
+				 * System.out.println("갯수 : " + rPoints.size() ); System.out.println("멤버 번호 : "
+				 * + pointbackRecord.getMemberNo() ); System.out.println("노드 번호: " +
+				 * pointbackRecord.getNodeNo() ); System.out.println("노드 타입 : " +
+				 * pointbackRecord.getNodeType() );
+				 */
+				continue;
+			}
+
+			rPoint = rPoints.get(0);
+			rPoint.setPointAmount(rPoint.getPointAmount() - pointbackRecord.getPointbackAmount());
+			this.greenPointMapper.updateByPrimaryKey(rPoint);
+
+			/* R Point 차감 내역 생성 */
+			record = new PaymentPointbackRecord();
+			record.setPaymentTransactionNo(transaction.getPaymentTransactionNo());
+			record.setMemberNo(pointbackRecord.getMemberNo());
+			record.setNodeNo(record.getNodeNo());
+			record.setNodeType(pointbackRecord.getNodeType());
+			record.setAccRate(pointbackRecord.getAccRate());
+			record.setPointbackAmount(transaction.getPaymentApprovalAmount() * pointbackRecord.getAccRate() * -1);
+			paymentPointbackRecordMapper.insert(record);
+		}
+
+		transaction.setPointBackStatus(AppConstants.AccumulateStatus.POINTBACK_CANCEL_COMPLETE);
+		this.paymentTransactionMapper.updateByPrimaryKey(transaction);
 	}
 
 	@Override
