@@ -7,9 +7,7 @@ public class PaymentTransactionRouter extends QueryCondition {
 
     private Integer paymentTransactionNo;
 
-    private String paymentTransactionRouterType;
-
-    private String paymentTransactionRouterName;
+    private Integer paymentRouterNo;
 
     public Integer getPaymentTransactionRouterNo() {
         return paymentTransactionRouterNo;
@@ -27,19 +25,11 @@ public class PaymentTransactionRouter extends QueryCondition {
         this.paymentTransactionNo = paymentTransactionNo;
     }
 
-    public String getPaymentTransactionRouterType() {
-        return paymentTransactionRouterType;
+    public Integer getPaymentRouterNo() {
+        return paymentRouterNo;
     }
 
-    public void setPaymentTransactionRouterType(String paymentTransactionRouterType) {
-        this.paymentTransactionRouterType = paymentTransactionRouterType == null ? null : paymentTransactionRouterType.trim();
-    }
-
-    public String getPaymentTransactionRouterName() {
-        return paymentTransactionRouterName;
-    }
-
-    public void setPaymentTransactionRouterName(String paymentTransactionRouterName) {
-        this.paymentTransactionRouterName = paymentTransactionRouterName == null ? null : paymentTransactionRouterName.trim();
+    public void setPaymentRouterNo(Integer paymentRouterNo) {
+        this.paymentRouterNo = paymentRouterNo;
     }
 }

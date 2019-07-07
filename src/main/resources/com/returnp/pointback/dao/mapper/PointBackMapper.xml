@@ -1261,13 +1261,13 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
       <if test="regAdminNo != null"> AND PA.regAdminNo = #{regAdminNo,jdbcType=INTEGER} </if>
          
      <if test="paymentRouterType != null"> 
-      		AND (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterType,jdbcType=VARCHAR} 
+      		AND (SELECT paymentRouterType from payment_router WHERE paymentRouterNo = PTR.paymentRouterNo) = #{paymentRouterType,jdbcType=VARCHAR} 
       </if>
       <if test="paymentRouterName != null"> 
-      		AND (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterName,jdbcType=VARCHAR} 
+      		AND (SELECT paymentRouterName from payment_router WHERE paymentRouterNo = PTR.paymentRouterNo) = #{paymentRouterName,jdbcType=VARCHAR} 
       	</if>
       <if test="paymentRouterCode != null"> 
-      		AND (SELECT paymentRouterCode from payment_router WHERE paymentRouterNo = APR.paymentRouterNo) = #{paymentRouterCode,jdbcType=VARCHAR} 
+      		AND (SELECT paymentRouterCode from payment_router WHERE paymentRouterNo = PTR.paymentRouterNo) = #{paymentRouterCode,jdbcType=VARCHAR} 
       	</if>
 
        <if test="memberName != null or memberEmail != null  or memberPhone != null || affiliateName != null">
@@ -2207,6 +2207,27 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     where 
      	 1 = 1 
     	<include refid = "AffilaiteTidCommandWhereStatement"/>
+  </select>
+  
+  
+  
+  <resultMap id="PaymentRouterResultMap" type="com.returnp.pointback.model.PaymentRouter">
+    <id column="paymentRouterNo" jdbcType="INTEGER" property="paymentRouterNo" />
+    <result column="paymentRouterType" jdbcType="VARCHAR" property="paymentRouterType" />
+    <result column="paymentRouterCode" jdbcType="VARCHAR" property="paymentRouterCode" />
+    <result column="paymentRouterName" jdbcType="VARCHAR" property="paymentRouterName" />
+  </resultMap>
+  
+     <select id="selectPaymentRouters" parameterType="com.returnp.pointback.model.PaymentRouter" resultMap="PaymentRouterResultMap">
+    select 
+   	 paymentRouterNo, paymentRouterType, paymentRouterCode, paymentRouterName
+    from payment_router
+    where 
+     	 1 = 1 
+    	<if test="paymentRouterNo != null"> AND paymentRouterNo = #{paymentRouterNo,jdbcType=INTEGER}</if>
+       <if test="paymentRouterType != null"> AND paymentRouterType = #{paymentRouterType,jdbcType=VARCHAR}</if>
+       <if test="paymentRouterCode != null"> AND paymentRouterCode = #{paymentRouterCode,jdbcType=VARCHAR}</if>
+       <if test="paymentRouterName != null"> AND paymentRouterName = #{paymentRouterName,jdbcType=VARCHAR}</if>
   </select>
   
 </mapper>

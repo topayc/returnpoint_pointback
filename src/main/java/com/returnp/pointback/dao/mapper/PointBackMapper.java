@@ -34,6 +34,7 @@ import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.MemberBankAccount;
 import com.returnp.pointback.model.MembershipRequest;
 import com.returnp.pointback.model.PaymentPointbackRecord;
+import com.returnp.pointback.model.PaymentRouter;
 import com.returnp.pointback.model.PaymentTransaction;
 import com.returnp.pointback.model.PointConversionTransaction;
 import com.returnp.pointback.model.Policy;
@@ -87,4 +88,5 @@ public interface PointBackMapper {
 	public ArrayList<GiftCardAccHistory> selectGiftCardAccHistories(GiftCardAccHistory record);
 	public ArrayList<GiftCardAccHistoryCommand> selectGiftCardAccHistoryCommands(GiftCardAccHistoryCommand record);
 	public ArrayList<AffiliateTidCommand> selectAffilaiteTidCommands(AffiliateTidCommand record);
+	public ArrayList<PaymentRouter> selectPaymentRouters(PaymentRouter rotuer);
 }

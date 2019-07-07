@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ResponseUtil;
-import com.returnp.pointback.dto.SaidaObject;
+import com.returnp.pointback.dto.CiderObject;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.service.interfaces.AdminPointbackHandleService;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.service.interfaces.PointAccumulateService;
 import com.returnp.pointback.service.interfaces.QRPointbackHandleService;
-import com.returnp.pointback.service.interfaces.SaidaPointbackHandleService;
+import com.returnp.pointback.service.interfaces.CiderPointbackHandleService;
 import com.returnp.pointback.web.message.MessageUtils;
 
 @Controller
@@ -43,7 +43,7 @@ public class PointAccumulateController extends ApplicationController{
 	@Autowired Environment env;
 	@Autowired QRPointbackHandleService qrPointBackHandler;
 	@Autowired AdminPointbackHandleService adminPointBackHandler;
-	@Autowired SaidaPointbackHandleService  saidaPointBackHandler;
+	@Autowired CiderPointbackHandleService  saidaPointBackHandler;
 	
 	ArrayList<String> keys;
 	ArrayList<Integer> pointAccList = new ArrayList<Integer>();
@@ -130,6 +130,9 @@ public class PointAccumulateController extends ApplicationController{
 			dataMap.put("payment_router_name", paymentRouterName);
 			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.QR);
 			
+			/*내부 형태대로 결제 번호 재 새성성*/
+			dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getStr("pan")); 
+			
 			/*적립*/
 			if (pas.equals("0")) {
 				res = this.qrPointBackHandler.accumulate(dataMap);
@@ -149,11 +152,11 @@ public class PointAccumulateController extends ApplicationController{
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/saidaAccumulatePoint", method = RequestMethod.GET)
+	@RequestMapping(value = "/ciderAccumulatePoint", method = RequestMethod.GET)
 	public ReturnpBaseResponse saidaAccumulatePoint(
 			@RequestParam(value = "userid", required = false) String userId, 
 			@RequestParam(value = "goodname", required = false) String goodName, 
-			@RequestParam(value = "price", required = false) String price, 
+			@RequestParam(value = "price", required = false) int price, 
 			@RequestParam(value = "recvphone", required = false) String recvPhone, 
 			@RequestParam(value = "memo", required = false) String memo, 
 			@RequestParam(value = "reqaddr", required = false) String reqAddr, 
@@ -174,42 +177,44 @@ public class PointAccumulateController extends ApplicationController{
 		System.out.println("####### PointAccumulateService.saidaAccumulatePoint ");
 		ReturnpBaseResponse res= null;
 		
-		SaidaObject saida = new SaidaObject();
-		saida.setUserId(userId);
-		saida.setGoodName(goodName);
-		saida.setPrice(price);
-		saida.setRecvPhone(recvPhone);
-		saida.setMemo(payMemo);
-		saida.setReqAddr(reqAddr);
-		saida.setReqDate(reqDate);
-		saida.setPayMemo(payMemo);
-		saida.setPayAddr(payAddr);
-		saida.setPayDate(payDate);
-		saida.setPayType(payType);
-		saida.setPayState(payState);
-		saida.setVar1(var1);
-		saida.setVar2(var2);
-		saida.setMulNo(mulNo);
-		saida.setPayUrl(payUrl);
-		saida.setCstUrl(cstUrl);
-		saida.setCardName(cardName);
-		saida.setPayerPhone(payerPhone);
+		CiderObject cider = new CiderObject();
+		cider.setUserId(userId);
+		cider.setGoodName(goodName);
+		cider.setPrice(price);
+		cider.setRecvPhone(recvPhone);
+		cider.setMemo(payMemo);
+		cider.setReqAddr(reqAddr);
+		cider.setReqDate(reqDate);
+		cider.setPayMemo(payMemo);
+		cider.setPayAddr(payAddr);
+		cider.setPayDate(payDate);
+		cider.setPayType(payType);
+		cider.setPayState(payState);
+		cider.setVar1(var1);
+		cider.setVar2(var2);
+		cider.setMulNo(mulNo);
+		cider.setPayUrl(payUrl);
+		cider.setCstUrl(cstUrl);
+		cider.setCardName(cardName);
+		cider.setPayerPhone(payerPhone);
+		
 		
 		/*승인번호의 고유성을 확보하기 위해 승인번호를 주문번호를 통하여 재 생성 */
-		saida.setPaymentApprovalNumber("SAIDA_" + saida.getMulNo() );
+		cider.setPaymentApprovalNumber("CIDER" + cider.getMulNo() );
 		
 		/* URL 경로에 따라 세팅되는 라우팅 정보*/
-		saida.setPaymentRouterName("SAIDA");
-		saida.setPaymentRouterType("PG");
+		cider.setPaymentRouterName("CIDER");
+		cider.setPaymentRouterType("PG");
+		cider.setPaymentTransactionType(AppConstants.PaymentTransactionType.APP);
 		
 		/*적립*/
-		if (saida.getPayState().equals("4")) {
-			res = this.saidaPointBackHandler.accumulate(saida);
+		if (cider.getPayState().equals("4")) {
+			res = this.saidaPointBackHandler.accumulate(cider);
 		} 
 		/*적립 취소	*/
-		else if (saida.getPayState().equals("9") || saida.getPayState().equals("64") || 
-					saida.getPayState().equals("70") || saida.getPayState().equals("71")) {
-			res = this.saidaPointBackHandler.cancelAccumulate(saida);
+		else if (cider.getPayState().equals("9") || cider.getPayState().equals("64") || 
+					cider.getPayState().equals("70") || cider.getPayState().equals("71")) {
+			res = this.saidaPointBackHandler.cancelAccumulate(cider);
 		}
 		return res;
 	}
@@ -263,7 +268,10 @@ public class PointAccumulateController extends ApplicationController{
 			}
 			dataMap.put("memberEmail", memberEmail);
 			dataMap.put("key", key.trim());
-
+			
+			/*내부 형태대로 결제 번호 재 새성성*/
+			dataMap.put("pan", (String)dataMap.get("af_id")+ "_" + (String)dataMap.getStr("pan")); 
+			
 			/*적립*/
 			if (pas.equals("0")) {
 				res = this.adminPointBackHandler.accumulate(dataMap);
@@ -279,7 +287,7 @@ public class PointAccumulateController extends ApplicationController{
 	
 	
 	/**
-	 * PaymentTransactionNo 에 의한 적립 처리 
+	 * PaymentTransactionNo 에 의한 적립 처리 (결제 요청이 유효한지도 검사한 후 재 적립을 진행)
 	 * @param paymentTrasactionNo
 	 * @param key
 	 * @return
@@ -305,7 +313,7 @@ public class PointAccumulateController extends ApplicationController{
 	}
 	
 	/**
-	 * 결제 승인 번호에 의한 의한 적립 처리 
+	 * 결제 승인 번호에 의한 의한 적립 처리 (결제 요청이 유효한지도 검사한 후 재 적립을 진행)
 	 * @param paymentTrasactionNo
 	 * @param key
 	 * @return
@@ -381,7 +389,7 @@ public class PointAccumulateController extends ApplicationController{
 	}
 
 	/**
-	 * PaymentTransactionNo 에 의한 적립 강제 처리 - 유효성 검사를 하지 않는 무조건 적인 취소 처리 
+	 * PaymentTransactionNo 에 의한 강제 적립 처리- 요청이 유효한지 검사하지 않고 무조건 적립 처리 해줌
 	 * @param paymentTrasactionNo
 	 * @param key
 	 * @return

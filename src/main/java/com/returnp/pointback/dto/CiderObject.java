@@ -2,10 +2,10 @@ package com.returnp.pointback.dto;
 
 import java.util.Date;
 
-public class SaidaObject {
+public class CiderObject {
 	private String userId;
 	private String goodName;
-	private String price;
+	private int price;
 	private String recvPhone;
 	private String memo;
 	private String reqAddr;
@@ -23,10 +23,25 @@ public class SaidaObject {
 	private String cardName;
 	private String payerPhone;
 	private String paymentApprovalNumber;
+	private String paymentApprovalAmount;
 	private String paymentRouterName;
 	private String paymentRouterType;
+	private String paymentTransactionType;
 	
 	
+	
+	public String getPaymentTransactionType() {
+		return paymentTransactionType;
+	}
+	public void setPaymentTransactionType(String paymentTransactionType) {
+		this.paymentTransactionType = paymentTransactionType;
+	}
+	public String getPaymentApprovalAmount() {
+		return paymentApprovalAmount;
+	}
+	public void setPaymentApprovalAmount(String paymentApprovalAmount) {
+		this.paymentApprovalAmount = paymentApprovalAmount;
+	}
 	public String getPaymentRouterName() {
 		return paymentRouterName;
 	}
@@ -57,10 +72,11 @@ public class SaidaObject {
 	public void setGoodName(String goodName) {
 		this.goodName = goodName;
 	}
-	public String getPrice() {
+
+	public int getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 	public String getRecvPhone() {
