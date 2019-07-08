@@ -152,7 +152,7 @@ public class PointAccumulateController extends ApplicationController{
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/ciderAccumulatePoint", method = RequestMethod.GET)
+	@RequestMapping(value = "/ciderAccumulatePoint", method = RequestMethod.POST)
 	public ReturnpBaseResponse saidaAccumulatePoint(
 			@RequestParam(value = "userid", required = false) String userId, 
 			@RequestParam(value = "goodname", required = false) String goodName, 
@@ -200,11 +200,11 @@ public class PointAccumulateController extends ApplicationController{
 		
 		
 		/*승인번호의 고유성을 확보하기 위해 승인번호를 주문번호를 통하여 재 생성 */
-		cider.setPaymentApprovalNumber("CIDER" + cider.getMulNo() );
+		cider.setPaymentApprovalNumber("CIDER_" + cider.getMulNo() );
 		
 		/* URL 경로에 따라 세팅되는 라우팅 정보*/
-		cider.setPaymentRouterName("CIDER");
 		cider.setPaymentRouterType("PG");
+		cider.setPaymentRouterName("CIDER");
 		cider.setPaymentTransactionType(AppConstants.PaymentTransactionType.APP);
 		
 		/*적립*/

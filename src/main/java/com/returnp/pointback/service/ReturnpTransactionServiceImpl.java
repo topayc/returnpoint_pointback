@@ -577,13 +577,28 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
             mem.setMemberEmail(dataMap.getStr("memberEmail"));
             ArrayList<Member> members = this.pointBackMapper.findMembers(mem);
             mem = members.get(0);
-    
-            AffiliateTidCommand atidCommand = new AffiliateTidCommand();
-            atidCommand.setTid(dataMap.getStr("af_id"));
-            ArrayList<AffiliateTidCommand> atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
             
-            Affiliate affiliate = new Affiliate();
-            affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
+            AffiliateTidCommand atidCommand = null;
+            ArrayList<AffiliateTidCommand> atidList = null;
+            Affiliate affiliate = null;
+            Member affiliateMember= null;
+            ArrayList<Member> affiliateMembers = null;
+            
+            if (dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.VAN) || dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.ADMIN)) {
+            	atidCommand = new AffiliateTidCommand();
+            	atidCommand.setTid(dataMap.getStr("af_id"));
+            	atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
+            	affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
+            	
+            }else if(dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.PG)) {
+            	affiliateMember= new Member();
+            	affiliateMember.setMemberEmail(dataMap.getStr("affiliateEmail"));
+            	affiliateMembers = this.pointBackMapper.findMembers(affiliateMember);
+    			
+    			affiliate= new Affiliate();
+    			affiliate.setMemberNo(affiliateMembers.get(0).getMemberNo());
+    			affiliate =  this.pointBackMapper.findAffiliates(affiliate).get(0);
+            }
             
             pt = new PaymentTransaction();
             pt.setMemberNo(mem.getMemberNo());

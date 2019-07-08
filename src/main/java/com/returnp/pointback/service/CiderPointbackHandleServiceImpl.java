@@ -124,7 +124,7 @@ public class CiderPointbackHandleServiceImpl implements CiderPointbackHandleServ
 			
 			/* CIDER 앱으로 결제 적립 하는 경우, af_id 는 null 로 세팅*/
 			dataMap.put("af_id", null);
-			
+			dataMap.put("affiliateEmail", cider.getUserId());
 			dataMap.put("phoneNumber", phoneNumber.trim());
 			dataMap.put("phoneNumberCountry", phoneNumberCountry.trim());
 			dataMap.put("memberEmail", members.get(0).getMemberEmail());
@@ -227,12 +227,13 @@ public class CiderPointbackHandleServiceImpl implements CiderPointbackHandleServ
 			
 			/* CIDER 앱으로 결제 적립 하는 경우, af_id 는 null 로 세팅*/
 			dataMap.put("af_id", null);
-
+			dataMap.put("affiliateEmail", cider.getUserId());
+			
 			dataMap.put("phoneNumber", phoneNumber.trim());
 			dataMap.put("phoneNumberCountry", phoneNumberCountry.trim());
 			dataMap.put("memberEmail", members.get(0).getMemberEmail());
 			
-			dataMap.put("payment_router_type", "VAN");
+			dataMap.put("payment_router_type", "PG");
 			dataMap.put("payment_router_name", "CIDER");
 			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.APP);
 			

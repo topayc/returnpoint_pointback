@@ -11,4 +11,6 @@ public interface CiderPointbackHandleService {
 	public ReturnpBaseResponse accumulate(CiderObject cider);
 
 	public ReturnpBaseResponse cancelAccumulate(CiderObject cider);
+	
+	
 }
