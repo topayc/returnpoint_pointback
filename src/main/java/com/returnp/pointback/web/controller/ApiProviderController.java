@@ -25,7 +25,8 @@ import com.returnp.pointback.dao.mapper.ApiMapper;
 import com.returnp.pointback.dto.command.api.ApiRequest;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.dto.response.StringResponse;
-import com.returnp.pointback.service.ApiResponseService;
+import com.returnp.pointback.service.interfaces.ApiPointbackHandleService;
+import com.returnp.pointback.service.interfaces.ApiResponseService;
 import com.returnp.pointback.service.interfaces.ApiServiceProvider;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.web.message.MessageUtils;
@@ -44,6 +45,7 @@ public class ApiProviderController extends ApplicationController{
 	@Autowired BasePointAccumulateService basePointAccumulateService;
 	@Autowired ApiResponseService apiResponseService;
 	@Autowired ApiMapper apiMapper;
+	@Autowired ApiPointbackHandleService apiPointbackHandleService;
 	public static final String DEFAULT_KEY = "qwertyuiopasdfghjklzxcvbnm123456";
 	
 	@InitBinder
@@ -238,6 +240,7 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/handle_accumulate", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse executeAccumualte(ApiRequest apiRequest) {
+		System.out.println("executeAccumualte");
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		DataMap dataMap = new DataMap();
@@ -252,23 +255,27 @@ public class ApiProviderController extends ApplicationController{
 			}
 			dataMap.put("pam", apiRequest.getPaymentApprovalAmount());
 			dataMap.put("pas", apiRequest.getPaymentApprovalStatus().trim());
-			
 			dataMap.put("pat", (apiRequest.getPaymentApprovalDateTime() == null ? new Date(): apiRequest.getPaymentApprovalDateTime()));
-			dataMap.put("pan", apiRequest.getPaymentApprovalNumber().trim());
+			
+			/*내부 승인 번호 체계로 변환*/
 			dataMap.put("af_id", apiRequest.getAfId().trim());
+			dataMap.put("pan", apiRequest.getAfId().trim() + "_"+ apiRequest.getPaymentApprovalNumber().trim());
 			dataMap.put("phoneNumber", apiRequest.getMemberPhone().trim());
 			dataMap.put("phoneNumberCountry", apiRequest.getMemberPhone().trim());
 			dataMap.put("memberEmail", apiRequest.getMemberEmail());
 			dataMap.put("key", (String)apiServiceMap.get("apiKey"));
-			dataMap.put("acc_from", AppConstants.PaymentTransactionType.API);
-			System.out.println("getPaymentApprovalStatus : " + apiRequest.getPaymentApprovalStatus());
+			
+			dataMap.put("payment_router_type", AppConstants.PaymentRouterType.API);
+			dataMap.put("payment_router_name", AppConstants.PaymentRouterName.API);
+			dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.API);
+			
 			/*적립*/
 			if (apiRequest.getPaymentApprovalStatus().equals("0")) {
-				res = this.basePointAccumulateService.accumulate(dataMap);
+				res = this.apiPointbackHandleService.accumulate(dataMap);
 			}
 			/*적립 취소*/
 			else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
-				res = this.basePointAccumulateService.cancelAccumulate(dataMap);
+				res = this.apiPointbackHandleService.cancelAccumulate(dataMap);
 			}
 			else {
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("api.message.wrong_payment_status"));

@@ -22,6 +22,7 @@ import com.returnp.pointback.dto.command.api.ApiRequest;
 import com.returnp.pointback.dto.response.ArrayResponse;
 import com.returnp.pointback.dto.response.ObjectResponse;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
+import com.returnp.pointback.service.interfaces.ApiResponseService;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
 import com.returnp.pointback.util.Util;
 import com.returnp.pointback.web.message.MessageUtils;

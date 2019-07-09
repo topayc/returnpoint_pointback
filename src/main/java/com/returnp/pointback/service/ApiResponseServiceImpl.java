@@ -15,6 +15,7 @@ import com.returnp.pointback.dto.response.ArrayResponse;
 import com.returnp.pointback.dto.response.ObjectResponse;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.dto.response.StringResponse;
+import com.returnp.pointback.service.interfaces.ApiResponseService;
 import com.returnp.pointback.util.Aes256Crypto;
 import com.returnp.pointback.util.BASE64Util;
 
@@ -82,13 +83,15 @@ public class ApiResponseServiceImpl implements ApiResponseService {
 			String plain = null;
 			if (base instanceof ObjectResponse<?>) {
 				plain = mapper.writeValueAsString(((ObjectResponse<?>)base).getData());
-				stringReponse.setData(BASE64Util.encodeString(Aes256Crypto.encode(plain, key)));
+				//stringReponse.setData(BASE64Util.encodeString(Aes256Crypto.encode(plain, key)));
+				stringReponse.setData(BASE64Util.encodeString(plain));
 				stringReponse.setTotal(-1);
 			}
 
 			else if (base instanceof ArrayResponse<?>) {
 				plain = mapper.writeValueAsString(((ArrayResponse<?>)base).getRows());
-				stringReponse.setData(BASE64Util.encodeString(Aes256Crypto.encode(plain, key)));
+				//stringReponse.setData(BASE64Util.encodeString(Aes256Crypto.encode(plain, key)));
+				stringReponse.setData(BASE64Util.encodeString(plain));
 				stringReponse.setTotal(((ArrayResponse<?>)base).getTotal());
 			} 
 			else  {

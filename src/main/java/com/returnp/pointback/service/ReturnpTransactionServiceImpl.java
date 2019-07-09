@@ -584,7 +584,9 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
             Member affiliateMember= null;
             ArrayList<Member> affiliateMembers = null;
             
-            if (dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.VAN) || dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.ADMIN)) {
+            if (dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.VAN) || 
+            		dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.ADMIN)  || 
+            		dataMap.get("payment_router_type").equals(AppConstants.PaymentRouterType.API)) {
             	atidCommand = new AffiliateTidCommand();
             	atidCommand.setTid(dataMap.getStr("af_id"));
             	atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);

@@ -307,13 +307,15 @@ public class AppConstants {
 		public static final String  VAN = "VAN";
 		public static final  String  PG= "PG";
 		public static final  String  ADMIN= "ADMIN";
+		public static final  String  API= "API";
 	}
 	
 	public static class PaymentRouterName{
 		public static final String  KICC  = "KICC";
-		public static final  String  KFT= "KFT";
+		public static final  String  KFTC= "KFTC";
 		public static final  String  SAIDA= "SAIDA";
 		public static final  String  ADMIN= "ADMIN";
+		public static final  String  API= "API";
 	}
 	
 	

@@ -1,4 +1,4 @@
-package com.returnp.pointback.service;
+package com.returnp.pointback.service.interfaces;
 
 import java.util.ArrayList;
 import java.util.HashMap;
