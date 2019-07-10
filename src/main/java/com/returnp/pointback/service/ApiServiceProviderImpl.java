@@ -198,7 +198,8 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			int count = this.apiMapper.selectMemberCount(apiQuery);
 			
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage( "api.duplicated", new Object[] { "E-MAIL " + apiRequest.getMemberEmail() }));
+				ResponseUtil.setResponse(
+					res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage( "api.duplicated", new Object[] { "E-MAIL " + apiRequest.getMemberEmail() }));
 				throw new ReturnpException(res);
 			}
 			
@@ -207,7 +208,8 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			apiQuery.setMemberPhone(apiRequest.getMemberPhone());
 			count = this.apiMapper.selectMemberCount(apiQuery);
 			if (count > 0 ) {
-				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "307", this.messageUtils.getMessage( "api.duplicated", new Object[] { "PHONE  " + apiRequest.getMemberPhone()}));
+				ResponseUtil.setResponse(
+					res, ResponseUtil.RESPONSE_OK, "307", this.messageUtils.getMessage( "api.duplicated", new Object[] { "PHONE  " + apiRequest.getMemberPhone()}));
 				throw new ReturnpException(res);
 			}
 			
@@ -219,8 +221,10 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			
 			/* 추천인 번호 설정*/
 			Map<String, Object> recommenderMap = this.apiMapper.selectRecommenderInfo(apiRequest);
-			if (recommenderMap != null) {
-				apiRequest.setRecommenderNo((Integer)recommenderMap.get("memberNo"));
+			if (recommenderMap == null) {
+				ResponseUtil.setResponse(
+					res, ResponseUtil.RESPONSE_OK, "309", this.messageUtils.getMessage( "api.not_existed_recommender", new Object[] { apiRequest.getRecommenderEmail()}));
+				throw new ReturnpException(res);
 			}
 			
 			/* 국가 코드 설정*/

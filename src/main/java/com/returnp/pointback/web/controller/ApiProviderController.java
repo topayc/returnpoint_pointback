@@ -165,6 +165,7 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/join_up", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse join(ApiRequest apiRequest) {
+		System.out.println("afid : " + apiRequest.getRecommenderEmail());
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		
@@ -240,7 +241,9 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/handle_accumulate", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse executeAccumualte(ApiRequest apiRequest) {
-		System.out.println("executeAccumualte");
+	/*	System.out.println("executeAccumualte");
+		System.out.println("afid : " + apiRequest.getAfId());
+		System.out.println("memberEmail : " + apiRequest.getMemberEmail());*/
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		DataMap dataMap = new DataMap();

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class ApiRequest {
 	private String afId;  /* 외부 연동 클라이언트에 부여한 고유 아이디 */
+	private String tid;
 	private String apiKey; /* 외부 연동 클라이언트에 부여한 서비스 권한 키  */
 	
 	private Integer greenPointNo;
@@ -80,7 +81,14 @@ public class ApiRequest {
     private String searchDateMonth;
     
     
-    public Integer getPaymentTransactionNo() {
+    public String getTid() {
+		return tid;
+	}
+	public void setTid(String tid) {
+		this.tid = tid;
+		this.afId = tid;
+	}
+	public Integer getPaymentTransactionNo() {
 		return paymentTransactionNo;
 	}
 	public void setPaymentTransactionNo(Integer paymentTransactionNo) {
@@ -140,6 +148,7 @@ public class ApiRequest {
 	}
 	public void setAfId(String afId) {
 		this.afId = afId;
+		this.tid = afId;
 	}
 	public String getApiKey() {
 		return apiKey;
