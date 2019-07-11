@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.AffiliateCiderpayMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.AffiliateCiderpay">
+    <id column="affiliateCiderPayNo" jdbcType="INTEGER" property="affiliateCiderPayNo" />
+    <result column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
+    <result column="ciderPayStatus" jdbcType="VARCHAR" property="ciderPayStatus" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    affiliateCiderPayNo, affiliateNo, ciderPayStatus, updateTime, createTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from affiliate_ciderpay
+    where affiliateCiderPayNo = #{affiliateCiderPayNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from affiliate_ciderpay
+    where affiliateCiderPayNo = #{affiliateCiderPayNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.AffiliateCiderpay">
+    insert into affiliate_ciderpay (affiliateCiderPayNo, affiliateNo, 
+      ciderPayStatus, updateTime, createTime
+      )
+    values (#{affiliateCiderPayNo,jdbcType=INTEGER}, #{affiliateNo,jdbcType=INTEGER}, 
+      #{ciderPayStatus,jdbcType=VARCHAR}, NOW(), NOW()
+      )
+      
+        <selectKey keyProperty="affiliateCiderPayNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.AffiliateCiderpay">
+    insert into affiliate_ciderpay
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="affiliateCiderPayNo != null">
+        affiliateCiderPayNo,
+      </if>
+      <if test="affiliateNo != null">
+        affiliateNo,
+      </if>
+      <if test="ciderPayStatus != null">
+        ciderPayStatus,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="affiliateCiderPayNo != null">
+        #{affiliateCiderPayNo,jdbcType=INTEGER},
+      </if>
+      <if test="affiliateNo != null">
+        #{affiliateNo,jdbcType=INTEGER},
+      </if>
+      <if test="ciderPayStatus != null">
+        #{ciderPayStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.AffiliateCiderpay">
+    update affiliate_ciderpay
+    <set>
+      <if test="affiliateNo != null">
+        affiliateNo = #{affiliateNo,jdbcType=INTEGER},
+      </if>
+      <if test="ciderPayStatus != null">
+        ciderPayStatus = #{ciderPayStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where affiliateCiderPayNo = #{affiliateCiderPayNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.AffiliateCiderpay">
+    update affiliate_ciderpay
+    set affiliateNo = #{affiliateNo,jdbcType=INTEGER},
+      ciderPayStatus = #{ciderPayStatus,jdbcType=VARCHAR},
+      updateTime = = NOW(),
+      createTime = #{createTime,jdbcType=TIMESTAMP}
+    where affiliateCiderPayNo = #{affiliateCiderPayNo,jdbcType=INTEGER}
+  </update>
+</mapper>

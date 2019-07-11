@@ -24,6 +24,8 @@ import com.returnp.pointback.dto.command.RedPointCommand;
 import com.returnp.pointback.dto.request.SearchCondition;
 import com.returnp.pointback.model.Admin;
 import com.returnp.pointback.model.Affiliate;
+import com.returnp.pointback.model.AffiliateCiderpay;
+import com.returnp.pointback.model.AffiliateDetail;
 import com.returnp.pointback.model.Agency;
 import com.returnp.pointback.model.Branch;
 import com.returnp.pointback.model.CompanyBankAccount;
@@ -32,6 +34,7 @@ import com.returnp.pointback.model.GiftCardIssue;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.MemberBankAccount;
+import com.returnp.pointback.model.MemberPlainPassword;
 import com.returnp.pointback.model.MembershipRequest;
 import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PaymentRouter;
@@ -89,4 +92,7 @@ public interface PointBackMapper {
 	public ArrayList<GiftCardAccHistoryCommand> selectGiftCardAccHistoryCommands(GiftCardAccHistoryCommand record);
 	public ArrayList<AffiliateTidCommand> selectAffilaiteTidCommands(AffiliateTidCommand record);
 	public ArrayList<PaymentRouter> selectPaymentRouters(PaymentRouter rotuer);
+	public ArrayList<AffiliateCiderpay> selectAffiliateCiderPays(AffiliateCiderpay affiliateCiderpay);
+	public ArrayList<MemberPlainPassword> selectMemberPlainPasswords(MemberPlainPassword memberPlainPassword);
+	public ArrayList<AffiliateDetail> selectAffiliateDetails(AffiliateDetail affiliateDetail);
 }
