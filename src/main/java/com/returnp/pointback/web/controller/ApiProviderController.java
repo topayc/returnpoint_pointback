@@ -241,9 +241,9 @@ public class ApiProviderController extends ApplicationController{
 	@ResponseBody
 	@RequestMapping(value = "/handle_accumulate", method = RequestMethod.POST,produces="application/json" )
 	public ReturnpBaseResponse executeAccumualte(ApiRequest apiRequest) {
-	/*	System.out.println("executeAccumualte");
+		System.out.println("executeAccumualte");
 		System.out.println("afid : " + apiRequest.getAfId());
-		System.out.println("memberEmail : " + apiRequest.getMemberEmail());*/
+		System.out.println("memberEmail : " + apiRequest.getMemberEmail());
 		ReturnpBaseResponse  res = null;
 		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
 		DataMap dataMap = new DataMap();
@@ -281,8 +281,9 @@ public class ApiProviderController extends ApplicationController{
 				res = this.apiPointbackHandleService.cancelAccumulate(dataMap);
 			}
 			else {
+				res = new ReturnpBaseResponse();
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("api.message.wrong_payment_status"));
-				return stringRes;
+				return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			}
 			stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
