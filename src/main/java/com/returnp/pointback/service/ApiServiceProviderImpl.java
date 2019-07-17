@@ -956,7 +956,11 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "621", this.messageUtils.getMessage( "api.message.invalid_member_pass"));
 				throw new ReturnpException(res);
 			}
+			HashMap<String, Object > data = new HashMap<String, Object>();
+			data.put("phone", memberMap.get("memberPhone"));
+			res.setData(data);
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("api.message.valid_member"));
+			
 			return res;
 			
 		}catch(ReturnpException e) {
