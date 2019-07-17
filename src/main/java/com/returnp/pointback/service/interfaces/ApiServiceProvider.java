@@ -62,6 +62,8 @@ public interface ApiServiceProvider {
 
 	public ReturnpBaseResponse getMyTotalPointInfo(ApiRequest apiRequest);
 
+	public ReturnpBaseResponse validateMember(ApiRequest apiRequest);
+
 	
 	
 	

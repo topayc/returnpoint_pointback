@@ -681,4 +681,27 @@ public class ApiProviderController extends ApplicationController{
 			return stringRes;
 		}
 	}
+	
+	/**
+	 * 회원 여부 
+	 *  memberEmail 회원 이메일
+	 *  memberPassword 회원 평문 비밀번호 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/valid_member", method = RequestMethod.GET,produces="application/json" )
+	public ReturnpBaseResponse validateMember(ApiRequest apiRequest) {
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		
+		if (apiServiceMap == null) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			return res;
+		}else {
+			res = this.apiServiceProvider.validateMember(apiRequest);
+			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
+		}
+	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.security.auth.login.AppConfigurationEntry;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import com.google.zxing.common.StringUtils;
-import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
 import com.returnp.pointback.dao.mapper.ApiMapper;
@@ -24,6 +21,7 @@ import com.returnp.pointback.dto.response.ObjectResponse;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.service.interfaces.ApiResponseService;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
+import com.returnp.pointback.util.Crypto;
 import com.returnp.pointback.util.Util;
 import com.returnp.pointback.web.message.MessageUtils;
 
@@ -944,6 +942,35 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 		}
 	}
 
+	@Override
+	public ReturnpBaseResponse validateMember(ApiRequest apiRequest) {
+		ObjectResponse<HashMap<String, Object>> res = new ObjectResponse<HashMap<String, Object>>();
+		try {
+			Map<String, Object> memberMap = this.apiMapper.selectMember(apiRequest);
+			if (memberMap == null) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "620", this.messageUtils.getMessage( "api.message.not_existed_id"));
+				throw new ReturnpException(res);
+			}
+			
+			if (!Crypto.sha(apiRequest.getMemberPassword()).equals((String)memberMap.get("memberPassword"))) {
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "621", this.messageUtils.getMessage( "api.message.invalid_member_pass"));
+				throw new ReturnpException(res);
+			}
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("api.message.valid_member"));
+			return res;
+			
+		}catch(ReturnpException e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			return e.getBaseResponse();
+		}catch(Exception e) {
+			e.printStackTrace();
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"500", this.messageUtils.getMessage("api.message.inner_server_error"));
+			return res;
+		}
+	}
+
 	/*
 	 * G 포인트의 R 포인트 전환 내역 
 	 * memberEmail
@@ -973,5 +1000,6 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 	public ReturnpBaseResponse cancelAccumuate(ApiRequest apiRequest) {
 		return null;
 	}
+
 	
 }
