@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -217,12 +218,17 @@ public class ApiServiceProviderImpl implements com.returnp.pointback.service.int
 			}
 			apiRequest.setMemberPassword2(Util.sha(apiRequest.getMemberPassword2()));
 			
-			/* 추천인 번호 설정*/
-			Map<String, Object> recommenderMap = this.apiMapper.selectRecommenderInfo(apiRequest);
-			if (recommenderMap == null) {
-				ResponseUtil.setResponse(
-					res, ResponseUtil.RESPONSE_OK, "309", this.messageUtils.getMessage( "api.not_existed_recommender", new Object[] { apiRequest.getRecommenderEmail()}));
-				throw new ReturnpException(res);
+			/* 
+			 * 추천인 번호 설정 , 추천인 이메일이 설정되어 있으면 추천인 이메일 이 존재하는지 검사
+			 * 추천인 이메일이 설정되어 있지 않으면, 추천인 없이 회원 가입 진행
+			 * */
+			if (apiRequest.getRecommenderEmail() != null && !StringUtils.isBlank(apiRequest.getRecommenderEmail())) {
+				Map<String, Object> recommenderMap = this.apiMapper.selectRecommenderInfo(apiRequest);
+				if (recommenderMap == null) {
+					ResponseUtil.setResponse(
+							res, ResponseUtil.RESPONSE_OK, "309", this.messageUtils.getMessage( "api.not_existed_recommender", new Object[] { apiRequest.getRecommenderEmail()}));
+					throw new ReturnpException(res);
+				}
 			}
 			
 			/* 국가 코드 설정*/

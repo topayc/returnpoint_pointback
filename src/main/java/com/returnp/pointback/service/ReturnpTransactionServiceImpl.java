@@ -813,7 +813,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 	            throw e2;
 	        }
 	}
-
+	
 	@Override
 	public void validateAccumulateRequest(DataMap dataMap) throws ReturnpException {
         ReturnpBaseResponse res =  new ReturnpBaseResponse();

@@ -452,7 +452,7 @@ public class PointAccumulateController extends ApplicationController{
 	@RequestMapping(value = "/test_mode", method = RequestMethod.GET)
 	public ReturnpBaseResponse accumulateByAdmin() {
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
-		this.setErrorRespone(res,"test 접속 성공");
+		this.setSuccessRespone(res,"test 접속 성공");
 		return res;
 	}
 	
