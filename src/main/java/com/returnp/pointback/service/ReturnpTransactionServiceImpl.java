@@ -176,17 +176,17 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 		PaymentTransaction transaction = this.createPaymentTransaction(dataMap);
 
 		PaymentPointbackRecord record = null;
-		ArrayList<GreenPoint> rPoints = null;
-		GreenPoint rPoint = null;
+		ArrayList<GreenPoint> gPoints = null;
+		GreenPoint gPoint = null;
 		for (PaymentPointbackRecord pointbackRecord : ppbList) {
-			/* R Point 차감 */
-			rPoint = new GreenPoint();
-			rPoint.setMemberNo(pointbackRecord.getMemberNo());
-			rPoint.setNodeType(pointbackRecord.getNodeType());
-			rPoint.setNodeNo(pointbackRecord.getNodeNo());
+			/* G Point 차감 */
+			gPoint = new GreenPoint();
+			gPoint.setMemberNo(pointbackRecord.getMemberNo());
+			gPoint.setNodeType(pointbackRecord.getNodeType());
+			gPoint.setNodeNo(pointbackRecord.getNodeNo());
 
-			rPoints = this.pointBackMapper.findGreenPoints(rPoint);
-			if (rPoints.size() != 1) {
+			gPoints = this.pointBackMapper.findGreenPoints(gPoint);
+			if (gPoints.size() != 1) {
 				/*
 				 * System.out.println("갯수 : " + rPoints.size() ); System.out.println("멤버 번호 : "
 				 * + pointbackRecord.getMemberNo() ); System.out.println("노드 번호: " +
@@ -196,11 +196,11 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 				continue;
 			}
 
-			rPoint = rPoints.get(0);
-			rPoint.setPointAmount(rPoint.getPointAmount() - pointbackRecord.getPointbackAmount());
-			this.greenPointMapper.updateByPrimaryKey(rPoint);
+			gPoint = gPoints.get(0);
+			gPoint.setPointAmount(gPoint.getPointAmount() - pointbackRecord.getPointbackAmount());
+			this.greenPointMapper.updateByPrimaryKey(gPoint);
 
-			/* R Point 차감 내역 생성 */
+			/* G Point 차감 내역 생성 */
 			record = new PaymentPointbackRecord();
 			record.setPaymentTransactionNo(transaction.getPaymentTransactionNo());
 			record.setMemberNo(pointbackRecord.getMemberNo());
@@ -615,7 +615,6 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
             //pt.setAffiliateSerial(affiliate.getAffiliateSerial());
             pt.setAffiliateSerial(dataMap.getStr("af_id"));
             //paymentTransaction.setOrgPaymentData(BASE64Util.decodeString(qrOrg));
-            pt.setPaymentApprovalAmount(dataMap.getInt("pam"));
             pt.setPaymentApprovalNumber(dataMap.getStr("pan"));
             Date date = new Date();
             pt.setCreateTime(date);
@@ -628,6 +627,9 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                 (dataMap.getStr("pas").equals("1") ? AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL : AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_ERROR) ;
             pt.setPaymentApprovalStatus(aps);
             
+            /*승인 취소 인 경우 금액을 마이너스 처리하여 insert*/
+            int amount = dataMap.getStr("pas").trim().equals("0") ? dataMap.getInt("pam") :  (dataMap.getStr("pas").trim().equals("1") ?  dataMap.getInt("pam") * -1 : 0 );
+            pt.setPaymentApprovalAmount(amount);
             /*
              * 적립 처리 작업인 경우 : 적립 진행중으로  표시
              * 적립 취소 처리 작업인 경우 : 적립 처리 취소중 표시
