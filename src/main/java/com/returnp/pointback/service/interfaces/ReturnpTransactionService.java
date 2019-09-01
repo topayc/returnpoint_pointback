@@ -4,7 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ReturnpException;
-import com.returnp.pointback.dto.CiderObject;
+import com.returnp.pointback.dto.command.api.ApiRequest;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.GreenPoint;
@@ -36,6 +36,10 @@ public interface ReturnpTransactionService {
 	public PaymentTransaction  validateCancelRequest(DataMap dataMap) throws ReturnpException;
 	
 	public DataMap convertPaymentTransactionToDataMap(PaymentTransaction pt);
+
+	public ReturnpBaseResponse gpointPaymentApporval(ApiRequest apiRequest);
+
+	public ReturnpBaseResponse gpointPaymentCancel(ApiRequest apiRequest) ;
 	
 	
 }

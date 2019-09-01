@@ -1,12 +1,9 @@
 package com.returnp.pointback.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -14,28 +11,10 @@ import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
-import com.returnp.pointback.dao.mapper.AffiliateMapper;
-import com.returnp.pointback.dao.mapper.GreenPointMapper;
-import com.returnp.pointback.dao.mapper.PaymentPointbackRecordMapper;
-import com.returnp.pointback.dao.mapper.PaymentTransactionMapper;
-import com.returnp.pointback.dao.mapper.PointBackMapper;
-import com.returnp.pointback.dao.mapper.PolicyMapper;
-import com.returnp.pointback.dto.command.AffiliateCommand;
-import com.returnp.pointback.dto.command.AffiliateTidCommand;
-import com.returnp.pointback.dto.command.InnerPointBackTarget;
-import com.returnp.pointback.dto.command.OuterPointBackTarget;
-import com.returnp.pointback.dto.command.PaymentTransactionCommand;
+import com.returnp.pointback.dto.command.api.ApiRequest;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
-import com.returnp.pointback.model.Affiliate;
-import com.returnp.pointback.model.GreenPoint;
-import com.returnp.pointback.model.Member;
-import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PaymentTransaction;
-import com.returnp.pointback.model.Policy;
-import com.returnp.pointback.model.SoleDist;
 import com.returnp.pointback.service.interfaces.ApiPointbackHandleService;
-import com.returnp.pointback.service.interfaces.PointbackTargetService;
-import com.returnp.pointback.service.interfaces.QRPointbackHandleService;
 import com.returnp.pointback.service.interfaces.ReturnpTransactionService;
 import com.returnp.pointback.web.message.MessageUtils;
 
@@ -127,6 +106,77 @@ public class ApiPointbackHandleServiceImpl implements ApiPointbackHandleService 
             return res;
         }
     }
-   
 
+	/* 
+	 * G POINT 결제 승인
+	 * 결제한 G POINT 를 차감한 후 DB insert
+	 */
+	@Override
+	public ReturnpBaseResponse gpointPayApproval(ApiRequest apiRequest) {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
+
+        try {
+        	switch(apiRequest.getPaymentTransactionType().trim()){
+             case AppConstants.PaymentTransactionType.QR: break;
+             case AppConstants.PaymentTransactionType.MANUAL: break;
+             case AppConstants.PaymentTransactionType.APP: break;
+             case AppConstants.PaymentTransactionType.API: break;
+        	 }
+        	 this.returnpTransactionService.validateMemberAndGet(apiRequest.getMemberEmail(), apiRequest.getMemberPhone(), apiRequest.getMemberPhone());
+        	 this.returnpTransactionService.validateAffiliateAuthAndGet(apiRequest.getPaymentRouterType(), apiRequest.getPaymentRouterName(), apiRequest.getAfId());
+        	 return this.returnpTransactionService.gpointPaymentApporval(apiRequest);
+         /*    ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.gpoint_payment_ok"));
+            return res;*/
+        }catch(ReturnpException e) {
+            e.printStackTrace();
+            if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+            	TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+            res = e.getBaseResponse();
+            return res;
+        }catch(Exception e) {
+            e.printStackTrace();
+            if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+            	TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+            ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+            return res;
+        }
+	}
+
+	/* 
+	 * G POINT 결제 취소
+	 * 결제한 G POINT 를 회복한 후 DB insert
+	 */
+	@Override
+	public ReturnpBaseResponse gpointPayCancel(ApiRequest apiRequest) {
+		ReturnpBaseResponse res = null;
+		try {
+			 switch(apiRequest.getPaymentTransactionType().trim()){
+             case AppConstants.PaymentTransactionType.QR: break;
+             case AppConstants.PaymentTransactionType.MANUAL: break;
+             case AppConstants.PaymentTransactionType.APP: break;
+             case AppConstants.PaymentTransactionType.API: break;
+        	 }
+			 this.returnpTransactionService.validateMemberAndGet(apiRequest.getMemberEmail(), apiRequest.getMemberPhone(), apiRequest.getMemberPhone());
+        	 this.returnpTransactionService.validateAffiliateAuthAndGet(apiRequest.getPaymentRouterType(), apiRequest.getPaymentRouterName(), apiRequest.getAfId());
+        	 return this.returnpTransactionService.gpointPaymentCancel(apiRequest);
+        	/* ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.gpoint_cancel_ok"));
+            return res;*/
+		}catch(ReturnpException e) {
+			e.printStackTrace();
+			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			}
+			res = e.getBaseResponse();
+			return res;
+		}catch(Exception e) {
+			e.printStackTrace();
+			if (!TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			}
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR,"2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			return res;
+		}
+	}
 }

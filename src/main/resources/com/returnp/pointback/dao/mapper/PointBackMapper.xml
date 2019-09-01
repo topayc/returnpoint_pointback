@@ -2325,4 +2325,5 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     	<include refid = "AffiliateDetailWhereStatement"/>
   </select>
   
+  
 </mapper>

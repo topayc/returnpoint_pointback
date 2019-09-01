@@ -51,6 +51,8 @@ public class ApiRequest {
     private String paymentApprovalNumber;   /* 결제 승인 번호*/
     private String paymentApprovalStatus;   /* 0 :승인 , 1 :취소*/
     private String paymentTransactionType;   /* 적립 요청의  종류 구분  1 : 모바일 QR ,  2 : 밴사, 3 : 관리자, 4 : 쇼핑몰  */
+    private String paymentRouterType; 
+    private String paymentRouterName; 
     private Date paymentApprovalDateTime;  /* 결제 승인 시간 yyyy-MM-dd HH:mm:ss */
 
     private Integer withdrawalAmount;  /* 현금 출금 요청할 RPAY 금액*/
@@ -79,9 +81,45 @@ public class ApiRequest {
     private Integer offset;
     private Integer pageSize;
     private String searchDateMonth;
+
+    /*G 포인트 결제 포인트 */
+    private Integer gpointPaymentAmount;
+    private Integer realPaymentAmount;
+    private String paymentMethod;
     
     
-    public String getTid() {
+	public String getPaymentRouterType() {
+		return paymentRouterType;
+	}
+	public void setPaymentRouterType(String paymentRouterType) {
+		this.paymentRouterType = paymentRouterType;
+	}
+	public String getPaymentRouterName() {
+		return paymentRouterName;
+	}
+	public void setPaymentRouterName(String paymentRouterName) {
+		this.paymentRouterName = paymentRouterName;
+	}
+	public Integer getGpointPaymentAmount() {
+		return gpointPaymentAmount;
+	}
+	public void setGpointPaymentAmount(Integer gpointPaymentAmount) {
+		this.gpointPaymentAmount = gpointPaymentAmount;
+	}
+	public Integer getRealPaymentAmount() {
+		return realPaymentAmount;
+	}
+	public void setRealPaymentAmount(Integer realPaymentAmount) {
+		this.realPaymentAmount = realPaymentAmount;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+	public String getTid() {
 		return tid;
 	}
 	public void setTid(String tid) {

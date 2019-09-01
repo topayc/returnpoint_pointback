@@ -264,17 +264,25 @@ public class AdminPointbackHandleServiceImpl implements AdminPointbackHandleServ
 	 */
 	@Override
 	public ReturnpBaseResponse forcedAccumuate(int paymentTrasactionNo) {
-		DataMap dataMap = null;
 		ReturnpBaseResponse res = new ReturnpBaseResponse();
-		PaymentTransaction pt = null;
-		try {
-			pt = paymentTransactionMapper.selectByPrimaryKey(paymentTrasactionNo);
-			if (pt == null) {
-				 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "628", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
-					throw new ReturnpException(res);
-			}
-			
-			dataMap = this.returnpTransactionService.convertPaymentTransactionToDataMap(pt);
+        DataMap dataMap = null;
+        
+        ArrayList<PaymentTransactionCommand> ptList  = null;
+        PaymentTransactionCommand com = new PaymentTransactionCommand();
+        com.setPaymentTransactionNo(paymentTrasactionNo);
+        
+        ptList  =this.pointBackMapper.findPaymentTransactionCommands(com);
+                
+        try {
+            if (ptList.size() == 0) {
+                 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "687", this.messageUtils.getMessage("pointback.message.not_existed_payment"));
+                    throw new ReturnpException(res);
+            }
+            
+            dataMap = this.returnpTransactionService.convertPaymentTransactionToDataMap(ptList.get(0));
+            dataMap.put("payment_router_type", ptList.get(0).getPaymentRouterType());
+            dataMap.put("payment_router_name", ptList.get(0).getPaymentRouterName());
+            dataMap.put("payment_transaction_type", AppConstants.PaymentTransactionType.MANUAL);
 			/*요청처리를 결제 승인으로 파라메터를 변경*/
 			dataMap.put("pas", "0");  
 			

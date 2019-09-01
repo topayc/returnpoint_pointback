@@ -15,20 +15,22 @@ import com.returnp.pointback.common.DataMap;
 import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
 import com.returnp.pointback.dao.mapper.AffiliateMapper;
+import com.returnp.pointback.dao.mapper.GpointPaymentMapper;
 import com.returnp.pointback.dao.mapper.GreenPointMapper;
 import com.returnp.pointback.dao.mapper.PaymentPointbackRecordMapper;
 import com.returnp.pointback.dao.mapper.PaymentTransactionMapper;
 import com.returnp.pointback.dao.mapper.PaymentTransactionRouterMapper;
 import com.returnp.pointback.dao.mapper.PointBackMapper;
 import com.returnp.pointback.dao.mapper.PolicyMapper;
-import com.returnp.pointback.dto.CiderObject;
 import com.returnp.pointback.dto.command.AffiliateCommand;
 import com.returnp.pointback.dto.command.AffiliateTidCommand;
 import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PaymentTransactionCommand;
+import com.returnp.pointback.dto.command.api.ApiRequest;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.Affiliate;
+import com.returnp.pointback.model.GpointPayment;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.PaymentPointbackRecord;
@@ -54,6 +56,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 	    @Autowired Environment env;
 	    @Autowired PointbackTargetService pointBackTargetService;
 	    @Autowired PaymentTransactionRouterMapper paymentTransactionRouterMapper;
+	    @Autowired GpointPaymentMapper gpointPaymentMapper;
 	    
 	@Override
 	public ReturnpBaseResponse accumulate(DataMap dataMap) {
@@ -1028,6 +1031,143 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
         return dataMap;
 	}
 
+	@Override
+	public ReturnpBaseResponse gpointPaymentApporval(ApiRequest apiRequest)  {
+		 ReturnpBaseResponse res = new ReturnpBaseResponse();
+		 try {
+			 Member member = new Member();
+			 member.setMemberEmail(apiRequest.getMemberEmail());
+	         ArrayList<Member> members = this.pointBackMapper.findMembers(member);
+	         member = members.get(0);
+			 
+	         AffiliateTidCommand atidCommand = null;
+	         ArrayList<AffiliateTidCommand> atidList = null;
+	         Affiliate affiliate = null;
+	         
+	         atidCommand = new AffiliateTidCommand();
+        	 atidCommand.setTid(apiRequest.getAfId());
+        	 atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
+        	 affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
+	         
+        	 /* 보유 포인트와 결제 포인트의 비교*/
+        	 GreenPoint gPoint = new GreenPoint();
+	         gPoint.setMemberNo(member.getMemberNo());
+	         gPoint.setNodeType(AppConstants.NodeType.MEMBER);
+	         gPoint  = this.pointBackMapper.findGreenPoints(gPoint).get(0);
+	         if (apiRequest.getGpointPaymentAmount() > gPoint.getPointAmount() ) {
+	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2004",
+	                        this.messageUtils.getMessage("pointback.message.not_enough_for_gpoint_pay"));
+	                throw new ReturnpException(res);
+	         }
+	         
+        	 /*G POINT Payment Table insert*/
+        	 GpointPayment gpointPayment = new GpointPayment();
+        	 gpointPayment.setAffiliateNo(affiliate.getAffiliateNo());
+        	 gpointPayment.setAffiliateSerial(affiliate.getAffiliateSerial());
+        	 gpointPayment.setAffiliateName(affiliate.getAffiliateName());
+        	 gpointPayment.setMemberNo(member.getMemberNo());
+        	 gpointPayment.setMemberName(member.getMemberName());
+        	 gpointPayment.setMemberEmail(member.getMemberEmail());
+        	 gpointPayment.setMemberPhone(member.getMemberPhone());
 
-	
+        	 gpointPayment.setPaymentApprovalAmount(apiRequest.getPaymentApprovalAmount());
+        	 gpointPayment.setRealPaymentAmount(apiRequest.getRealPaymentAmount());
+        	 gpointPayment.setGpointPaymentAmount(apiRequest.getGpointPaymentAmount());
+
+        	 gpointPayment.setPaymentApprovalNumber(apiRequest.getPaymentApprovalNumber());
+        	 gpointPayment.setPaymentMethod(apiRequest.getPaymentMethod());
+        	 gpointPayment.setPaymentTransactionType(apiRequest.getPaymentTransactionType());
+        	 gpointPayment.setPaymentApprovalDateTime(apiRequest.getPaymentApprovalDateTime());
+        	 
+        	 String aps  = apiRequest.getPaymentApprovalStatus().equals("0") ? 
+                     AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK : 
+                     (apiRequest.getPaymentApprovalStatus().equals("1") ? AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL : AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_ERROR) ;        
+        	 gpointPayment.setPaymentApprovalStatus(aps);
+        	 
+	         this.gpointPaymentMapper.insert(gpointPayment);
+	         
+	         /*G POINT 삭감 */
+	         
+	         gPoint.setPointAmount(gPoint.getPointAmount() - apiRequest.getGpointPaymentAmount());
+	         this.greenPointMapper.updateByPrimaryKey(gPoint);
+	         
+	         ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.gpoint_payment_ok"));
+	         return res;
+		 }catch(ReturnpException e) {
+			 e.printStackTrace();
+			 res = e.getBaseResponse();
+			 return res; 
+		 }catch(Exception e) {
+			 e.printStackTrace();
+			 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			 return res; 
+		 }
+	}
+
+	@Override
+	public ReturnpBaseResponse gpointPaymentCancel(ApiRequest apiRequest) throws ReturnpException {
+		ReturnpBaseResponse res = new ReturnpBaseResponse();
+		try {
+			 Member member = new Member();
+			 member.setMemberEmail(apiRequest.getMemberEmail());
+	         ArrayList<Member> members = this.pointBackMapper.findMembers(member);
+	         member = members.get(0);
+			 
+	         AffiliateTidCommand atidCommand = null;
+	         ArrayList<AffiliateTidCommand> atidList = null;
+	         Affiliate affiliate = null;
+	         
+	         atidCommand = new AffiliateTidCommand();
+        	 atidCommand.setTid(apiRequest.getAfId());
+        	 atidList = this.pointBackMapper.selectAffilaiteTidCommands(atidCommand);
+        	 affiliate = this.affiliateMapper.selectByPrimaryKey(atidList.get(0).getAffiliateNo());
+	         
+        	 /*G POINT Payment Table insert*/
+        	 GpointPayment gpointPayment = new GpointPayment();
+        	 gpointPayment.setAffiliateNo(affiliate.getAffiliateNo());
+        	 gpointPayment.setAffiliateSerial(affiliate.getAffiliateSerial());
+        	 gpointPayment.setAffiliateName(affiliate.getAffiliateName());
+        	 gpointPayment.setMemberNo(member.getMemberNo());
+        	 gpointPayment.setMemberName(member.getMemberName());
+        	 gpointPayment.setMemberEmail(member.getMemberEmail());
+        	 gpointPayment.setMemberPhone(member.getMemberPhone());
+        	 
+        	 gpointPayment.setPaymentApprovalAmount(apiRequest.getPaymentApprovalAmount() * -1);
+        	 gpointPayment.setRealPaymentAmount(apiRequest.getRealPaymentAmount() * -1);
+        	 gpointPayment.setGpointPaymentAmount(apiRequest.getGpointPaymentAmount()* -1);
+
+        	 gpointPayment.setPaymentApprovalNumber(apiRequest.getPaymentApprovalNumber());
+        	 gpointPayment.setPaymentMethod(apiRequest.getPaymentMethod());
+        	 gpointPayment.setPaymentTransactionType(apiRequest.getPaymentTransactionType());
+        	 gpointPayment.setPaymentApprovalDateTime(apiRequest.getPaymentApprovalDateTime());
+
+        	 String aps  = apiRequest.getPaymentApprovalStatus().equals("0") ? 
+                     AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK : 
+                     (apiRequest.getPaymentApprovalStatus().equals("1") ? AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_CANCEL : AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_ERROR) ;        
+        	 gpointPayment.setPaymentApprovalStatus(aps);
+        	 
+	         this.gpointPaymentMapper.insert(gpointPayment);
+
+			/*G POINT 증가 */
+			GreenPoint gPoint = new GreenPoint();
+			gPoint.setMemberNo(member.getMemberNo());
+			gPoint.setNodeType(AppConstants.NodeType.MEMBER);
+			gPoint  = this.pointBackMapper.findGreenPoints(gPoint).get(0);
+
+			gPoint.setPointAmount(gPoint.getPointAmount() + apiRequest.getGpointPaymentAmount());
+			this.greenPointMapper.updateByPrimaryKey(gPoint);
+
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.message.gpoint_cancel_ok"));
+			return res;
+		}catch(ReturnpException e) {
+			e.printStackTrace();
+			res = e.getBaseResponse();
+			return res; 
+		}catch(Exception e) {
+			e.printStackTrace();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_ERROR, "2000", this.messageUtils.getMessage("pointback.message.inner_server_error"));
+			return res; 
+		}
+	}
+
 }

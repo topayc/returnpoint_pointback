@@ -16,6 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.returnp.pointback.common.AppConstants;
@@ -279,6 +280,47 @@ public class ApiProviderController extends ApplicationController{
 			/*적립 취소*/
 			else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
 				res = this.apiPointbackHandleService.cancelAccumulate(dataMap);
+			}
+			else {
+				res = new ReturnpBaseResponse();
+				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("api.message.wrong_payment_status"));
+				return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			}
+			stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
+			return stringRes;
+		}
+		
+	}
+	
+	/**
+	 * GPOINT 결제 처리 핸들러
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/gpoint_pay", method = RequestMethod.POST,produces="application/json" )
+	public ReturnpBaseResponse gpointPayment(ApiRequest apiRequest) {
+		System.out.println("gpointPay");
+	
+		ReturnpBaseResponse  res = null;
+		HashMap<String, Object> apiServiceMap = this.apiMapper.selectApiService(apiRequest);
+		StringResponse stringRes = null;
+		
+		if (apiServiceMap == null ) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
+			return res;
+		}else {
+			apiRequest.setPaymentRouterType(AppConstants.PaymentRouterType.API);
+			apiRequest.setPaymentRouterName(AppConstants.PaymentRouterName.API);
+			apiRequest.setPaymentTransactionType(AppConstants.PaymentTransactionType.API);
+			apiRequest.setPaymentApprovalNumber(apiRequest.getAfId() + "_" + apiRequest.getPaymentApprovalNumber());
+			
+			if (apiRequest.getPaymentApprovalStatus().equals("0")) {
+				res = this.apiPointbackHandleService.gpointPayApproval(apiRequest);
+			}
+			
+			else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
+				res = this.apiPointbackHandleService.gpointPayCancel(apiRequest);
 			}
 			else {
 				res = new ReturnpBaseResponse();

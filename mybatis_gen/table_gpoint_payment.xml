@@ -18,27 +18,27 @@
       <property name="forceBigDecimals" value="false" />
     </javaTypeResolver>
 
-    <javaModelGenerator targetPackage="com.returnp.admin.model" targetProject="returnp_admin/src/main/java">
+    <javaModelGenerator targetPackage="com.returnp.pointback.model" targetProject="returnp_pointback/src/main/java">
     	<property name="enableSubPackages" value="true"/>
         <property name="trimStrings" value="true"/>
-        <property name="rootClass" value="com.returnp.admin.dto.QueryCondition" />
+        <property name="rootClass" value="com.returnp.pointback.dto.QueryCondition" /> 
     </javaModelGenerator>
     
-    <sqlMapGenerator targetPackage="com.returnp.admin.dao.mapper" targetProject="returnp_admin/src/main/resources">
+    <sqlMapGenerator targetPackage="com.returnp.pointback.dao.mapper" targetProject="returnp_pointback/src/main/resources">
     	<property name="enableSubPackages" value="true"/>
     </sqlMapGenerator>
     
-    <javaClientGenerator targetPackage="com.returnp.admin.dao.mapper" targetProject="returnp_admin/src/main/java" type="XMLMAPPER">
+    <javaClientGenerator targetPackage="com.returnp.pointback.dao.mapper" targetProject="returnp_pointback/src/main/java" type="XMLMAPPER">
     	<property name="enableSubPackages" value="true"/>
     	<property name="methodNameCalculator" value="extended"/>
     </javaClientGenerator>
     
  
-   <table 
-   		tableName="green_point" domainObjectName="GreenPoint" enableCountByExample="false" 
+    <table 
+   		tableName="gpoint_payment" domainObjectName="GpointPayment" enableCountByExample="false" 
    		enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
    		selectByExampleQueryId="false">
-   			<property name="useActualColumnNames" value="true" />
-   </table> 
+    	<property name="useActualColumnNames" value="true" />
+   </table>
   </context>
 </generatorConfiguration>
