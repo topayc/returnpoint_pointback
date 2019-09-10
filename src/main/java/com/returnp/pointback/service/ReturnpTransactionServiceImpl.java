@@ -1035,6 +1035,12 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 	public ReturnpBaseResponse gpointPaymentApporval(ApiRequest apiRequest)  {
 		 ReturnpBaseResponse res = new ReturnpBaseResponse();
 		 try {
+			 if (apiRequest.getPaymentApprovalAmount() != (apiRequest.getRealPaymentAmount() + apiRequest.getGpointPaymentAmount())){
+				 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "700",
+	                        this.messageUtils.getMessage("pointback.message.invalid_payment_sum"));
+	                throw new ReturnpException(res);
+			 }
+			 
 			 Member member = new Member();
 			 member.setMemberEmail(apiRequest.getMemberEmail());
 	         ArrayList<Member> members = this.pointBackMapper.findMembers(member);
@@ -1055,7 +1061,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 	         gPoint.setNodeType(AppConstants.NodeType.MEMBER);
 	         gPoint  = this.pointBackMapper.findGreenPoints(gPoint).get(0);
 	         if (apiRequest.getGpointPaymentAmount() > gPoint.getPointAmount() ) {
-	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "2004",
+	        	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "701",
 	                        this.messageUtils.getMessage("pointback.message.not_enough_for_gpoint_pay"));
 	                throw new ReturnpException(res);
 	         }

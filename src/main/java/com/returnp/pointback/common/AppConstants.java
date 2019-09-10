@@ -319,5 +319,9 @@ public class AppConstants {
 	}
 	
 	
+	public static class PaymentMethod{
+		public static final String  CREDIT  = "1";
+		public static final String  CASH= "2";
+	}
 
 }
