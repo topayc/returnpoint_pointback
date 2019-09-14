@@ -803,6 +803,11 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 	                throw new ReturnpException(res);
 	            }
 	            
+	            if (affiliate.getGreenPointAccStatus().trim().equals("N")) {
+	            	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "781", 
+		                        this.messageUtils.getMessage("pointback.message.temp_stop_green_accumulate"));
+		                throw new ReturnpException(res);
+	            }
 	            if (!affiliate.getAffiliateType().contains(AppConstants.AffiliateType.COMMON_AFFILIATE)  && 
 	                    !affiliate.getAffiliateType().contains(AppConstants.AffiliateType.ONLINE_AFFILIATE)) {
 	                ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "619", 
