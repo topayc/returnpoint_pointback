@@ -193,10 +193,13 @@
     <result column="gPointMovingMaxLimit" jdbcType="INTEGER" property="gPointMovingMaxLimit" />
     <result column="rPointMovingMinLimit" jdbcType="INTEGER" property="rPointMovingMinLimit" />
     <result column="rPointMovingMaxLimit" jdbcType="INTEGER" property="rPointMovingMaxLimit" />
+    <result column="maxGpointAccLImit" jdbcType="INTEGER" property="maxGpointAccLImit" />
     <result column="customerRecManagerComm" jdbcType="REAL" property="customerRecManagerComm" />
     <result column="affiliateRecManagerComm" jdbcType="REAL" property="affiliateRecManagerComm" />
     <result column="agancyRecManagerComm" jdbcType="REAL" property="agancyRecManagerComm" />
     <result column="branchRecManagerComm" jdbcType="REAL" property="branchRecManagerComm" />
+    <result column="rPayWithdrawalMinLimit" jdbcType="INTEGER" property="rPayWithdrawalMinLimit" />
+    <result column="rPayWithdrawalMaxLimit" jdbcType="INTEGER" property="rPayWithdrawalMaxLimit" />
     <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -204,8 +207,9 @@
     policyNo, regAdminNo, branchComm, soleDistComm, agancyComm, affiliateComm, branchRecComm, 
     agancyRecComm, affiliateRecComm, customerRecCom, customerComm, pointTransRate, pointTransLimit, 
     redPointAccRate, membershipTransLimit, gPointMovingMinLimit, gPointMovingMaxLimit, 
-    rPointMovingMinLimit, rPointMovingMaxLimit, customerRecManagerComm, affiliateRecManagerComm, 
-    agancyRecManagerComm, branchRecManagerComm, createTime, updateTime
+    rPointMovingMinLimit, rPointMovingMaxLimit, maxGpointAccLImit, customerRecManagerComm, 
+    affiliateRecManagerComm, agancyRecManagerComm, branchRecManagerComm, rPayWithdrawalMinLimit, 
+    rPayWithdrawalMaxLimit, createTime, updateTime
   </sql>
   
   <sql id ="policyWhereStatement">

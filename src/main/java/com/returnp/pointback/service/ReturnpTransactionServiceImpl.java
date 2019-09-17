@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -828,7 +829,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 	public void validateAccumulateRequest(DataMap dataMap) throws ReturnpException {
         ReturnpBaseResponse res =  new ReturnpBaseResponse();
         try {
-            
+              
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             /*
              * PaymentTransaction paymentTransaction = new PaymentTransaction();
@@ -864,6 +865,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "604", this.messageUtils.getMessage("pointback.message.already_accumulate_or_canceled"));
                     throw new ReturnpException(res);
             }
+          
             /* 
              * 결제 번호가 같을 경우 바로 에러 처리를 해주어야 하나, 상태별 에러 메시지를 뿌려주기 위해 
              * 아래의 처리를 진행함 
@@ -900,6 +902,18 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                      ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("pointback.message.invalid_req"));
                         throw new ReturnpException(res);
                 }
+             }else {
+            	  /*1회 적립 한도 초과 여부 검사 */
+             	Policy policy = new Policy();
+                ArrayList<Policy> policies = this.pointBackMapper.findPolicies(policy);
+                policy = policies.get(policies.size() -1 );
+                 
+                 /*1일 적립 한도 초과시 에러 처리 */
+                 if (dataMap.getInt("pam") > policy.getMaxGpointAccLImit()) {
+                	 ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "787", this.messageUtils.getMessage("pointback.message.exceed_once_acc_limit",
+                             new Object[] { policy.getMaxGpointAccLImit()}));
+                       throw new ReturnpException(res);
+                 }
              }
         } catch(ReturnpException ee) {
             ee.printStackTrace();
@@ -908,7 +922,6 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
             e.printStackTrace();
             throw e;
         }
-		
 	}
 
 	@Override

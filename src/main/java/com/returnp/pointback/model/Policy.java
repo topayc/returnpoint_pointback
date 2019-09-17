@@ -42,6 +42,8 @@ public class Policy extends QueryCondition {
 
     private Integer rPointMovingMaxLimit;
 
+    private Integer maxGpointAccLImit;
+
     private Float customerRecManagerComm;
 
     private Float affiliateRecManagerComm;
@@ -208,6 +210,14 @@ public class Policy extends QueryCondition {
 
     public void setrPointMovingMaxLimit(Integer rPointMovingMaxLimit) {
         this.rPointMovingMaxLimit = rPointMovingMaxLimit;
+    }
+
+    public Integer getMaxGpointAccLImit() {
+        return maxGpointAccLImit;
+    }
+
+    public void setMaxGpointAccLImit(Integer maxGpointAccLImit) {
+        this.maxGpointAccLImit = maxGpointAccLImit;
     }
 
     public Float getCustomerRecManagerComm() {
