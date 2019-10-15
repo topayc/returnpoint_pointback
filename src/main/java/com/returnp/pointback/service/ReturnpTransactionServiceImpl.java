@@ -871,7 +871,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
              * 아래의 처리를 진행함 
              * */
             if (paymentTransactions.size() == 1) {
-                paymentTransaction = paymentTransactions.get(0);
+            	paymentTransaction = paymentTransactions.get(0);
                  //부적절한 요청 - 현재 적립 처리중인 내역에 대한 중복 적립 요청
                  if (paymentTransaction.getPaymentApprovalStatus().equals(AppConstants.PaymentApprovalStatus.PAYMENT_APPROVAL_OK)) {
                      if (paymentTransaction.getPointBackStatus().equals(AppConstants.AccumulateStatus.POINTBACK_START) || 
@@ -931,7 +931,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             
             /*
-             * 결제 번호 및 승인 일시로 조회하여 등록된 결제 정보가 있는지 조회
+             * 결제 번호 및 조회하여 등록된 결제 정보가 있는지 조회
              * */
             
             PaymentTransactionCommand ptCommand = new PaymentTransactionCommand();
