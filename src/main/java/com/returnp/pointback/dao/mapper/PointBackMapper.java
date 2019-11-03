@@ -19,6 +19,7 @@ import com.returnp.pointback.dto.command.PaymentTransactionCommand;
 import com.returnp.pointback.dto.command.PointBackTarget;
 import com.returnp.pointback.dto.command.PointConversionTransactionCommand;
 import com.returnp.pointback.dto.command.PointConvertRequestCommand;
+import com.returnp.pointback.dto.command.PointCouponTransactionCommand;
 import com.returnp.pointback.dto.command.RecommenderCommand;
 import com.returnp.pointback.dto.command.RedPointCommand;
 import com.returnp.pointback.dto.request.SearchCondition;
@@ -40,6 +41,7 @@ import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PaymentRouter;
 import com.returnp.pointback.model.PaymentTransaction;
 import com.returnp.pointback.model.PointConversionTransaction;
+import com.returnp.pointback.model.PointCoupon;
 import com.returnp.pointback.model.Policy;
 import com.returnp.pointback.model.Recommender;
 import com.returnp.pointback.model.SaleManager;
@@ -95,4 +97,7 @@ public interface PointBackMapper {
 	public ArrayList<AffiliateCiderpay> selectAffiliateCiderPays(AffiliateCiderpay affiliateCiderpay);
 	public ArrayList<MemberPlainPassword> selectMemberPlainPasswords(MemberPlainPassword memberPlainPassword);
 	public ArrayList<AffiliateDetail> selectAffiliateDetails(AffiliateDetail affiliateDetail);
+
+	public ArrayList<PointCoupon> selectPointCoupons(PointCoupon pointCoupon);
+	public ArrayList<PointCouponTransactionCommand> selectPointCouponTransactionCommands(PointCouponTransactionCommand pointCouponTransactionCommand);
 }

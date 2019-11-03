@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PointCouponMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PointCoupon">
+    <id column="pointCouponNo" jdbcType="INTEGER" property="pointCouponNo" />
+    <result column="couponNumber" jdbcType="VARCHAR" property="couponNumber" />
+    <result column="couponType" jdbcType="VARCHAR" property="couponType" />
+    <result column="useStatus" jdbcType="VARCHAR" property="useStatus" />
+    <result column="deliveryStatus" jdbcType="VARCHAR" property="deliveryStatus" />
+    <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
+    <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
+    <result column="accPointAmount" jdbcType="REAL" property="accPointAmount" />
+    <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+    <result column="useStartTime" jdbcType="TIMESTAMP" property="useStartTime" />
+    <result column="useEndTime" jdbcType="TIMESTAMP" property="useEndTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pointCouponNo, couponNumber, couponType, useStatus, deliveryStatus, payAmount, accPointRate, 
+    accPointAmount, publisher, useStartTime, useEndTime, updateTime, createTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from point_coupon
+    where pointCouponNo = #{pointCouponNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from point_coupon
+    where pointCouponNo = #{pointCouponNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.PointCoupon">
+    insert into point_coupon (pointCouponNo, couponNumber, couponType, 
+      useStatus, deliveryStatus, payAmount, 
+      accPointRate, accPointAmount, publisher, 
+      useStartTime, useEndTime, updateTime, 
+      createTime)
+    values (#{pointCouponNo,jdbcType=INTEGER}, #{couponNumber,jdbcType=VARCHAR}, #{couponType,jdbcType=VARCHAR}, 
+      #{useStatus,jdbcType=VARCHAR}, #{deliveryStatus,jdbcType=VARCHAR}, #{payAmount,jdbcType=INTEGER}, 
+      #{accPointRate,jdbcType=REAL}, #{accPointAmount,jdbcType=REAL}, #{publisher,jdbcType=VARCHAR}, 
+      #{useStartTime,jdbcType=TIMESTAMP}, #{useEndTime,jdbcType=TIMESTAMP}, NOW(), NOW())
+      <selectKey keyProperty="pointCouponNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PointCoupon">
+    insert into point_coupon
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pointCouponNo != null">
+        pointCouponNo,
+      </if>
+      <if test="couponNumber != null">
+        couponNumber,
+      </if>
+      <if test="couponType != null">
+        couponType,
+      </if>
+      <if test="useStatus != null">
+        useStatus,
+      </if>
+      <if test="deliveryStatus != null">
+        deliveryStatus,
+      </if>
+      <if test="payAmount != null">
+        payAmount,
+      </if>
+      <if test="accPointRate != null">
+        accPointRate,
+      </if>
+      <if test="accPointAmount != null">
+        accPointAmount,
+      </if>
+      <if test="publisher != null">
+        publisher,
+      </if>
+      <if test="useStartTime != null">
+        useStartTime,
+      </if>
+      <if test="useEndTime != null">
+        useEndTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pointCouponNo != null">
+        #{pointCouponNo,jdbcType=INTEGER},
+      </if>
+      <if test="couponNumber != null">
+        #{couponNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null">
+        #{couponType,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null">
+        #{useStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryStatus != null">
+        #{deliveryStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmount != null">
+        #{payAmount,jdbcType=INTEGER},
+      </if>
+      <if test="accPointRate != null">
+        #{accPointRate,jdbcType=REAL},
+      </if>
+      <if test="accPointAmount != null">
+        #{accPointAmount,jdbcType=REAL},
+      </if>
+      <if test="publisher != null">
+        #{publisher,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartTime != null">
+        #{useStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="useEndTime != null">
+        #{useEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PointCoupon">
+    update point_coupon
+    <set>
+      <if test="couponNumber != null">
+        couponNumber = #{couponNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null">
+        couponType = #{couponType,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null">
+        useStatus = #{useStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryStatus != null">
+        deliveryStatus = #{deliveryStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmount != null">
+        payAmount = #{payAmount,jdbcType=INTEGER},
+      </if>
+      <if test="accPointRate != null">
+        accPointRate = #{accPointRate,jdbcType=REAL},
+      </if>
+      <if test="accPointAmount != null">
+        accPointAmount = #{accPointAmount,jdbcType=REAL},
+      </if>
+      <if test="publisher != null">
+        publisher = #{publisher,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartTime != null">
+        useStartTime = #{useStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="useEndTime != null">
+        useEndTime = #{useEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pointCouponNo = #{pointCouponNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PointCoupon">
+    update point_coupon
+    set couponNumber = #{couponNumber,jdbcType=VARCHAR},
+      couponType = #{couponType,jdbcType=VARCHAR},
+      useStatus = #{useStatus,jdbcType=VARCHAR},
+      deliveryStatus = #{deliveryStatus,jdbcType=VARCHAR},
+      payAmount = #{payAmount,jdbcType=INTEGER},
+      accPointRate = #{accPointRate,jdbcType=REAL},
+      accPointAmount = #{accPointAmount,jdbcType=REAL},
+      publisher = #{publisher,jdbcType=VARCHAR},
+      useStartTime = #{useStartTime,jdbcType=TIMESTAMP},
+      useEndTime = #{useEndTime,jdbcType=TIMESTAMP},
+      updateTime = NOW(),
+      createTime = #{createTime,jdbcType=TIMESTAMP}
+    where pointCouponNo = #{pointCouponNo,jdbcType=INTEGER}
+  </update>
+</mapper>

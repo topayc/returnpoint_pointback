@@ -2329,5 +2329,104 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     	<include refid = "AffiliateDetailWhereStatement"/>
   </select>
   
+         <!-- ===============================================================================================================    -->
+  <!-- PointCoupon   -->
+  
+    <resultMap id="PointCouponResultMap" type="com.returnp.pointback.model.PointCoupon">
+    <id column="pointCouponNo" jdbcType="INTEGER" property="pointCouponNo" />
+    <result column="couponNumber" jdbcType="VARCHAR" property="couponNumber" />
+    <result column="couponType" jdbcType="VARCHAR" property="couponType" />
+    <result column="useStatus" jdbcType="VARCHAR" property="useStatus" />
+    <result column="deliveryStatus" jdbcType="VARCHAR" property="deliveryStatus" />
+    <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
+    <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
+    <result column="accPointAmount" jdbcType="REAL" property="accPointAmount" />
+    <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+    <result column="useStartTime" jdbcType="TIMESTAMP" property="useStartTime" />
+    <result column="useEndTime" jdbcType="TIMESTAMP" property="useEndTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+    <sql id="PointCoupon_Column_List">
+          pointCouponNo, couponNumber, couponType, useStatus, deliveryStatus, payAmount, accPointRate, 
+    accPointAmount, publisher, useStartTime, useEndTime, updateTime, createTime
+  </sql>
+  
+    <sql id ="PointCouponWhereStatement">
+      <if test="pointCouponNo != null"> AND pointCouponNo = #{pointCouponNo,jdbcType=INTEGER}</if>
+      <if test="couponNumber != null"> AND couponNumber = #{couponNumber,jdbcType=INTEGER}</if>
+      <if test="couponType != null"> AND couponType = #{couponType,jdbcType=VARCHAR}</if>
+      <if test="useStatus != null"> AND useStatus = #{useStatus,jdbcType=VARCHAR}</if>
+       <if test="deliveryStatus != null"> AND deliveryStatus = #{businessItem,jdbcType=VARCHAR}</if>
+  </sql>
+  
+  <select id="selectPointCoupons" parameterType="com.returnp.pointback.model.PointCoupon" resultMap="PointCouponResultMap">
+    select 
+    <include refid="PointCoupon_Column_List" />
+    from point_coupon
+    where 
+     	 1 = 1 
+    	<include refid = "PointCouponWhereStatement"/>
+  </select>
+  
+           <!-- ===============================================================================================================    -->
+  <!-- PointCouponTransaction   -->
+  
+   <resultMap id="PointCouponTransactionCommandResultMap" type="com.returnp.pointback.dto.command.PointCouponTransactionCommand">
+     <id column="pointCouponTransactionNo" jdbcType="INTEGER" property="pointCouponTransactionNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="pointCouponNo" jdbcType="VARCHAR" property="pointCouponNo" />
+    <result column="pointBackStatus" jdbcType="VARCHAR" property="pointBackStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="memberName" jdbcType="VARCHAR" property="memberName" />
+    <result column="memberPhone" jdbcType="VARCHAR" property="memberPhone" />
+    <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
+    <result column="couponNumber" jdbcType="VARCHAR" property="couponNumber" />
+    <result column="couponType" jdbcType="VARCHAR" property="couponType" />
+    <result column="useStatus" jdbcType="VARCHAR" property="useStatus" />
+    <result column="deliveryStatus" jdbcType="VARCHAR" property="deliveryStatus" />
+    <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
+    <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
+    <result column="accPointAmount" jdbcType="REAL" property="accPointAmount" />
+    <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+    <result column="useStartTime" jdbcType="TIMESTAMP" property="useStartTime" />
+    <result column="useEndTime" jdbcType="TIMESTAMP" property="useEndTime" />
+  </resultMap>
+  
+    <sql id="PointCouponTransactionCommand_Column_List">
+      pointCouponTransactionNo, memberNo, pointCouponNo, pointBackStatus, createTime, updateTime,
+      pointCouponNo, couponNumber, couponType, useStatus, deliveryStatus, payAmount, accPointRate, 
+      accPointAmount, publisher, useStartTime, useEndTime, updateTime, createTime
+  </sql>
+  
+    <sql id ="PointCouponTransactionCommandWhereStatement">
+      <if test="pointCouponNo != null"> AND pointCouponNo = #{pointCouponNo,jdbcType=INTEGER}</if>
+      <if test="couponNumber != null"> AND couponNumber = #{couponNumber,jdbcType=INTEGER}</if>
+      <if test="couponType != null"> AND couponType = #{couponType,jdbcType=VARCHAR}</if>
+      <if test="useStatus != null"> AND useStatus = #{useStatus,jdbcType=VARCHAR}</if>
+      <if test="deliveryStatus != null"> AND deliveryStatus = #{businessItem,jdbcType=VARCHAR}</if>
+            <if test="memberName != null or memberEmail != null or memberPhone != null">
+      	AND ( 1 = 2 
+      </if>
+      <if test="memberPhone != null">OR M.memberPhone  LIKE CONCAT('%',#{memberPhone,jdbcType=VARCHAR},'%') </if>
+      <if test="memberName != null">OR M.memberName  LIKE CONCAT('%',#{memberName,jdbcType=VARCHAR},'%') </if>
+      <if test="memberEmail != null">OR M.memberEmail  LIKE CONCAT('%',#{memberEmail,jdbcType=VARCHAR},'%' ) </if>
+      <if test="memberName != null or memberEmail != null or memberPhone != null">
+      	)
+      </if>
+  </sql>
+  
+  <select id="selectPointCouponTransactionCommands" parameterType="com.returnp.pointback.dto.command.PointCouponTransactionCommand" 
+  		resultMap="PointCouponTransactionCommandResultMap">
+    select 
+    <include refid="PointCouponTransactionCommand_Column_List" />
+    from point_coupon_transaction
+    where 
+     	 1 = 1 
+    	<include refid = "PointCouponTransactionCommandWhereStatement"/>
+  </select>
+  
   
 </mapper>

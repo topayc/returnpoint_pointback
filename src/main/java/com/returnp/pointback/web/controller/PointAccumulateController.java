@@ -28,9 +28,10 @@ import com.returnp.pointback.dto.CiderObject;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.service.interfaces.AdminPointbackHandleService;
 import com.returnp.pointback.service.interfaces.BasePointAccumulateService;
-import com.returnp.pointback.service.interfaces.PointAccumulateService;
-import com.returnp.pointback.service.interfaces.QRPointbackHandleService;
 import com.returnp.pointback.service.interfaces.CiderPointbackHandleService;
+import com.returnp.pointback.service.interfaces.PointAccumulateService;
+import com.returnp.pointback.service.interfaces.PointCouponPointbackHandleService;
+import com.returnp.pointback.service.interfaces.QRPointbackHandleService;
 import com.returnp.pointback.web.message.MessageUtils;
 
 @Controller
@@ -44,6 +45,7 @@ public class PointAccumulateController extends ApplicationController{
 	@Autowired QRPointbackHandleService qrPointBackHandler;
 	@Autowired AdminPointbackHandleService adminPointBackHandler;
 	@Autowired CiderPointbackHandleService  saidaPointBackHandler;
+	@Autowired PointCouponPointbackHandleService  pointCouponPointbackHandler;
 	
 	ArrayList<String> keys;
 	ArrayList<Integer> pointAccList = new ArrayList<Integer>();
@@ -435,6 +437,44 @@ public class PointAccumulateController extends ApplicationController{
 			return res;
 		}else {
 			res = this.adminPointBackHandler.cancelAccumuate(pan);
+		}
+		return res;
+	}
+	
+	/**
+	 * 포인트 적립 쿠폰 처리 
+	 * @param paymentTrasactionNo
+	 * @param key
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/handlePointCoupon", method = RequestMethod.GET)
+	public ReturnpBaseResponse handlePointCoupon( 
+			@RequestParam(value = "memberEmail", required = true ) String memberEmail,  
+			@RequestParam(value = "memberPhone", required = true ) String phoneNumber,  
+			@RequestParam(value = "phoneNumberCountry", required = false ) String phoneNumberCountry,
+			@RequestParam(value = "couponNumber", required = true ) String couponNumber,
+			@RequestParam(value = "status", required = true ) String status,  /* 0 적립, 1 취소*/
+			@RequestParam(value = "key", required = true ) String key
+			){
+		
+		ReturnpBaseResponse res= null;
+		
+		if (!this.keys.contains(key)) {
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
+			return res;
+		}else {
+			/*적립*/
+			if (status.equals("0")) {
+				res = this.pointCouponPointbackHandler.accumulate(memberEmail, phoneNumber,phoneNumberCountry,couponNumber);
+			}
+		
+			/*적립 취소*/
+			else if (status.equals("1")) {
+				res = this.pointCouponPointbackHandler.cancelAccumulate(memberEmail, phoneNumber,phoneNumberCountry,couponNumber);
+			}
+			
 		}
 		return res;
 	}

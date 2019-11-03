@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.returnp.pointback.dao.mapper.PointCouponTransactionMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PointCouponTransaction">
+    <id column="pointCouponTransactionNo" jdbcType="INTEGER" property="pointCouponTransactionNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="pointCouponNo" jdbcType="INTEGER" property="pointCouponNo" />
+    <result column="pointBackStatus" jdbcType="VARCHAR" property="pointBackStatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pointCouponTransactionNo, memberNo, pointCouponNo, pointBackStatus, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from point_coupon_transaction
+    where pointCouponTransactionNo = #{pointCouponTransactionNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from point_coupon_transaction
+    where pointCouponTransactionNo = #{pointCouponTransactionNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.returnp.pointback.model.PointCouponTransaction">
+    insert into point_coupon_transaction (pointCouponTransactionNo, memberNo, 
+      pointCouponNo, pointBackStatus, createTime, 
+      updateTime)
+    values (#{pointCouponTransactionNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, 
+      #{pointCouponNo,jdbcType=INTEGER}, #{pointBackStatus,jdbcType=VARCHAR}, NOW(), NOW())
+      <selectKey keyProperty="pointCouponTransactionNo" resultType="java.lang.Integer" order ="AFTER">
+		    SELECT LAST_INSERT_ID()
+	 </selectKey>	
+  </insert>
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PointCouponTransaction">
+    insert into point_coupon_transaction
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pointCouponTransactionNo != null">
+        pointCouponTransactionNo,
+      </if>
+      <if test="memberNo != null">
+        memberNo,
+      </if>
+      <if test="pointCouponNo != null">
+        pointCouponNo,
+      </if>
+      <if test="pointBackStatus != null">
+        pointBackStatus,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="updateTime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pointCouponTransactionNo != null">
+        #{pointCouponTransactionNo,jdbcType=INTEGER},
+      </if>
+      <if test="memberNo != null">
+        #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointCouponNo != null">
+        #{pointCouponNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointBackStatus != null">
+        #{pointBackStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PointCouponTransaction">
+    update point_coupon_transaction
+    <set>
+      <if test="memberNo != null">
+        memberNo = #{memberNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointCouponNo != null">
+        pointCouponNo = #{pointCouponNo,jdbcType=INTEGER},
+      </if>
+      <if test="pointBackStatus != null">
+        pointBackStatus = #{pointBackStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pointCouponTransactionNo = #{pointCouponTransactionNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PointCouponTransaction">
+    update point_coupon_transaction
+    set memberNo = #{memberNo,jdbcType=INTEGER},
+      pointCouponNo = #{pointCouponNo,jdbcType=INTEGER},
+      pointBackStatus = #{pointBackStatus,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = NOW()
+    where pointCouponTransactionNo = #{pointCouponTransactionNo,jdbcType=INTEGER}
+  </update>
+</mapper>
