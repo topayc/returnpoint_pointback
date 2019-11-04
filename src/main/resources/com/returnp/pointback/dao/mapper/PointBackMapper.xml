@@ -2396,9 +2396,22 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   </resultMap>
   
     <sql id="PointCouponTransactionCommand_Column_List">
-      pointCouponTransactionNo, memberNo, pointCouponNo, pointBackStatus, createTime, updateTime,
-      pointCouponNo, couponNumber, couponType, useStatus, deliveryStatus, payAmount, accPointRate, 
-      accPointAmount, publisher, useStartTime, useEndTime, updateTime, createTime
+      PCT.pointCouponTransactionNo, 
+      PCT.memberNo, 
+      PCT.pointCouponNo, 
+      PCT.pointBackStatus, 
+      PCT.createTime, 
+      PCT.updateTime,
+      PC.couponNumber, 
+      PC.couponType, 
+      PC.useStatus, 
+      PC.deliveryStatus, 
+      PC.payAmount, 
+      PC.accPointRate, 
+      PC.accPointAmount, 
+      PC.publisher, 
+      PC.useStartTime, 
+      PC.useEndTime 
   </sql>
   
     <sql id ="PointCouponTransactionCommandWhereStatement">
@@ -2422,7 +2435,8 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   		resultMap="PointCouponTransactionCommandResultMap">
     select 
     <include refid="PointCouponTransactionCommand_Column_List" />
-    from point_coupon_transaction
+    from point_coupon_transaction as PCT
+    inner join point_coupon as PC on (PCT.pointCouponNo = PC.pointCouponNo) 
     where 
      	 1 = 1 
     	<include refid = "PointCouponTransactionCommandWhereStatement"/>

@@ -12,6 +12,7 @@ import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
 import com.returnp.pointback.dao.mapper.GreenPointMapper;
 import com.returnp.pointback.dao.mapper.PointBackMapper;
+import com.returnp.pointback.dao.mapper.PointCouponMapper;
 import com.returnp.pointback.dao.mapper.PointCouponPointbackRecordMapper;
 import com.returnp.pointback.dao.mapper.PointCouponTransactionMapper;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
@@ -19,7 +20,6 @@ import com.returnp.pointback.dto.command.PointCouponTransactionCommand;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
-import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PointCoupon;
 import com.returnp.pointback.model.PointCouponPointbackRecord;
 import com.returnp.pointback.model.PointCouponTransaction;
@@ -42,6 +42,7 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
     @Autowired ReturnpTransactionService  returnpTransactionService;
     @Autowired PointbackTargetService pointBackTargetService;
     @Autowired GreenPointMapper greenPointMapper;
+    @Autowired PointCouponMapper pointCouponMapper;;
     
     
     public static class Command {
@@ -109,7 +110,7 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
             pctc.setCouponNumber(couponNumber);
             
             ArrayList<PointCouponTransactionCommand> pctcs = this.pointBackMapper.selectPointCouponTransactionCommands(pctc);
-            if (pctcs == null || pctcs.size() != 1 ) {
+            if ( pctcs.size() > 0 ) {
             	 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "987", this.messageUtils.getMessage("pointback.already_reg_point_coupon_transaction"));
                      throw new ReturnpException(res);
             }
@@ -137,8 +138,8 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
             if (outerTarget.getMemberNo() != null) {
                 increasePoint(
                 	pct.getPointCouponTransactionNo(),
-                	pc.getAccPointRate(),
-                	pc.getAccPointAmount(),
+                	pointCoupons.get(0).getAccPointRate(),
+                	pointCoupons.get(0).getAccPointAmount(),
                     outerTarget.getMemberNo(), 
                     outerTarget.getMemberNo(), 
                     AppConstants.NodeType.MEMBER, 
@@ -150,17 +151,23 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
             if (outerTarget.getFirstRecommenderMemberNo() != null) {
                 increasePoint(
                 	pct.getPointCouponTransactionNo(),
-                	pc.getAccPointRate(),
-                	pc.getAccPointAmount() * policy.getCustomerRecCom(),
+                	pointCoupons.get(0).getAccPointRate(),
+                	pointCoupons.get(0).getAccPointAmount() * policy.getCustomerRecCom(),
                     outerTarget.getFirstRecommenderMemberNo(), 
                     outerTarget.getFirstRecommenderMemberNo(), 
                     AppConstants.NodeType.RECOMMENDER, 
                     "recommender"
               ); 
             }
+            
            /*포인트 쿠폰 트랜잭션의 적립 상태를 적립완료로 번경*/
-            pct.setPointBackStatus("4");
-            this.pointCouponTransactionMapper.updateByPrimaryKey(pct);
+            pct.setPointBackStatus("3");
+            this.pointCouponTransactionMapper.updateByPrimaryKeySelective(pct);
+            
+            /*적립된 포인트 쿠폰의 상태를 사용 완료로 변경*/
+            pointCoupons.get(0).setUseStatus("3");
+            pointCoupons.get(0).setDeliveryStatus("Y");
+            this.pointCouponMapper.updateByPrimaryKeySelective(pointCoupons.get(0));
             
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.point_coupon.pointback_accumulate_ok"));
             return res;

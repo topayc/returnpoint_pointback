@@ -451,7 +451,7 @@ public class PointAccumulateController extends ApplicationController{
 	@RequestMapping(value = "/handlePointCoupon", method = RequestMethod.GET)
 	public ReturnpBaseResponse handlePointCoupon( 
 			@RequestParam(value = "memberEmail", required = true ) String memberEmail,  
-			@RequestParam(value = "memberPhone", required = true ) String phoneNumber,  
+			@RequestParam(value = "phoneNumber", required = true ) String phoneNumber,  
 			@RequestParam(value = "phoneNumberCountry", required = false ) String phoneNumberCountry,
 			@RequestParam(value = "couponNumber", required = true ) String couponNumber,
 			@RequestParam(value = "status", required = true ) String status,  /* 0 적립, 1 취소*/
