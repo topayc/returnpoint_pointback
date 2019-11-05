@@ -18,6 +18,15 @@ public class PointCouponTransactionCommand extends PointCouponTransaction {
     private String publisher;
     private Date useStartTime;
     private Date useEndTime;
+    private String accTargetRange;
+    
+    
+	public String getAccTargetRange() {
+		return accTargetRange;
+	}
+	public void setAccTargetRange(String accTargetRange) {
+		this.accTargetRange = accTargetRange;
+	}
 	public String getMemberName() {
 		return memberName;
 	}

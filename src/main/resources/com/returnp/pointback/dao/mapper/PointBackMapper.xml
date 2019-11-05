@@ -2341,6 +2341,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
     <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
     <result column="accPointAmount" jdbcType="REAL" property="accPointAmount" />
+    <result column="accTargetRange" jdbcType="REAL" property="accTargetRange" />
     <result column="publisher" jdbcType="VARCHAR" property="publisher" />
     <result column="useStartTime" jdbcType="TIMESTAMP" property="useStartTime" />
     <result column="useEndTime" jdbcType="TIMESTAMP" property="useEndTime" />
@@ -2350,7 +2351,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   
     <sql id="PointCoupon_Column_List">
           pointCouponNo, couponNumber, couponType, useStatus, deliveryStatus, payAmount, accPointRate, 
-    accPointAmount, publisher, useStartTime, useEndTime, updateTime, createTime
+    accPointAmount,accTargetRange, publisher, useStartTime, useEndTime, updateTime, createTime
   </sql>
   
     <sql id ="PointCouponWhereStatement">
@@ -2358,7 +2359,8 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
       <if test="couponNumber != null"> AND couponNumber = #{couponNumber,jdbcType=INTEGER}</if>
       <if test="couponType != null"> AND couponType = #{couponType,jdbcType=VARCHAR}</if>
       <if test="useStatus != null"> AND useStatus = #{useStatus,jdbcType=VARCHAR}</if>
-       <if test="deliveryStatus != null"> AND deliveryStatus = #{businessItem,jdbcType=VARCHAR}</if>
+       <if test="deliveryStatus != null"> AND deliveryStatus = #{deliveryStatus,jdbcType=VARCHAR}</if>
+       <if test="accTargetRange != null"> AND accTargetRange = #{accTargetRange,jdbcType=VARCHAR}</if>
   </sql>
   
   <select id="selectPointCoupons" parameterType="com.returnp.pointback.model.PointCoupon" resultMap="PointCouponResultMap">
@@ -2385,6 +2387,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     <result column="memberEmail" jdbcType="VARCHAR" property="memberEmail" />
     <result column="couponNumber" jdbcType="VARCHAR" property="couponNumber" />
     <result column="couponType" jdbcType="VARCHAR" property="couponType" />
+    <result column="accTargetRange" jdbcType="VARCHAR" property="accTargetRange" />
     <result column="useStatus" jdbcType="VARCHAR" property="useStatus" />
     <result column="deliveryStatus" jdbcType="VARCHAR" property="deliveryStatus" />
     <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
@@ -2405,6 +2408,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
       PC.couponNumber, 
       PC.couponType, 
       PC.useStatus, 
+      PC.accTargetRange, 
       PC.deliveryStatus, 
       PC.payAmount, 
       PC.accPointRate, 
@@ -2419,8 +2423,9 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
       <if test="couponNumber != null"> AND couponNumber = #{couponNumber,jdbcType=INTEGER}</if>
       <if test="couponType != null"> AND couponType = #{couponType,jdbcType=VARCHAR}</if>
       <if test="useStatus != null"> AND useStatus = #{useStatus,jdbcType=VARCHAR}</if>
-      <if test="deliveryStatus != null"> AND deliveryStatus = #{businessItem,jdbcType=VARCHAR}</if>
-            <if test="memberName != null or memberEmail != null or memberPhone != null">
+      <if test="deliveryStatus != null"> AND deliveryStatus = #{deliveryStatus,jdbcType=VARCHAR}</if>
+      <if test="accTargetRange != null"> AND accTargetRange = #{accTargetRange,jdbcType=VARCHAR}</if>
+       <if test="memberName != null or memberEmail != null or memberPhone != null">
       	AND ( 1 = 2 
       </if>
       <if test="memberPhone != null">OR M.memberPhone  LIKE CONCAT('%',#{memberPhone,jdbcType=VARCHAR},'%') </if>

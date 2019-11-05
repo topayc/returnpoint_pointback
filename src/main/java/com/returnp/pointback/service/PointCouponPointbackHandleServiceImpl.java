@@ -147,17 +147,46 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
                 ); 
             }
             
-            /* 등록자의  1대 추천인 포인트 적립, 추천인이 없을 경우 처리하지 않음 */
-            if (outerTarget.getFirstRecommenderMemberNo() != null) {
-                increasePoint(
-                	pct.getPointCouponTransactionNo(),
-                	pointCoupons.get(0).getAccPointRate(),
-                	pointCoupons.get(0).getAccPointAmount() * policy.getCustomerRecCom(),
-                    outerTarget.getFirstRecommenderMemberNo(), 
-                    outerTarget.getFirstRecommenderMemberNo(), 
-                    AppConstants.NodeType.RECOMMENDER, 
-                    "recommender"
-              ); 
+            /*2 인경우 1대 만 적립*/
+            if (pointCoupons.get(0).getAccTargetRange().equals("2")) {
+            	if (outerTarget.getFirstRecommenderMemberNo() != null) {
+                      increasePoint(
+                      	pct.getPointCouponTransactionNo(),
+                      	policy.getCustomerRecCom(),
+                      	pointCoupons.get(0).getAccPointAmount() * policy.getCustomerRecCom(),
+                        outerTarget.getFirstRecommenderMemberNo(), 
+                        outerTarget.getFirstRecommenderMemberNo(), 
+                        AppConstants.NodeType.RECOMMENDER, 
+                        "recommender"
+                    ); 
+                }
+            }
+            
+            /*3인 경우 1대 , 2대 모두 적립*/
+            if (pointCoupons.get(0).getAccTargetRange().equals("3")) {
+            	if (outerTarget.getFirstRecommenderMemberNo() != null) {
+                    increasePoint(
+                    	pct.getPointCouponTransactionNo(),
+                    	policy.getCustomerRecCom(),
+                    	pointCoupons.get(0).getAccPointAmount() * policy.getCustomerRecCom(),
+                        outerTarget.getFirstRecommenderMemberNo(), 
+                        outerTarget.getFirstRecommenderMemberNo(), 
+                        AppConstants.NodeType.RECOMMENDER, 
+                       "recommender"
+                  ); 
+              }
+            	
+            	if (outerTarget.getSecondRecommenderMemberNo() != null) {
+                    increasePoint(
+                    	pct.getPointCouponTransactionNo(),
+                    	policy.getCustomerRecManagerComm(),
+                    	pointCoupons.get(0).getAccPointAmount() * policy.getCustomerRecManagerComm(),
+                        outerTarget.getSecondRecommenderMemberNo(),
+                        outerTarget.getSecondRecommenderMemberNo(), 
+                        AppConstants.NodeType.RECOMMENDER, 
+                        "recommender"
+                  ); 
+              }
             }
             
            /*포인트 쿠폰 트랜잭션의 적립 상태를 적립완료로 번경*/

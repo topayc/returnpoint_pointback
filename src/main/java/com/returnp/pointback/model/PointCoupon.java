@@ -20,6 +20,8 @@ public class PointCoupon extends QueryCondition {
 
     private Float accPointAmount;
 
+    private String accTargetRange;
+
     private String publisher;
 
     private Date useStartTime;
@@ -92,6 +94,14 @@ public class PointCoupon extends QueryCondition {
 
     public void setAccPointAmount(Float accPointAmount) {
         this.accPointAmount = accPointAmount;
+    }
+
+    public String getAccTargetRange() {
+        return accTargetRange;
+    }
+
+    public void setAccTargetRange(String accTargetRange) {
+        this.accTargetRange = accTargetRange == null ? null : accTargetRange.trim();
     }
 
     public String getPublisher() {

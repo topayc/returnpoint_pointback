@@ -10,6 +10,7 @@
     <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
     <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
     <result column="accPointAmount" jdbcType="REAL" property="accPointAmount" />
+    <result column="accTargetRange" jdbcType="VARCHAR" property="accTargetRange" />
     <result column="publisher" jdbcType="VARCHAR" property="publisher" />
     <result column="useStartTime" jdbcType="TIMESTAMP" property="useStartTime" />
     <result column="useEndTime" jdbcType="TIMESTAMP" property="useEndTime" />
@@ -18,7 +19,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     pointCouponNo, couponNumber, couponType, useStatus, deliveryStatus, payAmount, accPointRate, 
-    accPointAmount, publisher, useStartTime, useEndTime, updateTime, createTime
+    accPointAmount, accTargetRange, publisher, useStartTime, useEndTime, updateTime, 
+    createTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -33,14 +35,15 @@
   <insert id="insert" parameterType="com.returnp.pointback.model.PointCoupon">
     insert into point_coupon (pointCouponNo, couponNumber, couponType, 
       useStatus, deliveryStatus, payAmount, 
-      accPointRate, accPointAmount, publisher, 
-      useStartTime, useEndTime, updateTime, 
-      createTime)
+      accPointRate, accPointAmount, accTargetRange, 
+      publisher, useStartTime, useEndTime, 
+      updateTime, createTime)
     values (#{pointCouponNo,jdbcType=INTEGER}, #{couponNumber,jdbcType=VARCHAR}, #{couponType,jdbcType=VARCHAR}, 
       #{useStatus,jdbcType=VARCHAR}, #{deliveryStatus,jdbcType=VARCHAR}, #{payAmount,jdbcType=INTEGER}, 
-      #{accPointRate,jdbcType=REAL}, #{accPointAmount,jdbcType=REAL}, #{publisher,jdbcType=VARCHAR}, 
-      #{useStartTime,jdbcType=TIMESTAMP}, #{useEndTime,jdbcType=TIMESTAMP}, NOW(), NOW())
-      <selectKey keyProperty="pointCouponNo" resultType="java.lang.Integer" order ="AFTER">
+      #{accPointRate,jdbcType=REAL}, #{accPointAmount,jdbcType=REAL}, #{accTargetRange,jdbcType=VARCHAR}, 
+      #{publisher,jdbcType=VARCHAR}, #{useStartTime,jdbcType=TIMESTAMP}, #{useEndTime,jdbcType=TIMESTAMP}, 
+      NOW(), NOW())
+          <selectKey keyProperty="pointCouponNo" resultType="java.lang.Integer" order ="AFTER">
 		    SELECT LAST_INSERT_ID()
 	 </selectKey>	
   </insert>
@@ -70,6 +73,9 @@
       </if>
       <if test="accPointAmount != null">
         accPointAmount,
+      </if>
+      <if test="accTargetRange != null">
+        accTargetRange,
       </if>
       <if test="publisher != null">
         publisher,
@@ -112,6 +118,9 @@
       <if test="accPointAmount != null">
         #{accPointAmount,jdbcType=REAL},
       </if>
+      <if test="accTargetRange != null">
+        #{accTargetRange,jdbcType=VARCHAR},
+      </if>
       <if test="publisher != null">
         #{publisher,jdbcType=VARCHAR},
       </if>
@@ -153,6 +162,9 @@
       <if test="accPointAmount != null">
         accPointAmount = #{accPointAmount,jdbcType=REAL},
       </if>
+      <if test="accTargetRange != null">
+        accTargetRange = #{accTargetRange,jdbcType=VARCHAR},
+      </if>
       <if test="publisher != null">
         publisher = #{publisher,jdbcType=VARCHAR},
       </if>
@@ -180,6 +192,7 @@
       payAmount = #{payAmount,jdbcType=INTEGER},
       accPointRate = #{accPointRate,jdbcType=REAL},
       accPointAmount = #{accPointAmount,jdbcType=REAL},
+      accTargetRange = #{accTargetRange,jdbcType=VARCHAR},
       publisher = #{publisher,jdbcType=VARCHAR},
       useStartTime = #{useStartTime,jdbcType=TIMESTAMP},
       useEndTime = #{useEndTime,jdbcType=TIMESTAMP},
