@@ -4,7 +4,7 @@ import com.returnp.pointback.dto.QueryCondition;
 import java.util.Date;
 
 public class PointCouponPointbackRecord extends QueryCondition {
-    private Integer pointCouponPointbackRecord;
+    private Integer pointCouponPointbackRecordNo;
 
     private Integer memberNo;
 
@@ -22,12 +22,12 @@ public class PointCouponPointbackRecord extends QueryCondition {
 
     private Date updateTime;
 
-    public Integer getPointCouponPointbackRecord() {
-        return pointCouponPointbackRecord;
+    public Integer getPointCouponPointbackRecordNo() {
+        return pointCouponPointbackRecordNo;
     }
 
-    public void setPointCouponPointbackRecord(Integer pointCouponPointbackRecord) {
-        this.pointCouponPointbackRecord = pointCouponPointbackRecord;
+    public void setPointCouponPointbackRecordNo(Integer pointCouponPointbackRecordNo) {
+        this.pointCouponPointbackRecordNo = pointCouponPointbackRecordNo;
     }
 
     public Integer getMemberNo() {
