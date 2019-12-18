@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.returnp.pointback.dao.mapper.PointCouponPointbackRecordMapper">
-  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PointCouponPointbackRecord">
-    <id column="pointCouponPointbackRecordNo" jdbcType="INTEGER" property="pointCouponPointbackRecordNo" />
+<mapper namespace="com.returnp.pointback.dao.mapper.PointCodePointbackRecordMapper">
+  <resultMap id="BaseResultMap" type="com.returnp.pointback.model.PointCodePointbackRecord">
+    <id column="pointCodePointbackRecordNo" jdbcType="INTEGER" property="pointCodePointbackRecordNo" />
     <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
-    <result column="pointCouponTransactionNo" jdbcType="INTEGER" property="pointCouponTransactionNo" />
+    <result column="pointCodeTransactionNo" jdbcType="INTEGER" property="pointCodeTransactionNo" />
     <result column="nodeNo" jdbcType="INTEGER" property="nodeNo" />
     <result column="nodeType" jdbcType="VARCHAR" property="nodeType" />
     <result column="accRate" jdbcType="REAL" property="accRate" />
@@ -13,43 +13,43 @@
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    pointCouponPointbackRecordNo, memberNo, pointCouponTransactionNo, nodeNo, nodeType, 
-    accRate, accPoint, createTime, updateTime
+    pointCodePointbackRecordNo, memberNo, pointCodeTransactionNo, nodeNo, nodeType, accRate, 
+    accPoint, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from point_coupon_pointback_record
-    where pointCouponPointbackRecordNo = #{pointCouponPointbackRecordNo,jdbcType=INTEGER}
+    from point_code_pointback_record
+    where pointCodePointbackRecordNo = #{pointCodePointbackRecordNo,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from point_coupon_pointback_record
-    where pointCouponPointbackRecordNo = #{pointCouponPointbackRecordNo,jdbcType=INTEGER}
+    delete from point_code_pointback_record
+    where pointCodePointbackRecordNo = #{pointCodePointbackRecordNo,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.returnp.pointback.model.PointCouponPointbackRecord">
-    insert into point_coupon_pointback_record (pointCouponPointbackRecordNo, memberNo, 
-      pointCouponTransactionNo, nodeNo, nodeType, 
+  <insert id="insert" parameterType="com.returnp.pointback.model.PointCodePointbackRecord">
+    insert into point_code_pointback_record (pointCodePointbackRecordNo, memberNo, 
+      pointCodeTransactionNo, nodeNo, nodeType, 
       accRate, accPoint, createTime, 
       updateTime)
-    values (#{pointCouponPointbackRecordNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, 
-      #{pointCouponTransactionNo,jdbcType=INTEGER}, #{nodeNo,jdbcType=INTEGER}, #{nodeType,jdbcType=VARCHAR}, 
+    values (#{pointCodePointbackRecordNo,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, 
+      #{pointCodeTransactionNo,jdbcType=INTEGER}, #{nodeNo,jdbcType=INTEGER}, #{nodeType,jdbcType=VARCHAR}, 
       #{accRate,jdbcType=REAL}, #{accPoint,jdbcType=REAL}, NOW(), NOW())
-      
-      <selectKey keyProperty="pointCouponPointbackRecordNo" resultType="java.lang.Integer" order ="AFTER">
+     
+      <selectKey keyProperty="pointCodePointbackRecordNo" resultType="java.lang.Integer" order ="AFTER">
 		    SELECT LAST_INSERT_ID()
-	 </selectKey>	
+	 </selectKey>
   </insert>
-  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PointCouponPointbackRecord">
-    insert into point_coupon_pointback_record
+  <insert id="insertSelective" parameterType="com.returnp.pointback.model.PointCodePointbackRecord">
+    insert into point_code_pointback_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="pointCouponPointbackRecordNo != null">
-        pointCouponPointbackRecordNo,
+      <if test="pointCodePointbackRecordNo != null">
+        pointCodePointbackRecordNo,
       </if>
       <if test="memberNo != null">
         memberNo,
       </if>
-      <if test="pointCouponTransactionNo != null">
-        pointCouponTransactionNo,
+      <if test="pointCodeTransactionNo != null">
+        pointCodeTransactionNo,
       </if>
       <if test="nodeNo != null">
         nodeNo,
@@ -71,14 +71,14 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="pointCouponPointbackRecordNo != null">
-        #{pointCouponPointbackRecordNo,jdbcType=INTEGER},
+      <if test="pointCodePointbackRecordNo != null">
+        #{pointCodePointbackRecordNo,jdbcType=INTEGER},
       </if>
       <if test="memberNo != null">
         #{memberNo,jdbcType=INTEGER},
       </if>
-      <if test="pointCouponTransactionNo != null">
-        #{pointCouponTransactionNo,jdbcType=INTEGER},
+      <if test="pointCodeTransactionNo != null">
+        #{pointCodeTransactionNo,jdbcType=INTEGER},
       </if>
       <if test="nodeNo != null">
         #{nodeNo,jdbcType=INTEGER},
@@ -100,14 +100,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PointCouponPointbackRecord">
-    update point_coupon_pointback_record
+  <update id="updateByPrimaryKeySelective" parameterType="com.returnp.pointback.model.PointCodePointbackRecord">
+    update point_code_pointback_record
     <set>
       <if test="memberNo != null">
         memberNo = #{memberNo,jdbcType=INTEGER},
       </if>
-      <if test="pointCouponTransactionNo != null">
-        pointCouponTransactionNo = #{pointCouponTransactionNo,jdbcType=INTEGER},
+      <if test="pointCodeTransactionNo != null">
+        pointCodeTransactionNo = #{pointCodeTransactionNo,jdbcType=INTEGER},
       </if>
       <if test="nodeNo != null">
         nodeNo = #{nodeNo,jdbcType=INTEGER},
@@ -128,19 +128,18 @@
         updateTime = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where pointCouponPointbackRecordNo = #{pointCouponPointbackRecordNo,jdbcType=INTEGER}
+    where pointCodePointbackRecordNo = #{pointCodePointbackRecordNo,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PointCouponPointbackRecord">
-    update point_coupon_pointback_record
+  <update id="updateByPrimaryKey" parameterType="com.returnp.pointback.model.PointCodePointbackRecord">
+    update point_code_pointback_record
     set memberNo = #{memberNo,jdbcType=INTEGER},
-      pointCouponTransactionNo = #{pointCouponTransactionNo,jdbcType=INTEGER},
+      pointCodeTransactionNo = #{pointCodeTransactionNo,jdbcType=INTEGER},
       nodeNo = #{nodeNo,jdbcType=INTEGER},
       nodeType = #{nodeType,jdbcType=VARCHAR},
       accRate = #{accRate,jdbcType=REAL},
       accPoint = #{accPoint,jdbcType=REAL},
       createTime = #{createTime,jdbcType=TIMESTAMP},
-      updateTime = NOW()
-    where pointCouponPointbackRecordNo = #{pointCouponPointbackRecordNo,jdbcType=INTEGER}
+      updateTime =NOW()
+    where pointCodePointbackRecordNo = #{pointCodePointbackRecordNo,jdbcType=INTEGER}
   </update>
-  
 </mapper>

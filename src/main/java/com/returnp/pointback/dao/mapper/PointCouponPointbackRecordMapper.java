@@ -5,13 +5,14 @@ import com.returnp.pointback.model.PointCouponPointbackRecord;
 public interface PointCouponPointbackRecordMapper {
     int deleteByPrimaryKey(Integer pointCouponPointbackRecordNo);
 
-    int insert(PointCouponPointbackRecord record);
+	int insert(PointCouponPointbackRecord record);
 
-    int insertSelective(PointCouponPointbackRecord record);
+	int insertSelective(PointCouponPointbackRecord record);
 
-    PointCouponPointbackRecord selectByPrimaryKey(Integer pointCouponPointbackRecordNo);
+	PointCouponPointbackRecord selectByPrimaryKey(Integer pointCouponPointbackRecordNo);
 
-    int updateByPrimaryKeySelective(PointCouponPointbackRecord record);
+	int updateByPrimaryKeySelective(PointCouponPointbackRecord record);
 
-    int updateByPrimaryKey(PointCouponPointbackRecord record);
+	int updateByPrimaryKey(PointCouponPointbackRecord record);
+
 }

@@ -35,7 +35,7 @@
     
  
     <table 
-   		tableName="point_code_pointback_record" domainObjectName="PointCodePointbackRecord" enableCountByExample="false" 
+   		tableName="point_code_issue" domainObjectName="PointCodeIssue" enableCountByExample="false" 
    		enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
    		selectByExampleQueryId="false">
     	<property name="useActualColumnNames" value="true" />

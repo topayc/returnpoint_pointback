@@ -2448,4 +2448,107 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   </select>
   
   
+  <!-- ===============================================================================================================    -->
+  <!-- PointCodeIssues-->
+  
+  <resultMap id="PointCodeResultMap" type="com.returnp.admin.model.PointCodeIssue">
+    <id column="pointCodeIssueNo" jdbcType="INTEGER" property="pointCodeIssueNo" />
+    <result column="pointCodeIssueRequestNo" jdbcType="INTEGER" property="pointCodeIssueRequestNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="pointCode" jdbcType="VARCHAR" property="pointCode" />
+    <result column="useStatus" jdbcType="VARCHAR" property="useStatus" />
+    <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
+    <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
+    <result column="accPointAmount" jdbcType="REAL" property="accPointAmount" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+    <sql id="PointCode_Column_List">
+  pointCodeIssueNo, pointCodeIssueRequestNo, memberNo, pointCode, useStatus, payAmount, 
+    accPointRate, accPointAmount, createTime, updateTime
+  </sql>
+  
+    <sql id ="PointCodeWhereStatement">
+      <if test="pointCodeIssueRequestNo != null"> AND pointCodeIssueRequestNo = #{pointCodeIssueRequestNo,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="pointCode != null"> AND pointCode = #{pointCode,jdbcType=INTEGER}</if>
+      <if test="useStatus != null"> AND useStatus = #{useStatus,jdbcType=VARCHAR}</if>
+  </sql>
+  
+  <select id="selectPointCodeIssues" parameterType="com.returnp.pointback.model.PointCodeIssue" resultMap="PointCodeResultMap">
+    select 
+    <include refid="PointCode_Column_List" />
+    from point_code_issue
+    where 
+     	 1 = 1 
+    	<include refid = "PointCodeWhereStatement"/>
+  </select>
+  
+    
+  <!-- ===============================================================================================================    -->
+  <!-- PointCodeIssueCommand-->
+  
+  <resultMap id="PointCodeCommandResultMap" type="com.returnp.pointback.dto.command.PointCodeIssueCommand">
+    <id column="pointCodeIssueNo" jdbcType="INTEGER" property="pointCodeIssueNo" />
+    <result column="pointCodeIssueRequestNo" jdbcType="INTEGER" property="pointCodeIssueRequestNo" />
+    <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
+    <result column="pointCode" jdbcType="VARCHAR" property="pointCode" />
+    <result column="accTargetRange" jdbcType="VARCHAR" property="accTargetRange" />
+    <result column="useStatus" jdbcType="VARCHAR" property="useStatus" />
+    <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
+    <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
+    <result column="accPointAmount" jdbcType="REAL" property="accPointAmount" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+    <sql id="PointCodeCommand_Column_List">
+  	A.pointCodeIssueNo, 
+  	A.pointCodeIssueRequestNo, 
+  	A.memberNo, pointCode, 
+  	B.accTargetRange, 
+  	A.useStatus, 
+  	A.payAmount, 
+    A.accPointRate, 
+    A.accPointAmount, 
+    A.createTime, 
+    A.updateTime
+  </sql>
+  
+    <sql id ="PointCodeCommandWhereStatement">
+      <if test="pointCodeIssueRequestNo != null"> AND A.pointCodeIssueRequestNo = #{pointCodeIssueRequestNo,jdbcType=INTEGER}</if>
+      <if test="memberNo != null"> AND A.memberNo = #{memberNo,jdbcType=INTEGER}</if>
+      <if test="pointCode != null"> AND A.pointCode = #{pointCode,jdbcType=INTEGER}</if>
+      <if test="useStatus != null"> AND A.useStatus = #{useStatus,jdbcType=VARCHAR}</if>
+  </sql>
+  
+  <select id="selectPointCodeIssueCommands" parameterType="com.returnp.pointback.dto.command.PointCodeIssueCommand" resultMap="PointCodeCommandResultMap">
+    select 
+    <include refid="PointCodeCommand_Column_List" />
+    from point_code_issue A
+    inner join point_code_issue_request as B on (A.pointCodeIssueRequestNo =B.pointCodeIssueRequestNo) 
+    where 
+     	 1 = 1 
+    	<include refid = "PointCodeCommandWhereStatement"/>
+  </select>
+  
+  
+  <!-- ===============================================================================================================    -->
+  <!-- PointCodeTransaction   -->
+  
+  <select id="selectPointCodeTransactions" parameterType="HashMap"  resultType="HashMap" >
+    select 
+    	*
+    from point_code_transaction as A
+    inner join point_code_issues  as B on (A.pointCodeIssueNo = PC.pointCodeIssueNo) 
+    where 
+     	 1 = 1 
+       <if test="pointCodeTransactionNo != null"> AND pointCodeTransactionNo = #{pointCodeTransactionNo}</if>
+       <if test="pointCodeIssueNo != null"> AND pointCodeIssueNo = #{pointCodeIssueNo}</if>
+      <if test="memberNo != null"> AND memberNo = #{memberNo}</if>
+      <if test="pointCode != null"> AND pointCode = #{pointCode}</if>
+      <if test="pointBackStatus != null"> AND pointBackStatus = #{pointBackStatus}</if>
+  </select>
+  
 </mapper>

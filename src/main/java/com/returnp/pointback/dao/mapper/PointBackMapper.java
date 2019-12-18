@@ -17,6 +17,7 @@ import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PaymentPointbackRecordCommand;
 import com.returnp.pointback.dto.command.PaymentTransactionCommand;
 import com.returnp.pointback.dto.command.PointBackTarget;
+import com.returnp.pointback.dto.command.PointCodeIssueCommand;
 import com.returnp.pointback.dto.command.PointConversionTransactionCommand;
 import com.returnp.pointback.dto.command.PointConvertRequestCommand;
 import com.returnp.pointback.dto.command.PointCouponTransactionCommand;
@@ -40,6 +41,7 @@ import com.returnp.pointback.model.MembershipRequest;
 import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PaymentRouter;
 import com.returnp.pointback.model.PaymentTransaction;
+import com.returnp.pointback.model.PointCodeIssue;
 import com.returnp.pointback.model.PointConversionTransaction;
 import com.returnp.pointback.model.PointCoupon;
 import com.returnp.pointback.model.Policy;
@@ -100,4 +102,11 @@ public interface PointBackMapper {
 
 	public ArrayList<PointCoupon> selectPointCoupons(PointCoupon pointCoupon);
 	public ArrayList<PointCouponTransactionCommand> selectPointCouponTransactionCommands(PointCouponTransactionCommand pointCouponTransactionCommand);
+
+	public ArrayList<PointCodeIssue> selectPointCodeIssues(PointCodeIssue pc);
+	public ArrayList<HashMap<String, Object>> selectPointCodeIssues(HashMap<String, Object> dbparam);
+
+	public ArrayList<HashMap<String, Object>> selectPointCodeTransactions(HashMap<String, Object> dbparam);
+
+	public ArrayList<PointCodeIssueCommand> selectPointCodeIssueCommand(PointCodeIssue pc);
 }
