@@ -2451,7 +2451,7 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   <!-- ===============================================================================================================    -->
   <!-- PointCodeIssues-->
   
-  <resultMap id="PointCodeResultMap" type="com.returnp.admin.model.PointCodeIssue">
+  <resultMap id="PointCodeResultMap" type="com.returnp.pointback.model.PointCodeIssue">
     <id column="pointCodeIssueNo" jdbcType="INTEGER" property="pointCodeIssueNo" />
     <result column="pointCodeIssueRequestNo" jdbcType="INTEGER" property="pointCodeIssueRequestNo" />
     <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
