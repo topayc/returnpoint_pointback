@@ -2539,15 +2539,16 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   
   <select id="selectPointCodeTransactions" parameterType="HashMap"  resultType="HashMap" >
     select 
-    	*
+    A.*, 
+    B.useStatus
     from point_code_transaction as A
-    inner join point_code_issues  as B on (A.pointCodeIssueNo = PC.pointCodeIssueNo) 
+    inner join point_code_issue  as B on (A.pointCodeIssueNo = B.pointCodeIssueNo) 
     where 
      	 1 = 1 
        <if test="pointCodeTransactionNo != null"> AND pointCodeTransactionNo = #{pointCodeTransactionNo}</if>
        <if test="pointCodeIssueNo != null"> AND pointCodeIssueNo = #{pointCodeIssueNo}</if>
       <if test="memberNo != null"> AND memberNo = #{memberNo}</if>
-      <if test="pointCode != null"> AND pointCode = #{pointCode}</if>
+      <if test="pointCode != null"> AND B.pointCode = #{pointCode}</if>
       <if test="pointBackStatus != null"> AND pointBackStatus = #{pointBackStatus}</if>
   </select>
   

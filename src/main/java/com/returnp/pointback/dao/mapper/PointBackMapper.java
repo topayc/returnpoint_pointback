@@ -108,5 +108,5 @@ public interface PointBackMapper {
 
 	public ArrayList<HashMap<String, Object>> selectPointCodeTransactions(HashMap<String, Object> dbparam);
 
-	public ArrayList<PointCodeIssueCommand> selectPointCodeIssueCommand(PointCodeIssue pc);
+	public ArrayList<PointCodeIssueCommand> selectPointCodeIssueCommands(PointCodeIssue pc);
 }

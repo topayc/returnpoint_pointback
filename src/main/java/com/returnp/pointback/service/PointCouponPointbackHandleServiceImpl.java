@@ -94,7 +94,7 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
 	            /*포인트 적립권 유효성 판단*/
 	            PointCodeIssue pc = new PointCodeIssue();
 	            pc.setPointCode(pointCode.trim());
-	            ArrayList<PointCodeIssueCommand> pointCodeIssuecommands= this.pointBackMapper.selectPointCodeIssueCommand(pc);
+	            ArrayList<PointCodeIssueCommand> pointCodeIssuecommands= this.pointBackMapper.selectPointCodeIssueCommands(pc);
 	            if (pointCodeIssuecommands == null || pointCodeIssuecommands.size() != 1 ) {
 	                 ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "987", this.messageUtils.getMessage("pointback.invalid_point_coupon"));
 	                     throw new ReturnpException(res);
@@ -126,6 +126,7 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
 	            pct.setMemberNo(members.get(0).getMemberNo());
 	            pct.setPointCodeIssueNo(pointCodeIssuecommands.get(0).getPointCodeIssueNo());
 	            pct.setPayAmount(pointCodeIssuecommands.get(0).getPayAmount());
+	            pct.setPointCode(pointCodeIssuecommands.get(0).getPointCode());
 	            pct.setAccPointAmount(pointCodeIssuecommands.get(0).getAccPointAmount());
 	            pct.setAccPointRate(pointCodeIssuecommands.get(0).getAccPointRate());
 	            pct.setPointBackStatus("1");

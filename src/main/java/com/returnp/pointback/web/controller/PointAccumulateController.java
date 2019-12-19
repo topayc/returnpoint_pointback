@@ -493,7 +493,7 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "memberEmail", required = true ) String memberEmail,  
 			@RequestParam(value = "phoneNumber", required = true ) String phoneNumber,  
 			@RequestParam(value = "phoneNumberCountry", required = false ) String phoneNumberCountry,
-			@RequestParam(value = "couponNumber", required = true ) String couponNumber,
+			@RequestParam(value = "pointCode", required = true ) String pointCode,
 			@RequestParam(value = "status", required = true ) String status,  /* 0 적립, 1 취소*/
 			@RequestParam(value = "key", required = true ) String key
 			){
@@ -507,12 +507,12 @@ public class PointAccumulateController extends ApplicationController{
 		}else {
 			/*적립*/
 			if (status.equals("0")) {
-				res = this.pointCouponPointbackHandler.accumulate(memberEmail, phoneNumber,phoneNumberCountry,couponNumber);
+				res = this.pointCouponPointbackHandler.accumulate(memberEmail, phoneNumber,phoneNumberCountry,pointCode);
 			}
 		
 			/*적립 취소*/
 			else if (status.equals("1")) {
-				res = this.pointCouponPointbackHandler.cancelAccumulate(memberEmail, phoneNumber,phoneNumberCountry,couponNumber);
+				res = this.pointCouponPointbackHandler.cancelAccumulate(memberEmail, phoneNumber,phoneNumberCountry,pointCode);
 			}
 			
 		}
