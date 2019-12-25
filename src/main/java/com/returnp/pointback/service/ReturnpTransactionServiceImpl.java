@@ -211,7 +211,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 			record.setNodeNo(record.getNodeNo());
 			record.setNodeType(pointbackRecord.getNodeType());
 			record.setAccRate(pointbackRecord.getAccRate());
-			record.setPointbackAmount(transaction.getPaymentApprovalAmount() * pointbackRecord.getAccRate() * -1);
+			record.setPointbackAmount(pointbackRecord.getPointbackAmount() * -1);
 			paymentPointbackRecordMapper.insert(record);
 		}
 
@@ -810,7 +810,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
 		                throw new ReturnpException(res);
 	            }
 	            if (!affiliate.getAffiliateType().contains(AppConstants.AffiliateType.COMMON_AFFILIATE)  && 
-	                    !affiliate.getAffiliateType().contains(AppConstants.AffiliateType.ONLINE_AFFILIATE)) {
+	                    !affiliate.getAffiliateType().contains(AppConstants.AffiliateType.ONLINE_AFFILIATE) && !affiliate.getAffiliateType().contains(AppConstants.AffiliateType.NO_BUSINESS_NUMBER_AFFILIATE)) {
 	                ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "619", 
 	                        this.messageUtils.getMessage("pointback.message.acc_ok_but_not_accable_affiliate"));
 	                throw new ReturnpException(res);

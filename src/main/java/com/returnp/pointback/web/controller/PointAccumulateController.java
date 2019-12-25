@@ -98,7 +98,7 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "phoneNumber", required = true ) String phoneNumber,
 			@RequestParam(value = "phoneNumberCountry", required = false ) String phoneNumberCountry,
 			@RequestParam(value = "memberEmail", required = true ) String memberEmail,
-			@RequestParam(value = "key", required = true ) String key
+			@RequestParam(value = "key", required = false, defaultValue = "not" ) String key
 			){
 		
 		logger.info("-----------------------PointAccumulateController.qrAccumulatePoint----------------------------");
@@ -108,7 +108,7 @@ public class PointAccumulateController extends ApplicationController{
 		
 		ReturnpBaseResponse res= null;
 		DataMap dataMap = new DataMap();
-		if (!this.keys.contains(key)) {
+		if (key.equals("not") && !this.keys.contains(key) ) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
@@ -240,14 +240,14 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "phoneNumber", required = true ) String phoneNumber,
 			@RequestParam(value = "phoneNumberCountry", required = false ) String phoneNumberCountry,
 			@RequestParam(value = "memberEmail", required = true ) String memberEmail,
-			@RequestParam(value = "key", required = true ) String key
+			@RequestParam(value = "key", required = false, defaultValue = "not" ) String key
 			){
 		
 		System.out.println("####### PointAccumulateService.manualAccumulatePoint ");
 		ReturnpBaseResponse res= null;
 		
 		DataMap dataMap = new DataMap();
-		if (!this.keys.contains(key)) {
+		if (key.equals("not") && !this.keys.contains(key) ) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
@@ -457,12 +457,12 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "phoneNumberCountry", required = false ) String phoneNumberCountry,
 			@RequestParam(value = "couponNumber", required = true ) String couponNumber,
 			@RequestParam(value = "status", required = true ) String status,  /* 0 적립, 1 취소*/
-			@RequestParam(value = "key", required = true ) String key
+			@RequestParam(value = "key", required = false, defaultValue = "not") String key
 			){
 		
 		ReturnpBaseResponse res= null;
 		
-		if (!this.keys.contains(key)) {
+		if (key.equals("not") && !this.keys.contains(key) ) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
@@ -482,7 +482,7 @@ public class PointAccumulateController extends ApplicationController{
 	}
 	
 	/**
-	 * 포인트 적립 쿠폰 처리 
+	 * 포인트 적립 코드 처리 
 	 * @param paymentTrasactionNo
 	 * @param key
 	 * @return
@@ -495,12 +495,12 @@ public class PointAccumulateController extends ApplicationController{
 			@RequestParam(value = "phoneNumberCountry", required = false ) String phoneNumberCountry,
 			@RequestParam(value = "pointCode", required = true ) String pointCode,
 			@RequestParam(value = "status", required = true ) String status,  /* 0 적립, 1 취소*/
-			@RequestParam(value = "key", required = true ) String key
+			@RequestParam(value = "key", required = false, defaultValue = "not" ) String key
 			){
 		
 		ReturnpBaseResponse res= null;
 		
-		if (!this.keys.contains(key)) {
+		if (key.equals("not") && !this.keys.contains(key) ) {
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "306", this.messageUtils.getMessage("pointback.message.invalid_key"));
 			return res;
