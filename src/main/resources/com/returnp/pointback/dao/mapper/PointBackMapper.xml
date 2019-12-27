@@ -2495,6 +2495,8 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     <result column="memberNo" jdbcType="INTEGER" property="memberNo" />
     <result column="pointCode" jdbcType="VARCHAR" property="pointCode" />
     <result column="accTargetRange" jdbcType="VARCHAR" property="accTargetRange" />
+    <result column="issueType" jdbcType="VARCHAR" property="issueType" />
+    <result column="affiliateNo" jdbcType="INTEGER" property="affiliateNo" />
     <result column="useStatus" jdbcType="VARCHAR" property="useStatus" />
     <result column="payAmount" jdbcType="INTEGER" property="payAmount" />
     <result column="accPointRate" jdbcType="REAL" property="accPointRate" />
@@ -2508,6 +2510,8 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
   	A.pointCodeIssueRequestNo, 
   	A.memberNo, pointCode, 
   	B.accTargetRange, 
+  	B.issueType,
+  	B.affiliateNo,
   	A.useStatus, 
   	A.payAmount, 
     A.accPointRate, 
@@ -2533,7 +2537,22 @@ saleManagerNo, memberNo, saleManagerCode, saleManagerName, saleManagerAddress, s
     	<include refid = "PointCodeCommandWhereStatement"/>
   </select>
   
+    <!-- ===============================================================================================================    -->
+  <!-- PointCodeIssueRequest   -->
   
+  <select id="selectPointCodeIssueRequests" parameterType="com.returnp.pointback.model.PointCodeIssueRequest" resultType="com.returnp.pointback.model.PointCodeIssueRequest">
+    select 
+    A.*, 
+    B.useStatus
+    from point_code_issue_request
+    where 
+     	 1 = 1 
+       <if test="pointCodeIssueRequestNo != null"> AND pointCodeIssueRequestNo = #{pointCodeIssueRequestNo}</if>
+       <if test="memberNo != null"> AND memberNo = #{memberNo}</if>
+      <if test="affiliateNo != null"> AND affiliateNo = #{affiliateNo}</if>
+      <if test="issueType != null"> AND issueType = #{issueType}</if>
+      <if test="status != null"> AND status = #{status}</if>
+  </select>
   <!-- ===============================================================================================================    -->
   <!-- PointCodeTransaction   -->
   

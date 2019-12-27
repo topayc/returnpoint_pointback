@@ -15,9 +15,9 @@ import com.returnp.pointback.model.PaymentTransaction;
 
 @Transactional
 public interface PointCodePointbackHandleService {
-	public ReturnpBaseResponse accumulate(String memberEmail, String phoneNumber, String phoneNumberCountry, String couponNumber);
-	public ReturnpBaseResponse cancelAccumulate(String memberEmail, String phoneNumber, String phoneNumberCountry,String couponNumber);
-	public void increasePoint(int pointCouponTransactionNo, float accRate, float accPointAmount, int memberNo, int nodeNo, String nodeType, String nodeTypeName); 
+	public ReturnpBaseResponse accumulate(String memberEmail, String phoneNumber, String phoneNumberCountry, String pointCode);
+	public ReturnpBaseResponse cancelAccumulate(String memberEmail, String phoneNumber, String phoneNumberCountry,String pointCode);
+	public void increasePoint(int pointCodeTransactionNo, float accRate, float accPointAmount, int memberNo, int nodeNo, String nodeType, String nodeTypeName); 
 	public GreenPoint createRecommenderRPoint(int memberNo) ;
 
 }

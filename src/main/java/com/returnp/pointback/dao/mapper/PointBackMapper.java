@@ -42,6 +42,7 @@ import com.returnp.pointback.model.PaymentPointbackRecord;
 import com.returnp.pointback.model.PaymentRouter;
 import com.returnp.pointback.model.PaymentTransaction;
 import com.returnp.pointback.model.PointCodeIssue;
+import com.returnp.pointback.model.PointCodeIssueRequest;
 import com.returnp.pointback.model.PointConversionTransaction;
 import com.returnp.pointback.model.PointCoupon;
 import com.returnp.pointback.model.Policy;
@@ -109,4 +110,7 @@ public interface PointBackMapper {
 	public ArrayList<HashMap<String, Object>> selectPointCodeTransactions(HashMap<String, Object> dbparam);
 
 	public ArrayList<PointCodeIssueCommand> selectPointCodeIssueCommands(PointCodeIssue pc);
+
+	public ArrayList<PointCodeIssueRequest> selectPointCodeIssueRequests(PointCodeIssueRequest reCond);
+
 }

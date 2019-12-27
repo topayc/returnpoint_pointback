@@ -24,16 +24,16 @@ import com.returnp.pointback.model.PointCoupon;
 import com.returnp.pointback.model.PointCouponPointbackRecord;
 import com.returnp.pointback.model.PointCouponTransaction;
 import com.returnp.pointback.model.Policy;
-import com.returnp.pointback.service.interfaces.PointCodePointbackHandleService;
+import com.returnp.pointback.service.interfaces.PointCouponPointbackHandleService;
 import com.returnp.pointback.service.interfaces.PointbackTargetService;
 import com.returnp.pointback.service.interfaces.ReturnpTransactionService;
 import com.returnp.pointback.web.message.MessageUtils;
 
 @Service
 /*@PropertySource("classpath:/messages.properties")*/
-public class PointCodePointbackHandleServiceImpl implements PointCodePointbackHandleService {
+public class PointCouponPointbackHandleServiceImpl implements PointCouponPointbackHandleService {
     
-    private Logger logger = Logger.getLogger(PointCodePointbackHandleServiceImpl.class);
+    private Logger logger = Logger.getLogger(PointCouponPointbackHandleServiceImpl.class);
     
     @Autowired MessageUtils messageUtils;
     @Autowired PointBackMapper pointBackMapper;

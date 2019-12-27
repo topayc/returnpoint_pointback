@@ -11,6 +11,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.returnp.pointback.common.AppConstants;
 import com.returnp.pointback.common.ResponseUtil;
 import com.returnp.pointback.common.ReturnpException;
+import com.returnp.pointback.dao.mapper.AffiliateMapper;
 import com.returnp.pointback.dao.mapper.GreenPointMapper;
 import com.returnp.pointback.dao.mapper.PointBackMapper;
 import com.returnp.pointback.dao.mapper.PointCodeIssueMapper;
@@ -19,25 +20,27 @@ import com.returnp.pointback.dao.mapper.PointCodeTransactionMapper;
 import com.returnp.pointback.dao.mapper.PointCouponMapper;
 import com.returnp.pointback.dao.mapper.PointCouponPointbackRecordMapper;
 import com.returnp.pointback.dao.mapper.PointCouponTransactionMapper;
+import com.returnp.pointback.dto.command.InnerPointBackTarget;
 import com.returnp.pointback.dto.command.OuterPointBackTarget;
 import com.returnp.pointback.dto.command.PointCodeIssueCommand;
 import com.returnp.pointback.dto.response.ReturnpBaseResponse;
+import com.returnp.pointback.model.Affiliate;
 import com.returnp.pointback.model.GreenPoint;
 import com.returnp.pointback.model.Member;
 import com.returnp.pointback.model.PointCodeIssue;
 import com.returnp.pointback.model.PointCodePointbackRecord;
 import com.returnp.pointback.model.PointCodeTransaction;
 import com.returnp.pointback.model.Policy;
-import com.returnp.pointback.service.interfaces.PointCouponPointbackHandleService;
+import com.returnp.pointback.service.interfaces.PointCodePointbackHandleService;
 import com.returnp.pointback.service.interfaces.PointbackTargetService;
 import com.returnp.pointback.service.interfaces.ReturnpTransactionService;
 import com.returnp.pointback.web.message.MessageUtils;
 
 @Service
 /*@PropertySource("classpath:/messages.properties")*/
-public class PointCouponPointbackHandleServiceImpl implements PointCouponPointbackHandleService {
+public class PointCodePointbackHandleServiceImpl implements PointCodePointbackHandleService {
     
-	   private Logger logger = Logger.getLogger(PointCouponPointbackHandleServiceImpl.class);
+	   private Logger logger = Logger.getLogger(PointCodePointbackHandleServiceImpl.class);
 	    
 	    @Autowired MessageUtils messageUtils;
 	    @Autowired PointBackMapper pointBackMapper;
@@ -50,6 +53,7 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
 	    @Autowired PointbackTargetService pointBackTargetService;
 	    @Autowired GreenPointMapper greenPointMapper;
 	    @Autowired PointCouponMapper pointCouponMapper;;
+	    @Autowired AffiliateMapper affiliateMapper;;
 	    
 	    
 	    public static class Command {
@@ -132,10 +136,8 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
 	            pct.setPointBackStatus("1");
 	            this.pointCodeTransactionMapper.insert(pct);
 	            
-	            /* 쿠폰 등록자 및 등록자의 1대만 적립 포인트 만큼 증가 
-	             * 증가완료후 포인트 백 상태 변경
-	             * 포인트 적립 레코드 생성
-	             * */
+	            
+	            /*영수증 타입에 따른 적립 범위 분기 */
 	            
 	            OuterPointBackTarget outerTarget = new OuterPointBackTarget();
 	            outerTarget.setMemberNo(members.get(0).getMemberNo());
@@ -157,25 +159,62 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
 	                    "member"  
 	                ); 
 	            }
-	            
-	            /*2 인경우 1대 만 적립*/
-	            if (pointCodeIssuecommands.get(0).getAccTargetRange().equals("2")) {
-	                if (outerTarget.getFirstRecommenderMemberNo() != null) {
-	                      increasePoint(
-	                        pct.getPointCodeTransactionNo(),
-	                        policy.getCustomerRecCom(),
-	                        pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getCustomerRecCom(),
-	                        outerTarget.getFirstRecommenderMemberNo(), 
-	                        outerTarget.getFirstRecommenderMemberNo(), 
-	                        AppConstants.NodeType.RECOMMENDER, 
-	                        "recommender"
-	                    ); 
-	                }
+	           
+	            /*
+	             * 비 가맹점 영수증일 경우 
+	             * 적립 범위에 따라 적립 진행 
+	             * */
+	            if (pointCodeIssuecommands.get(0).getIssueType().trim().equals("2")) {
+	                /*2 인경우 1대 만 적립*/
+		            if (pointCodeIssuecommands.get(0).getAccTargetRange().equals("2")) {
+		                if (outerTarget.getFirstRecommenderMemberNo() != null) {
+		                      increasePoint(
+		                        pct.getPointCodeTransactionNo(),
+		                        policy.getCustomerRecCom(),
+		                        pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getCustomerRecCom(),
+		                        outerTarget.getFirstRecommenderMemberNo(), 
+		                        outerTarget.getFirstRecommenderMemberNo(), 
+		                        AppConstants.NodeType.RECOMMENDER, 
+		                        "recommender"
+		                    ); 
+		                }
+		            }
+		            
+		            /*3인 경우 1대 , 2대 모두 적립*/
+		            if (pointCodeIssuecommands.get(0).getAccTargetRange().equals("3")) {
+		                if (outerTarget.getFirstRecommenderMemberNo() != null) {
+		                    increasePoint(
+		                        pct.getPointCodeTransactionNo(),
+		                        policy.getCustomerRecCom(),
+		                        pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getCustomerRecCom(),
+		                        outerTarget.getFirstRecommenderMemberNo(), 
+		                        outerTarget.getFirstRecommenderMemberNo(), 
+		                        AppConstants.NodeType.RECOMMENDER, 
+		                       "recommender"
+		                  ); 
+		              }
+		                
+		                if (outerTarget.getSecondRecommenderMemberNo() != null) {
+		                    increasePoint(
+		                        pct.getPointCodeTransactionNo(),
+		                        policy.getCustomerRecManagerComm(),
+		                        pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getCustomerRecManagerComm(),
+		                        outerTarget.getSecondRecommenderMemberNo(),
+		                        outerTarget.getSecondRecommenderMemberNo(), 
+		                        AppConstants.NodeType.RECOMMENDER, 
+		                        "recommender"
+		                  ); 
+		              }
+		            }
 	            }
 	            
-	            /*3인 경우 1대 , 2대 모두 적립*/
-	            if (pointCodeIssuecommands.get(0).getAccTargetRange().equals("3")) {
-	                if (outerTarget.getFirstRecommenderMemberNo() != null) {
+	            /*
+	             * 가맹점 영수증일 경우 
+	             * 일반 큐알 적립과 마찬가지로 모든 노드 적립
+	             * */
+	            else if (pointCodeIssuecommands.get(0).getIssueType().trim().equals("1")){
+	                /*회원의 1대 적립*/
+	            	if (outerTarget.getFirstRecommenderMemberNo() != null) {
 	                    increasePoint(
 	                        pct.getPointCodeTransactionNo(),
 	                        policy.getCustomerRecCom(),
@@ -184,22 +223,175 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
 	                        outerTarget.getFirstRecommenderMemberNo(), 
 	                        AppConstants.NodeType.RECOMMENDER, 
 	                       "recommender"
-	                  ); 
-	              }
+	                    ); 
+	            	}
+		            	/*회원의 2대 적립*/  
+		            if (outerTarget.getSecondRecommenderMemberNo() != null) {
+		                   increasePoint(
+		                       pct.getPointCodeTransactionNo(),
+		                       policy.getCustomerRecManagerComm(),
+		                       pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getCustomerRecManagerComm(),
+		                       outerTarget.getSecondRecommenderMemberNo(),
+		                       outerTarget.getSecondRecommenderMemberNo(), 
+		                       AppConstants.NodeType.RECOMMENDER, 
+		                       "recommender"
+		                 ); 
+		              }
+		            
+		            Affiliate targetAffiliate = this.affiliateMapper.selectByPrimaryKey(pointCodeIssuecommands.get(0).getAffiliateNo());
+		            InnerPointBackTarget innerTarget = this.pointBackTargetService.findInnerPointBackTarget(targetAffiliate.getAffiliateSerial());
+		            float affiliateComm =  targetAffiliate.getAffiliateComm() > 0 ?  targetAffiliate.getAffiliateComm()  : policy.getAffiliateComm();
 	                
-	                if (outerTarget.getSecondRecommenderMemberNo() != null) {
-	                    increasePoint(
-	                        pct.getPointCodeTransactionNo(),
-	                        policy.getCustomerRecManagerComm(),
-	                        pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getCustomerRecManagerComm(),
-	                        outerTarget.getSecondRecommenderMemberNo(),
-	                        outerTarget.getSecondRecommenderMemberNo(), 
-	                        AppConstants.NodeType.RECOMMENDER, 
-	                        "recommender"
-	                  ); 
-	              }
-	            }
+		            /*
+		             * 가맹점 포인트 적립
+		             * */
+		            if (innerTarget.getAffiliateNo() != null) {
+		                increasePoint(
+		                	pct.getPointCodeTransactionNo(),
+		                	policy.getAffiliateComm(),
+		                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getAffiliateComm(),
+		                	innerTarget.getAffiliateMemberNo(), 
+		                	innerTarget.getAffiliateNo(), 
+		                	AppConstants.NodeType.AFFILIATE, 
+		                	"Affiliate"
+		                ); 
+		            }
 	            
+		            /*
+		             * 가맹점의 1대 추천인 포인트 적립
+		             * */
+		            if (innerTarget.getAffiliateFirstRecommenderMemberNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getAffiliateRecComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getAffiliateRecComm(),
+			                	innerTarget.getAffiliateFirstRecommenderMemberNo(), 
+			                	innerTarget.getAffiliateFirstRecommenderMemberNo(), 
+			                	AppConstants.NodeType.RECOMMENDER, 
+			                	"recommender"
+			                ); 
+		            }
+	            
+		            /*
+		             * 가맹점의 2대 추천인 포인트 적립
+		             * */
+		            if (innerTarget.getAffiliateSecondRecommenderMemberNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getAffiliateRecManagerComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getAffiliateRecManagerComm(),
+			                	innerTarget.getAffiliateSecondRecommenderMemberNo(), 
+			                	innerTarget.getAffiliateSecondRecommenderMemberNo(), 
+			                	AppConstants.NodeType.RECOMMENDER, 
+			                	"recommender"
+			                ); 
+		            }
+		            
+		            /*
+		             * 대리점 포인트 적립
+		             * */
+		            if (innerTarget.getAgencyNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getAgancyComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getAgancyComm(),
+			                	innerTarget.getAgencyMemberNo(), 
+			                	innerTarget.getAgencyNo(), 
+			                	AppConstants.NodeType.AGENCY, 
+			                	"agency"
+			                ); 
+		            }
+		            
+		            /*
+		             * 대리점의 1대 추천인 포인트 지급
+		             * */
+		            if (innerTarget.getAgencyFirstRecommenderMemberNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getAgancyRecComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getAgancyRecComm(),
+			                	innerTarget.getAgencyFirstRecommenderMemberNo(), 
+			                	innerTarget.getAgencyFirstRecommenderMemberNo(),
+			                	AppConstants.NodeType.RECOMMENDER, 
+			                	"recommender"
+			                ); 
+		            }
+		            
+		            /*
+		             * 대리점의 2대 추천인 포인트 지급
+		             * */
+		            if (innerTarget.getAgencySecondRecommenderMemberNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getAgancyRecManagerComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getAgancyRecManagerComm(),
+			                	innerTarget.getAgencySecondRecommenderMemberNo(), 
+			                	innerTarget.getAgencySecondRecommenderMemberNo(),
+			                	AppConstants.NodeType.RECOMMENDER, 
+			                	"recommender"
+			                ); 
+		            }
+		            
+		            /*
+		             * 지사 포인트 적립 
+		             * */
+		            if (innerTarget.getBranchNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getBranchComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getBranchComm(),
+			                	innerTarget.getBranchMemberNo(), 
+			                	innerTarget.getBranchNo(),
+			                	AppConstants.NodeType.BRANCH, 
+			                	"branch"
+			                ); 
+		            }
+		            
+		            /*
+		             * 지사1의 1대 추천인 포인트 적립
+		             * */
+		            if (innerTarget.getBranchFirstRecommenderMemberNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getBranchRecComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getBranchRecComm(),
+			                	innerTarget.getBranchFirstRecommenderMemberNo(),
+			                	innerTarget.getBranchFirstRecommenderMemberNo(),
+			                	AppConstants.NodeType.RECOMMENDER, 
+			                	"recommender"
+			                ); 
+		            }
+		            
+		            /*
+		             * 지사의 2대 추천인 포인트 적립
+		             * */
+		            if (innerTarget.getBranchSecondRecommenderMemberNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getBranchRecManagerComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getBranchRecManagerComm(),
+			                	innerTarget.getBranchSecondRecommenderMemberNo(),
+			                	innerTarget.getBranchSecondRecommenderMemberNo(),
+			                	AppConstants.NodeType.RECOMMENDER, 
+			                	"recommender"
+			                ); 
+		            }
+	            
+		            /*
+		             * 총판 포인트 적립
+		             * */
+		            if (innerTarget.getSoleDistNo() != null) {
+		                increasePoint(
+			                	pct.getPointCodeTransactionNo(),
+			                	policy.getSoleDistComm(),
+			                	pointCodeIssuecommands.get(0).getAccPointAmount() * policy.getSoleDistComm(),
+			                	innerTarget.getSoleDistMemberNo(),
+			                	innerTarget.getSoleDistNo(),
+			                	AppConstants.NodeType.SOLE_DIST, 
+			                	"sole_dist"
+			                ); 
+		            }
+	            }
 	           /*포인트 쿠폰 트랜잭션의 적립 상태를 적립완료로 번경*/
 	            pct.setPointBackStatus("3");
 	            this.pointCodeTransactionMapper.updateByPrimaryKeySelective(pct);
@@ -207,7 +399,6 @@ public class PointCouponPointbackHandleServiceImpl implements PointCouponPointba
 	            /*적립된 포인트 쿠폰의 상태를 사용 완료로 변경*/
 	            pointCodeIssuecommands.get(0).setUseStatus("3");
 	            this.pointCodeIssueMapper.updateByPrimaryKeySelective(pointCodeIssuecommands.get(0));
-	            
 	            ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "100", this.messageUtils.getMessage("pointback.point_coupon.pointback_accumulate_ok"));
 	            return res;
 	        }catch(ReturnpException e) {

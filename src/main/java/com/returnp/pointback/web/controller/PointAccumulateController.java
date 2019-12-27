@@ -507,12 +507,12 @@ public class PointAccumulateController extends ApplicationController{
 		}else {
 			/*적립*/
 			if (status.equals("0")) {
-				res = this.pointCouponPointbackHandler.accumulate(memberEmail, phoneNumber,phoneNumberCountry,pointCode);
+				res = this.pointCodePointbackHandler.accumulate(memberEmail, phoneNumber,phoneNumberCountry,pointCode);
 			}
 		
 			/*적립 취소*/
 			else if (status.equals("1")) {
-				res = this.pointCouponPointbackHandler.cancelAccumulate(memberEmail, phoneNumber,phoneNumberCountry,pointCode);
+				res = this.pointCodePointbackHandler.cancelAccumulate(memberEmail, phoneNumber,phoneNumberCountry,pointCode);
 			}
 			
 		}
