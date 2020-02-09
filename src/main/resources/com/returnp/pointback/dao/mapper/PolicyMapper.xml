@@ -21,6 +21,7 @@
     <result column="gPointMovingMaxLimit" jdbcType="INTEGER" property="gPointMovingMaxLimit" />
     <result column="rPointMovingMinLimit" jdbcType="INTEGER" property="rPointMovingMinLimit" />
     <result column="rPointMovingMaxLimit" jdbcType="INTEGER" property="rPointMovingMaxLimit" />
+    <result column="rPayWithdrawalMaxLimitPerWeek" jdbcType="INTEGER" property="rPayWithdrawalMaxLimitPerWeek" />
     <result column="maxGpointAccLImit" jdbcType="INTEGER" property="maxGpointAccLImit" />
     <result column="customerRecManagerComm" jdbcType="REAL" property="customerRecManagerComm" />
     <result column="affiliateRecManagerComm" jdbcType="REAL" property="affiliateRecManagerComm" />
@@ -35,9 +36,9 @@
     policyNo, regAdminNo, branchComm, soleDistComm, agancyComm, affiliateComm, branchRecComm, 
     agancyRecComm, affiliateRecComm, customerRecCom, customerComm, pointTransRate, pointTransLimit, 
     redPointAccRate, membershipTransLimit, gPointMovingMinLimit, gPointMovingMaxLimit, 
-    rPointMovingMinLimit, rPointMovingMaxLimit, maxGpointAccLImit, customerRecManagerComm, 
-    affiliateRecManagerComm, agancyRecManagerComm, branchRecManagerComm, rPayWithdrawalMinLimit, 
-    rPayWithdrawalMaxLimit, createTime, updateTime
+    rPointMovingMinLimit, rPointMovingMaxLimit, rPayWithdrawalMaxLimitPerWeek, maxGpointAccLImit, 
+    customerRecManagerComm, affiliateRecManagerComm, agancyRecManagerComm, branchRecManagerComm, 
+    rPayWithdrawalMinLimit, rPayWithdrawalMaxLimit, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -57,9 +58,9 @@
       pointTransLimit, redPointAccRate, membershipTransLimit, 
       gPointMovingMinLimit, gPointMovingMaxLimit, 
       rPointMovingMinLimit, rPointMovingMaxLimit, 
-      maxGpointAccLImit, customerRecManagerComm, 
-      affiliateRecManagerComm, agancyRecManagerComm, 
-      branchRecManagerComm, rPayWithdrawalMinLimit, 
+      rPayWithdrawalMaxLimitPerWeek, maxGpointAccLImit, 
+      customerRecManagerComm, affiliateRecManagerComm, 
+      agancyRecManagerComm, branchRecManagerComm, rPayWithdrawalMinLimit, 
       rPayWithdrawalMaxLimit, createTime, updateTime
       )
     values (#{policyNo,jdbcType=INTEGER}, #{regAdminNo,jdbcType=INTEGER}, #{branchComm,jdbcType=REAL}, 
@@ -69,15 +70,11 @@
       #{pointTransLimit,jdbcType=REAL}, #{redPointAccRate,jdbcType=REAL}, #{membershipTransLimit,jdbcType=INTEGER}, 
       #{gPointMovingMinLimit,jdbcType=INTEGER}, #{gPointMovingMaxLimit,jdbcType=INTEGER}, 
       #{rPointMovingMinLimit,jdbcType=INTEGER}, #{rPointMovingMaxLimit,jdbcType=INTEGER}, 
-      #{maxGpointAccLImit,jdbcType=INTEGER}, #{customerRecManagerComm,jdbcType=REAL}, 
-      #{affiliateRecManagerComm,jdbcType=REAL}, #{agancyRecManagerComm,jdbcType=REAL}, 
-      #{branchRecManagerComm,jdbcType=REAL}, #{rPayWithdrawalMinLimit,jdbcType=INTEGER}, 
-      #{rPayWithdrawalMaxLimit,jdbcType=INTEGER}, NOW(), NOW()
+      #{rPayWithdrawalMaxLimitPerWeek,jdbcType=INTEGER}, #{maxGpointAccLImit,jdbcType=INTEGER}, 
+      #{customerRecManagerComm,jdbcType=REAL}, #{affiliateRecManagerComm,jdbcType=REAL}, 
+      #{agancyRecManagerComm,jdbcType=REAL}, #{branchRecManagerComm,jdbcType=REAL}, #{rPayWithdrawalMinLimit,jdbcType=INTEGER}, 
+      #{rPayWithdrawalMaxLimit,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
-      
-          <selectKey keyProperty="policyNo" resultType="java.lang.Integer" order ="AFTER">
-		    SELECT LAST_INSERT_ID()
-	 </selectKey>	
   </insert>
   <insert id="insertSelective" parameterType="com.returnp.pointback.model.Policy">
     insert into policy
@@ -138,6 +135,9 @@
       </if>
       <if test="rPointMovingMaxLimit != null">
         rPointMovingMaxLimit,
+      </if>
+      <if test="rPayWithdrawalMaxLimitPerWeek != null">
+        rPayWithdrawalMaxLimitPerWeek,
       </if>
       <if test="maxGpointAccLImit != null">
         maxGpointAccLImit,
@@ -225,6 +225,9 @@
       <if test="rPointMovingMaxLimit != null">
         #{rPointMovingMaxLimit,jdbcType=INTEGER},
       </if>
+      <if test="rPayWithdrawalMaxLimitPerWeek != null">
+        #{rPayWithdrawalMaxLimitPerWeek,jdbcType=INTEGER},
+      </if>
       <if test="maxGpointAccLImit != null">
         #{maxGpointAccLImit,jdbcType=INTEGER},
       </if>
@@ -311,6 +314,9 @@
       <if test="rPointMovingMaxLimit != null">
         rPointMovingMaxLimit = #{rPointMovingMaxLimit,jdbcType=INTEGER},
       </if>
+      <if test="rPayWithdrawalMaxLimitPerWeek != null">
+        rPayWithdrawalMaxLimitPerWeek = #{rPayWithdrawalMaxLimitPerWeek,jdbcType=INTEGER},
+      </if>
       <if test="maxGpointAccLImit != null">
         maxGpointAccLImit = #{maxGpointAccLImit,jdbcType=INTEGER},
       </if>
@@ -361,6 +367,7 @@
       gPointMovingMaxLimit = #{gPointMovingMaxLimit,jdbcType=INTEGER},
       rPointMovingMinLimit = #{rPointMovingMinLimit,jdbcType=INTEGER},
       rPointMovingMaxLimit = #{rPointMovingMaxLimit,jdbcType=INTEGER},
+      rPayWithdrawalMaxLimitPerWeek = #{rPayWithdrawalMaxLimitPerWeek,jdbcType=INTEGER},
       maxGpointAccLImit = #{maxGpointAccLImit,jdbcType=INTEGER},
       customerRecManagerComm = #{customerRecManagerComm,jdbcType=REAL},
       affiliateRecManagerComm = #{affiliateRecManagerComm,jdbcType=REAL},
@@ -369,7 +376,7 @@
       rPayWithdrawalMinLimit = #{rPayWithdrawalMinLimit,jdbcType=INTEGER},
       rPayWithdrawalMaxLimit = #{rPayWithdrawalMaxLimit,jdbcType=INTEGER},
       createTime = #{createTime,jdbcType=TIMESTAMP},
-      updateTime = NOW()
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
     where policyNo = #{policyNo,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -42,6 +42,8 @@ public class Policy extends QueryCondition {
 
     private Integer rPointMovingMaxLimit;
 
+    private Integer rPayWithdrawalMaxLimitPerWeek;
+
     private Integer maxGpointAccLImit;
 
     private Float customerRecManagerComm;
@@ -210,6 +212,14 @@ public class Policy extends QueryCondition {
 
     public void setrPointMovingMaxLimit(Integer rPointMovingMaxLimit) {
         this.rPointMovingMaxLimit = rPointMovingMaxLimit;
+    }
+
+    public Integer getrPayWithdrawalMaxLimitPerWeek() {
+        return rPayWithdrawalMaxLimitPerWeek;
+    }
+
+    public void setrPayWithdrawalMaxLimitPerWeek(Integer rPayWithdrawalMaxLimitPerWeek) {
+        this.rPayWithdrawalMaxLimitPerWeek = rPayWithdrawalMaxLimitPerWeek;
     }
 
     public Integer getMaxGpointAccLImit() {
