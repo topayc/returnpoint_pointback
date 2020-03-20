@@ -231,13 +231,14 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
             /*
              * 유일한 1개의 SoleDist 검색
              * 관련 노드가 존재하지 않을 경우 Default 로 SoleDist(총판)에게 분배  
-             * */
+             * 
+             * >>>> 변경 사항 : 추천인 없을때 이익형으로 포인트 올라가게 한 것을 삭제 한다.
             ArrayList<SoleDist> soleDistList = this.pointBackMapper.findSoleDists(new SoleDist());
             SoleDist defaultSoleDist = null;
             if (soleDistList .size() >= 0) {
                 defaultSoleDist  = soleDistList.get(0);
             }
-            
+            */
             OuterPointBackTarget outerTarget = new OuterPointBackTarget();
             outerTarget.setMemberNo(transaction.getMemberNo());
             outerTarget = this.pointBackTargetService.findOuterPointBackTarget(outerTarget);
@@ -273,7 +274,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     "recommender",  
                     policy.getCustomerRecCom()
                 ); 
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                         increasePoint(
                         transaction,
@@ -284,7 +285,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getCustomerRecCom()
                     ); 
                 }
-            }
+            }*/
             
             /* 
              * 소비자의 2대 추천인 포인트 적립
@@ -297,7 +298,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     AppConstants.NodeType.RECOMMENDER, "recommender",  
                     policy.getCustomerRecManagerComm()
                 ); 
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -308,7 +309,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getCustomerRecManagerComm()
                     ); 
                 }
-            }
+            }*/
             
             /* 
              * Inner Node 적립(협력업체, 협력업체 추천인, 추천인의 영업 관리자, 대리점, 지사 총판)
@@ -347,7 +348,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     "recommender",
                     policy.getAffiliateRecComm()
                 ); 
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -358,7 +359,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getAffiliateRecComm()
                     ); 
                 }
-            }
+            }*/
             
             /*
              * 가맹점의 2대 추천인 포인트 적립
@@ -371,7 +372,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     AppConstants.NodeType.RECOMMENDER, "recommender", 
                     policy.getAffiliateRecManagerComm()
                     ); 
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -382,7 +383,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getAffiliateRecManagerComm()
                     ); 
                 }
-            }
+            }*/
             
             /*
              * 대리점 포인트 적립
@@ -396,7 +397,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     "agency",  
                     policy.getAgancyComm()
                     ); 
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -407,7 +408,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getAffiliateRecManagerComm()
                     ); 
                 }
-            }
+            }*/
             
             /*
              * 대리점의 1대 추천인 포인트 지급
@@ -421,7 +422,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     "recommender", 
                     policy.getAgancyRecComm()
                     ); 
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -432,7 +433,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getAgancyRecComm()
                     ); 
                 }
-            }
+            }*/
             
             /*
              * 대리점의 2대 추천인 포인트 지급
@@ -446,7 +447,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     "recommender", 
                     policy.getAgancyRecManagerComm()
                     );
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -457,7 +458,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getAgancyRecManagerComm()
                     );
                 }
-            }
+            }*/
             
             /*
              * 지사 포인트 적립 
@@ -471,7 +472,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     "branch",  
                     policy.getBranchComm()
                 );
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -482,7 +483,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getAffiliateRecManagerComm()
                     ); 
                 }
-            }
+            }*/
             
             /*
              * 지사1의 1대 추천인 포인트 적립
@@ -496,7 +497,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     "recommender", 
                     policy.getBranchRecComm()
                 );
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -507,7 +508,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getBranchRecComm()
                     );
                 }
-            }
+            }*/
             
             /*
              * 지사의 2대 추천인 포인트 적립
@@ -522,7 +523,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     policy.getBranchRecManagerComm()
                 );
                 
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -533,7 +534,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getBranchRecManagerComm()
                     );
                 }
-            }
+            }*/
             
             /*
              * 총판 포인트 적립
@@ -546,7 +547,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                     AppConstants.NodeType.SOLE_DIST, "sole_dist", 
                     policy.getSoleDistComm()
                 );
-            }else {
+            }/*else {
                 if (defaultSoleDist != null) {
                     increasePoint(
                         transaction,
@@ -557,7 +558,7 @@ public class ReturnpTransactionServiceImpl implements ReturnpTransactionService 
                         policy.getAffiliateRecManagerComm()
                     ); 
                 }
-            }
+            }*/
             
             transaction.setPointBackStatus(AppConstants.AccumulateStatus.POINTBACK_COMPLETE  );
             this.paymentTransactionMapper.updateByPrimaryKey(transaction);
