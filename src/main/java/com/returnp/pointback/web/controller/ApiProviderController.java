@@ -73,9 +73,14 @@ public class ApiProviderController extends ApplicationController{
 			res = new ReturnpBaseResponse();
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 		}else {
-			res = this.apiServiceProvider.saveDataCache(apiRequest, session);
+			//res = this.apiServiceProvider.saveDataCache(apiRequest, session);
+
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지");
+			/* 서비스 중지 코드 끝*/ 
+			
 		}
-		
 		StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 		return stringRes;
 	}
@@ -96,7 +101,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getDataCache(apiRequest, session);
+			//res = this.apiServiceProvider.getDataCache(apiRequest, session);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -118,8 +129,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			//System.out.println(apiServiceMap.get("apiKey"));
-			res = this.apiServiceProvider.getMemberInfo(apiRequest);
+			//res = this.apiServiceProvider.getMemberInfo(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			//String data = apiResponseService.decode(stringRes.getData(),  (String)apiServiceMap.get("apiKey"));
 			//stringRes.setData(data);
@@ -146,7 +162,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.isRegistered(apiRequest);
+			//res = this.apiServiceProvider.isRegistered(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -175,7 +197,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.join(apiRequest);
+			//res = this.apiServiceProvider.join(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -198,7 +226,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.deleteMember(apiRequest);
+			//res = this.apiServiceProvider.deleteMember(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -229,7 +263,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.modifyMember(apiRequest);
+			//res = this.apiServiceProvider.modifyMember(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -276,15 +316,14 @@ public class ApiProviderController extends ApplicationController{
 			/*적립*/
 			if (apiRequest.getPaymentApprovalStatus().equals("0")) {
 				res = this.apiPointbackHandleService.accumulate(dataMap);
+				
 			}
 			/*적립 취소*/
 			else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
 				res = this.apiPointbackHandleService.cancelAccumulate(dataMap);
-			}
-			else {
+			} else {
 				res = new ReturnpBaseResponse();
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("api.message.wrong_payment_status"));
-				return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			}
 			stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
@@ -318,14 +357,11 @@ public class ApiProviderController extends ApplicationController{
 			if (apiRequest.getPaymentApprovalStatus().equals("0")) {
 				res = this.apiPointbackHandleService.gpointPayApproval(apiRequest);
 			}
-			
 			else if (apiRequest.getPaymentApprovalStatus().equals("1")) {
 				res = this.apiPointbackHandleService.gpointPayCancel(apiRequest);
-			}
-			else {
+			} else {
 				res = new ReturnpBaseResponse();
 				ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "610", this.messageUtils.getMessage("api.message.wrong_payment_status"));
-				return this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			}
 			stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
@@ -380,6 +416,7 @@ public class ApiProviderController extends ApplicationController{
 			return res;
 		}else {
 			res = this.basePointAccumulateService.cancelAccumuate(apiRequest.getPaymentApprovalNumber());
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -401,7 +438,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getLanguages(apiRequest);
+			//res = this.apiServiceProvider.getLanguages(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -425,7 +468,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getBankAccounts(apiRequest);
+			//res = this.apiServiceProvider.getBankAccounts(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -451,7 +500,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.registerBankAccount(apiRequest);
+			//res = this.apiServiceProvider.registerBankAccount(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -482,7 +537,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.updateBankAccount(apiRequest);
+			//res = this.apiServiceProvider.updateBankAccount(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -505,7 +566,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.deleteBankAccount(apiRequest);
+			//res = this.apiServiceProvider.deleteBankAccount(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -527,7 +594,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getPolicy(apiRequest);
+			//res = this.apiServiceProvider.getPolicy(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -549,7 +622,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getGpointAccumuateHistory(apiRequest);
+			//res = this.apiServiceProvider.getGpointAccumuateHistory(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -583,7 +662,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res,ResponseUtil.RESPONSE_OK,  "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.registerWithdrawal(apiRequest);
+			//res = this.apiServiceProvider.registerWithdrawal(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -604,7 +689,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getWithdrawalHistory(apiRequest);
+			//res = this.apiServiceProvider.getWithdrawalHistory(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -626,7 +717,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.deleteWithdrawal(apiRequest);
+			//res = this.apiServiceProvider.deleteWithdrawal(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -648,7 +745,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.cancelWithdrawal(apiRequest);
+			//res = this.apiServiceProvider.cancelWithdrawal(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -673,7 +776,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.updateWithdrawal(apiRequest);
+			//res = this.apiServiceProvider.updateWithdrawal(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -695,7 +804,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getMyMembers(apiRequest);
+			//res = this.apiServiceProvider.getMyMembers(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -718,7 +833,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.getMyTotalPointInfo(apiRequest);
+			//res = this.apiServiceProvider.getMyTotalPointInfo(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
@@ -741,7 +862,13 @@ public class ApiProviderController extends ApplicationController{
 			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "301", this.messageUtils.getMessage("api.message.wrong_afid_wrong_key"));
 			return res;
 		}else {
-			res = this.apiServiceProvider.validateMember(apiRequest);
+			//res = this.apiServiceProvider.validateMember(apiRequest);
+			
+			/* 서비스 중지 코드 시작*/ 
+			res = new ReturnpBaseResponse();
+			ResponseUtil.setResponse(res, ResponseUtil.RESPONSE_OK, "9087", "시스템 업그레이드로 연동 서비스 중지-기존 회원의 적립 요청 및 취소만 가능");
+			/* 서비스 중지 코드 끝*/ 
+			
 			StringResponse stringRes  = this.apiResponseService.generateResponse(res, (String)apiServiceMap.get("apiKey"));
 			return stringRes;
 		}
